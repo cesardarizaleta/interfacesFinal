@@ -1,0 +1,340 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+:root {
+  --color-primary: #ff0000;
+  --color-secondary: #ff0000;
+  --color-accent: #ff0000;
+  --color-text: #ff0000;
+  --color-text-light: #ff0000;
+  --color-background: #ffffff;
+  --background-neutral: #e5e5e5;
+}
+
+* {
+  font-family: 'Montserrat', sans-serif;
+  color: var(--color-text);
+}
+
+/* Override Tailwind text colors */
+.text-primary {
+  color: var(--color-primary) !important;
+}
+
+.text-secondary {
+  color: var(--color-secondary) !important;
+}
+
+.text-accent {
+  color: var(--color-accent) !important;
+}
+
+.text-stone-800 {
+  color: var(--color-text) !important;
+}
+
+.text-stone-600 {
+  color: var(--color-text-light) !important;
+}
+
+/* Override Tailwind background colors */
+.bg-primary {
+  background-color: var(--color-primary) !important;
+}
+
+.bg-secondary {
+  background-color: var(--color-secondary) !important;
+}
+
+.bg-accent {
+  background-color: var(--color-accent) !important;
+}
+
+/* Override Tailwind border colors */
+.border-primary {
+  border-color: var(--color-primary) !important;
+}
+
+.border-secondary {
+  border-color: var(--color-secondary) !important;
+}
+
+.border-accent {
+  border-color: var(--color-accent) !important;
+}
+
+/* Override Tailwind text colors for headings */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--color-primary) !important;
+}
+
+/* Override Tailwind text colors for links */
+a {
+  color: var(--color-primary) !important;
+}
+
+a:hover {
+  color: var(--color-secondary) !important;
+}
+
+/* Override Tailwind text colors for icons */
+i, .fa, .fas, .far, .fab {
+  color: var(--color-accent) !important;
+}
+
+/* Override Tailwind background colors for buttons */
+.btn {
+  background-color: var(--color-primary) !important;
+  color: var(--color-text-light) !important;
+}
+
+.btn:hover {
+  background-color: var(--color-secondary) !important;
+}
+
+/* Override Tailwind background colors for inputs */
+input, textarea {
+  background-color: var(--color-secondary) !important;
+  color: var(--color-text-light) !important;
+  border-color: var(--color-primary) !important;
+}
+
+/* Override Tailwind background colors for decorative elements */
+.decorative-circle,
+.bg-neutral-200,
+.bg-neutral-300 {
+  background-color: var(--color-secondary) !important;
+  opacity: 0.5;
+}
+
+/* Estilos específicos para formularios */
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="number"],
+textarea,
+select {
+  color: var(--color-text) !important;
+  border-color: var(--color-primary) !important;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="tel"]:focus,
+input[type="number"]:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.1) !important;
+}
+
+/* Estilos para botones */
+button,
+.btn,
+[type="button"],
+[type="submit"] {
+  background-color: var(--color-primary) !important;
+  color: white !important;
+  border-color: var(--color-primary) !important;
+}
+
+button:hover,
+.btn:hover,
+[type="button"]:hover,
+[type="submit"]:hover {
+  background-color: var(--color-secondary) !important;
+  border-color: var(--color-secondary) !important;
+}
+
+/* Estilos para enlaces */
+a {
+  color: var(--color-primary) !important;
+}
+
+a:hover {
+  color: var(--color-secondary) !important;
+}
+
+/* Estilos para placeholders */
+::placeholder {
+  color: var(--color-text-light) !important;
+  opacity: 0.7;
+}
+
+/* Estilos para labels */
+label {
+  color: var(--color-text) !important;
+}
+
+/* Estilos para mensajes de error */
+.error-message {
+  color: var(--color-primary) !important;
+}
+
+/* Estilos para mensajes de éxito */
+.success-message {
+  color: var(--color-secondary) !important;
+}
+
+/* Estilos para checkboxes y radio buttons */
+input[type="checkbox"],
+input[type="radio"] {
+  border-color: var(--color-primary) !important;
+}
+
+input[type="checkbox"]:checked,
+input[type="radio"]:checked {
+  background-color: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+}
+
+/* Estilos para el formulario de contacto */
+.contact-form input,
+.contact-form textarea,
+.contact-form select {
+  color: var(--color-text) !important;
+  border-color: var(--color-primary) !important;
+}
+
+.contact-form button {
+  background-color: var(--color-primary) !important;
+  color: white !important;
+}
+
+.contact-form button:hover {
+  background-color: var(--color-secondary) !important;
+}
+
+/* Estilos para el formulario de email */
+.email-form input,
+.email-form textarea {
+  color: var(--color-text) !important;
+  border-color: var(--color-primary) !important;
+}
+
+.email-form button {
+  background-color: var(--color-primary) !important;
+  color: white !important;
+}
+
+.email-form button:hover {
+  background-color: var(--color-secondary) !important;
+}
+
+/* Estilos para mensajes de estado en formularios */
+.form-message {
+  color: var(--color-text) !important;
+}
+
+/* Estilos para grupos de formulario */
+.form-group label {
+  color: var(--color-text) !important;
+}
+
+/* Estilos para campos requeridos */
+.required-field::after {
+  color: var(--color-primary) !important;
+}
+
+/* Estilos para tooltips */
+.tooltip {
+  background-color: var(--color-primary) !important;
+  color: white !important;
+}
+
+/* Estilos para mensajes de validación */
+.validation-message {
+  color: var(--color-primary) !important;
+}
+
+/* Estilos para campos deshabilitados */
+input:disabled,
+textarea:disabled,
+select:disabled {
+  background-color: rgba(255, 0, 0, 0.1) !important;
+  border-color: var(--color-primary) !important;
+  color: var(--color-text-light) !important;
+}
+
+/* Estilos para campos de solo lectura */
+input[readonly],
+textarea[readonly] {
+  background-color: rgba(255, 0, 0, 0.05) !important;
+  border-color: var(--color-primary) !important;
+  color: var(--color-text) !important;
+}
+
+/* Estilos para todos los textos */
+p, span, div, h1, h2, h3, h4, h5, h6, li, td, th, label, input, textarea, select {
+  color: var(--color-text) !important;
+}
+
+/* Estilos específicos para párrafos y descripciones */
+p, .description, .text-content, .content {
+  color: var(--color-text) !important;
+}
+
+/* Estilos para textos secundarios */
+.text-light, .text-muted, .text-gray {
+  color: var(--color-text-light) !important;
+}
+
+/* Estilos para textos en tablas */
+table td, table th {
+  color: var(--color-text) !important;
+}
+
+/* Estilos para textos en listas */
+ul li, ol li {
+  color: var(--color-text) !important;
+}
+
+/* Estilos para textos en cards */
+.card p, .card h1, .card h2, .card h3, .card h4, .card h5, .card h6 {
+  color: var(--color-text) !important;
+}
+
+/* Estilos para textos en modales */
+.modal p, .modal h1, .modal h2, .modal h3, .modal h4, .modal h5, .modal h6 {
+  color: var(--color-text) !important;
+}
+
+/* Estilos para textos en tooltips */
+.tooltip p, .tooltip span {
+  color: white !important;
+}
+
+/* Estilos para textos en alerts */
+.alert p, .alert span {
+  color: var(--color-text) !important;
+}
+
+/* Estilos para textos en badges */
+.badge {
+  color: var(--color-text) !important;
+  background-color: var(--color-primary) !important;
+}
+
+/* Estilos para textos en breadcrumbs */
+.breadcrumb li {
+  color: var(--color-text) !important;
+}
+
+/* Estilos para textos en pagination */
+.pagination li {
+  color: var(--color-text) !important;
+}
+
+/* Estilos para textos en dropdowns */
+.dropdown-item {
+  color: var(--color-text) !important;
+}
+
+/* Estilos para textos en navbars */
+.navbar a, .navbar span {
+  color: var(--color-text) !important;
+}
+
+/* Estilos para textos en footers */
+footer p, footer a, footer span {
+  color: var(--color-text) !important;
+}
