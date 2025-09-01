@@ -3,9 +3,9 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs'); // Asegúrate de importar fs para la función delete
 
-const FontsService = require('./../services/font_service');
-const validatorHandler = require('./../middlewares/validator_handler');
-const { updateFontSchema, createFontSchema, getFontSchema } = require('./../schemas/font_schema');
+const FontsService = require('../services/font_service');
+const validatorHandler = require('../middlewares/validator_handler');
+const { updateFontSchema, createFontSchema, getFontSchema } = require('../schemas/font_schema');
 const passport = require('passport');
 
 const router = express.Router();

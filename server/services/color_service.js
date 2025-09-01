@@ -1,97 +1,101 @@
 const boom = require('@hapi/boom');
-const { models } = require('../libs/sequelize');
-const { Sequelize } = require('sequelize'); // ¡Importa Sequelize aquí!
+const fs = require('fs').promises;
+const path = require('path');
 
 class ColorsService {
 
   constructor(){
+    this.filePath = path.join(__dirname, '../data/colors.json');
+  }
+
+  async _readData() {
+    try {
+      const data = await fs.readFile(this.filePath, 'utf8');
+      return JSON.parse(data);
+    } catch (error) {
+      return [];
+    }
+  }
+
+  async _writeData(data) {
+    await fs.writeFile(this.filePath, JSON.stringify(data, null, 2));
   }
 
   async create(data) {
-    const user = await models.User.findByPk(data.userId);
-    console.log(user);
-    // Validamos que exista el user
-    if (!user) {
-      throw boom.notFound('User not found');
-    }
-    const newColor = await models.Color.create(data);
+    const colors = await this._readData();
+    const newColor = {
+      id: Date.now().toString(),
+      ...data,
+      lastUsedAt: null
+    };
+    colors.push(newColor);
+    await this._writeData(colors);
     return newColor;
   }
 
   async find() {
-    const colors = await models.Color.findAll(
-      {
-        include: ['user']
-      }
-    );
+    const colors = await this._readData();
     return colors;
   }
 
   async findByUser(userId){
-    const colors = await models.Color.findAll({
-      where: {
-        userId: userId
-      }
-    });
-
-    return colors
+    const colors = await this._readData();
+    return colors.filter(color => color.userId === userId);
   }
 
   async findOne(id) {
-    const color = await models.Color.findByPk(id);
+    const colors = await this._readData();
+    const color = colors.find(color => color.id === id);
     if (!color) {
       throw boom.notFound('Color not found');
     }
-
-    await color.update({ lastUsedAt: new Date() });
-
+    // Update lastUsedAt
+    color.lastUsedAt = new Date().toISOString();
+    await this._writeData(colors);
     return color;
   }
 
   async update(id, changes) {
-    const color = await this.findOne(id);
-    const rta = await color.update(changes);
-    return rta;
+    const colors = await this._readData();
+    const index = colors.findIndex(color => color.id === id);
+    if (index === -1) {
+      throw boom.notFound('Color not found');
+    }
+    colors[index] = { ...colors[index], ...changes };
+    await this._writeData(colors);
+    return colors[index];
   }
 
   async delete(id) {
-    const color = await this.findOne(id);
-    await color.destroy();
+    const colors = await this._readData();
+    const index = colors.findIndex(color => color.id === id);
+    if (index === -1) {
+      throw boom.notFound('Color not found');
+    }
+    colors.splice(index, 1);
+    await this._writeData(colors);
     return { id };
   }
 
   async findLastUsedByUserId(userId) {
-    const color = await models.Color.findOne({
-      where: { userId: userId },
-      order: [
-        // Usamos sequelize.literal para una expresión SQL directa
-        // Esto fuerza que el order by incluya NULLS LAST
-        [Sequelize.literal('"last_used_at" DESC NULLS LAST')] 
-      ],
-      include: ['user']
-    });
-    if (!color) {
+    const colors = await this._readData();
+    const userColors = colors.filter(color => color.userId === userId && color.lastUsedAt);
+    if (userColors.length === 0) {
       throw boom.notFound('No se ha encontrado ninguna configuración de color reciente para este usuario.');
     }
-    return color;
+    userColors.sort((a, b) => new Date(b.lastUsedAt) - new Date(a.lastUsedAt));
+    return userColors[0];
   }
 
   async findOneByIdAndUserId(colorId, userId) {
-    // Busca la fuente por su ID y por el ID del usuario al que pertenece
-    const color = await models.Color.findOne({
-      where: {
-        id: colorId,
-        userId: userId
-      },
-      include: ['user'] // Incluir el usuario si lo necesitas
-    });
-
+    const colors = await this._readData();
+    const color = colors.find(color => color.id === colorId && color.userId === userId);
     if (!color) {
-      throw boom.notFound('Font not found or does not belong to the authenticated user.');
+      throw boom.notFound('Color not found or does not belong to the authenticated user.');
     }
-
-    await color.update({ lastUsedAt: new Date() });
-
+    // Update lastUsedAt
+    color.lastUsedAt = new Date().toISOString();
+    await this._writeData(colors);
     return color;
   }
 }

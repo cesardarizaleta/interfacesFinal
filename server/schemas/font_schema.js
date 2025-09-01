@@ -1,6 +1,6 @@
 const Joi = require('joi');
 
-const id = Joi.number().integer();
+const id = Joi.string();
 const name = Joi.string().min(4).max(20);
 const titleSize = Joi.number().integer(1);
 const subtitleSize = Joi.number().integer(1);

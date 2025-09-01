@@ -1,66 +1,84 @@
 const boom = require('@hapi/boom');
 const bcrypt = require('bcrypt');
-const { models } = require('../libs/sequelize');
+const fs = require('fs').promises;
+const path = require('path');
 
 class UsersService {
 
   constructor(){
+    this.filePath = path.join(__dirname, '../data/users.json');
   }
+
+  async _readData() {
+    try {
+      const data = await fs.readFile(this.filePath, 'utf8');
+      return JSON.parse(data);
+    } catch (error) {
+      return [];
+    }
+  }
+
+  async _writeData(data) {
+    await fs.writeFile(this.filePath, JSON.stringify(data, null, 2));
+  }
+
   async create(data) {
     const hash = await bcrypt.hash(data.password, 10);
-    const newUser = await models.User.create(
-      {
-        ...data,
-        password: hash
-      }
-    );
-    delete newUser.dataValues.password;
-    return newUser;
+    const users = await this._readData();
+    const newUser = {
+      id: Date.now().toString(),
+      ...data,
+      password: hash
+    };
+    users.push(newUser);
+    await this._writeData(users);
+    const { password, ...userWithoutPassword } = newUser;
+    return userWithoutPassword;
   }
 
   async find() {
-    const client = await models.User.findAll(
-      {
-        include: ['font', 'color']
-      }
-    );
-
-    return client;
+    const users = await this._readData();
+    return users.map(user => {
+      const { password, ...userWithoutPassword } = user;
+      return userWithoutPassword;
+    });
   }
 
   async findOneByEmail(email) {
-    const user = await models.User.findOne(
-      {
-        where: { email }
-      }
-    );
-
-
-
-    return user;
+    const users = await this._readData();
+    return users.find(user => user.email === email);
   }
 
   async findOne(id) {
-    const user = await models.User.findByPk(id,
-      {
-        include: ['font', 'color']
-      }
-    );
+    const users = await this._readData();
+    const user = users.find(user => user.id === id);
     if (!user) {
       throw boom.notFound('User not found');
     }
-    return user;
+    const { password, ...userWithoutPassword } = user;
+    return userWithoutPassword;
   }
 
   async update(id, changes) {
-    const user = await this.findOne(id);
-    const rta = await user.update(changes);
-    return rta;
+    const users = await this._readData();
+    const index = users.findIndex(user => user.id === id);
+    if (index === -1) {
+      throw boom.notFound('User not found');
+    }
+    users[index] = { ...users[index], ...changes };
+    await this._writeData(users);
+    const { password, ...userWithoutPassword } = users[index];
+    return userWithoutPassword;
   }
 
   async delete(id) {
-    const user = await this.findOne(id);
-    await user.destroy();
+    const users = await this._readData();
+    const index = users.findIndex(user => user.id === id);
+    if (index === -1) {
+      throw boom.notFound('User not found');
+    }
+    users.splice(index, 1);
+    await this._writeData(users);
     return { id };
   }
 

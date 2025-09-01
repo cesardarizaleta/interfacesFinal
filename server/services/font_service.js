@@ -1,123 +1,120 @@
-const fs = require('fs');
+const fs = require('fs').promises;
 const path = require('path');
-const { Sequelize } = require('sequelize');
 const boom = require('@hapi/boom');
-const { models } = require('../libs/sequelize');
 
 class FontsService {
 
   constructor(){
+    this.filePath = path.join(__dirname, '../data/fonts.json');
   }
-  async create(data) {
-    const user = await models.User.findByPk(data.userId);
-    console.log(user);
-    // Validamos que exista el user
-    if (!user) {
-      throw boom.notFound('User not found');
+
+  async _readData() {
+    try {
+      const data = await fs.readFile(this.filePath, 'utf8');
+      return JSON.parse(data);
+    } catch (error) {
+      return [];
     }
-    const newFont = await models.Font.create(data);
+  }
+
+  async _writeData(data) {
+    await fs.writeFile(this.filePath, JSON.stringify(data, null, 2));
+  }
+
+  async create(data) {
+    const fonts = await this._readData();
+    const newFont = {
+      id: Date.now().toString(),
+      ...data,
+      lastUsedAt: null
+    };
+    fonts.push(newFont);
+    await this._writeData(fonts);
     return newFont;
   }
 
   async find() {
-    const font = await models.Font.findAll(
-      {
-        include: ['user']
-      }
-    );
-
-    return font;
+    const fonts = await this._readData();
+    return fonts;
   }
 
   async findByUser(userId){
-    const fonts = await models.Font.findAll({
-      where: {
-        userId: userId
-      }
-    });
-
-    return fonts
+    const fonts = await this._readData();
+    return fonts.filter(font => font.userId === userId);
   }
 
   async findOne(id) {
-    const font = await models.Font.findByPk(id);
+    const fonts = await this._readData();
+    const font = fonts.find(font => font.id === id);
     if (!font) {
       throw boom.notFound('Font not found');
     }
-
-    await font.update({ lastUsedAt: new Date() });
-
+    // Update lastUsedAt
+    font.lastUsedAt = new Date().toISOString();
+    await this._writeData(fonts);
     return font;
   }
 
   async update(id, changes) {
-    const font = await this.findOne(id);
-    const rta = await font.update(changes);
-    return rta;
+    const fonts = await this._readData();
+    const index = fonts.findIndex(font => font.id === id);
+    if (index === -1) {
+      throw boom.notFound('Font not found');
+    }
+    fonts[index] = { ...fonts[index], ...changes };
+    await this._writeData(fonts);
+    return fonts[index];
   }
 
   async delete(id) {
-    const font = await this.findOne(id);
+    const fonts = await this._readData();
+    const index = fonts.findIndex(font => font.id === id);
+    if (index === -1) {
+      throw boom.notFound('Font not found');
+    }
+    const font = fonts[index];
 
+    // Delete files
     if (font.fontTitleFilePath) {
-      const filePath = path.join(process.cwd(), font.fontTitleFilePath);
-      fs.unlink(filePath, (err) => {
-        if (err) {
-          console.error(`Error al eliminar el archivo de fuente del título: ${filePath}`, err);
-        } else {
-          console.log(`Archivo de fuente del título eliminado: ${filePath}`);
-        }
-      });
+      try {
+        await fs.unlink(path.join(process.cwd(), font.fontTitleFilePath));
+      } catch (err) {
+        console.error(`Error al eliminar el archivo de fuente del título: ${font.fontTitleFilePath}`, err);
+      }
     }
 
     if (font.fontSubtitleFilePath) {
-      const filePath = path.join(process.cwd(), font.fontSubtitleFilePath);
-      fs.unlink(filePath, (err) => {
-        if (err) {
-          console.error(`Error al eliminar el archivo de fuente del subtítulo: ${filePath}`, err);
-        } else {
-          console.log(`Archivo de fuente del subtítulo eliminado: ${filePath}`);
-        }
-      });
+      try {
+        await fs.unlink(path.join(process.cwd(), font.fontSubtitleFilePath));
+      } catch (err) {
+        console.error(`Error al eliminar el archivo de fuente del subtítulo: ${font.fontSubtitleFilePath}`, err);
+      }
     }
 
-    await font.destroy();
+    fonts.splice(index, 1);
+    await this._writeData(fonts);
     return { id };
   }
 
   async findLastUsedByUserId(userId) {
-    const font = await models.Font.findOne({
-      where: { userId: userId },
-      order: [
-        // Usamos sequelize.literal para una expresión SQL directa
-        // Esto fuerza que el order by incluya NULLS LAST
-        [Sequelize.literal('"last_used_at" DESC NULLS LAST')] 
-      ],
-      include: ['user']
-    });
-    if (!font) {
+    const fonts = await this._readData();
+    const userFonts = fonts.filter(font => font.userId === userId && font.lastUsedAt);
+    if (userFonts.length === 0) {
       throw boom.notFound('No se ha encontrado ninguna configuración de fuente reciente para este usuario.');
     }
-    return font;
+    userFonts.sort((a, b) => new Date(b.lastUsedAt) - new Date(a.lastUsedAt));
+    return userFonts[0];
   }
 
   async findOneByIdAndUserId(fontId, userId) {
-    // Busca la fuente por su ID y por el ID del usuario al que pertenece
-    const font = await models.Font.findOne({
-      where: {
-        id: fontId,
-        userId: userId
-      },
-      include: ['user'] // Incluir el usuario si lo necesitas
-    });
-
+    const fonts = await this._readData();
+    const font = fonts.find(font => font.id === fontId && font.userId === userId);
     if (!font) {
       throw boom.notFound('Font not found or does not belong to the authenticated user.');
     }
-
-    // Marca la fuente como "última usada" al consultarla
-    await font.update({ lastUsedAt: new Date() });
-
+    // Update lastUsedAt
+    font.lastUsedAt = new Date().toISOString();
+    await this._writeData(fonts);
     return font;
   }
 

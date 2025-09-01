@@ -49,6 +49,5 @@ app.use(errorHandler);
 //swaggerDocs(app, port);
 
 app.listen(port, () => {
-  console.log(`Listening at http://localhost:${port}`);
-})
-
+  console.log(`Server running on port ${port}`);
+});

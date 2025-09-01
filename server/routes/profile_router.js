@@ -1,7 +1,7 @@
 const express = require('express');
 const passport = require('passport');
 
-const ColorsService = require('./../services/color_service');
+const ColorsService = require('../services/color_service');
 const {getColorSchema} = require('../schemas/color_schema');
 
 const FontsService = require('../services/font_service');
@@ -9,7 +9,7 @@ const {getFontSchema} = require('../schemas/font_schema');
 
 const {getUserSchema} = require('../schemas/user_schema');
 
-const validatorHandler = require('./../middlewares/validator_handler');
+const validatorHandler = require('../middlewares/validator_handler');
 
 const router = express.Router();
 

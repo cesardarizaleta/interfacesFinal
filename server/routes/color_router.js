@@ -1,8 +1,8 @@
 const express = require('express');
 
-const ColorsService = require('./../services/color_service');
-const validatorHandler = require('./../middlewares/validator_handler');
-const { updateColorSchema, createColorSchema, getColorSchema } = require('./../schemas/color_schema');
+const ColorsService = require('../services/color_service');
+const validatorHandler = require('../middlewares/validator_handler');
+const { updateColorSchema, createColorSchema, getColorSchema } = require('../schemas/color_schema');
 const passport = require('passport');
 
 const router = express.Router();

@@ -1,15 +1,15 @@
 const express = require('express');
 
-const UsersService = require('./../services/user_service');
-const validatorHandler = require('./../middlewares/validator_handler');
-const { updateUserSchema, createUserSchema, getUserSchema } = require('./../schemas/user_schema');
+const UsersService = require('../services/user_service');
+const validatorHandler = require('../middlewares/validator_handler');
+const { updateUserSchema, createUserSchema, getUserSchema } = require('../schemas/user_schema');
 
-const { getFontSchema } = require('./../schemas/font_schema');
-const FontsService = require('./../services/font_service');
+const { getFontSchema } = require('../schemas/font_schema');
+const FontsService = require('../services/font_service');
 const fontService = new FontsService();
 
-const { getColorSchema } = require('./../schemas/color_schema');
-const ColorsService = require('./../services/color_service');
+const { getColorSchema } = require('../schemas/color_schema');
+const ColorsService = require('../services/color_service');
 const colorService = new ColorsService();
 
 const router = express.Router();

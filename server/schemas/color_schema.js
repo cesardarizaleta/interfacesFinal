@@ -1,6 +1,6 @@
 const Joi = require('joi');
 
-const id = Joi.number().integer();
+const id = Joi.string();
 const name = Joi.string().min(4).max(20);
 const colorPrimary = Joi.string().length(7).pattern(/^#([A-Fa-f0-9]{6})$/) // Valida el formato del hexcode
 const colorSecondary = Joi.string().length(7).pattern(/^#([A-Fa-f0-9]{6})$/) // Valida el formato del hexcode
