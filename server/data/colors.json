@@ -1,1 +1,13 @@
-[]
+[
+  {
+    "id": "1756702749775",
+    "name": "Palet",
+    "colorPrimary": "#ff8c00",
+    "colorSecondary": "#FFFFFF",
+    "colorAccent": "#44403C",
+    "colorText": "#78716C",
+    "backgroundNeutral": "#E7E5E4",
+    "userId": "1756702311755",
+    "lastUsedAt": "2025-09-01T05:09:07.326Z"
+  }
+]

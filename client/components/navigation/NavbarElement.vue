@@ -106,8 +106,9 @@ const handleLogout = () => {
   font-size: 1.5rem;
   font-weight: 700;
   letter-spacing: 0.05em;
-  color: var(--color-text);
+  color: var(--color-primary);
   margin: 0;
+  transition: color var(--transition-normal);
 }
 
 .brand-sub {
@@ -116,6 +117,7 @@ const handleLogout = () => {
   letter-spacing: 0.05em;
   color: var(--color-text);
   margin: 0;
+  transition: color var(--transition-normal);
 }
 
 .navbar-menu {
@@ -133,11 +135,28 @@ const handleLogout = () => {
   color: var(--color-text);
   text-decoration: none;
   font-size: 1rem;
-  transition: color 0.3s ease;
+  font-weight: 500;
+  transition: all var(--transition-normal);
+  position: relative;
 }
 
 .navbar-link:hover {
-  color: var(--color-secondary);
+  color: var(--color-primary);
+}
+
+.navbar-link::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: var(--color-primary);
+  transition: width var(--transition-normal);
+}
+
+.navbar-link:hover::after {
+  width: 100%;
 }
 
 .navbar-actions {
@@ -149,34 +168,54 @@ const handleLogout = () => {
 .register-button,
 .logout-button {
   padding: 0.5rem 1rem;
-  border-radius: 0.25rem;
+  border-radius: 0.5rem;
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all var(--transition-normal);
   text-decoration: none;
   display: inline-block;
+  border: 2px solid transparent;
 }
 
 .login-button {
-  background-color: var(--color-primary);
-  color: white;
-  border: none;
+  background-color: var(--bg-primary);
+  color: var(--color-text-light);
+  border-color: var(--border-primary);
 }
 
 .login-button:hover {
-  background-color: var(--color-secondary);
+  background-color: var(--bg-secondary);
+  border-color: var(--border-secondary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--shadow-primary);
 }
 
 .register-button {
   background-color: transparent;
   color: var(--color-text);
-  border: 1px solid var(--color-primary);
+  border-color: var(--border-primary);
 }
 
 .register-button:hover {
-  background-color: var(--color-primary);
-  color: white;
+  background-color: var(--bg-primary);
+  color: var(--color-text-light);
+  border-color: var(--border-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--shadow-primary);
+}
+
+.logout-button {
+  background-color: var(--bg-accent);
+  color: var(--color-text-light);
+  border-color: var(--border-accent);
+}
+
+.logout-button:hover {
+  background-color: var(--bg-primary);
+  border-color: var(--border-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--shadow-accent);
 }
 
 .logout-button {

@@ -9,6 +9,9 @@ export default defineNuxtConfig({
       BACKEND_URL: process.env.BACKEND_URL,
     },
   },
+  plugins: [
+    '~/plugins/palette.client.ts'
+  ],
   app: {
     head: {
       link: [

@@ -1,35 +1,41 @@
 const Joi = require('joi');
 
 const id = Joi.string();
-const name = Joi.string().min(4).max(20);
-const titleSize = Joi.number().integer(1);
-const subtitleSize = Joi.number().integer(1);
-const paragraphSize = Joi.number().integer(1);
-const fontFamily = Joi.string().min(1).max(20);
-const fontTitleFilePath = Joi.string().max(512);
-const fontSubtitleFilePath = Joi.string().max(512);
+const name = Joi.string().min(2).max(50);
+const fontFamily = Joi.string().min(1).max(50);
+const fontType = Joi.string().valid('title', 'subtitle', 'paragraph', 'general').default('general');
+const fontFilePath = Joi.string().max(512);
+const fontWeight = Joi.string().valid('100', '200', '300', '400', '500', '600', '700', '800', '900', 'normal', 'bold', 'lighter', 'bolder').default('normal');
+const fontStyle = Joi.string().valid('normal', 'italic', 'oblique').default('normal');
+const fontFormat = Joi.string().valid('ttf', 'otf', 'woff', 'woff2').default('ttf');
 
 const createFontSchema = Joi.object({
   name: name.required(),
-  titleSize: titleSize.required(),
-  subtitleSize: subtitleSize.required(),
-  paragraphSize: paragraphSize.required(),
   fontFamily: fontFamily.required(),
-  fontTitleFilePath: fontTitleFilePath.optional(),
-  fontSubtitleFilePath: fontSubtitleFilePath.optional(),
+  fontType: fontType.optional(),
+  fontFilePath: fontFilePath.optional(),
+  fontWeight: fontWeight.optional(),
+  fontStyle: fontStyle.optional(),
+  fontFormat: fontFormat.optional(),
 });
 
 const updateFontSchema = Joi.object({
   name,
-  titleSize,
-  subtitleSize,
-  paragraphSize,
-  fontTitleFilePath,
-  fontSubtitleFilePath,
+  fontFamily,
+  fontType,
+  fontFilePath,
+  fontWeight,
+  fontStyle,
+  fontFormat,
 });
 
 const getFontSchema = Joi.object({
-  id
+  id: id.required()
 });
 
-module.exports = { createFontSchema, updateFontSchema, getFontSchema }
+const assignFontSchema = Joi.object({
+  fontId: id.required(),
+  fontType: fontType.required(),
+});
+
+module.exports = { createFontSchema, updateFontSchema, getFontSchema, assignFontSchema }

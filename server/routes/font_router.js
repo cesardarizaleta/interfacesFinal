@@ -24,13 +24,28 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage: storage,
   fileFilter: (req, file, cb) => {
-    if (file.mimetype === 'font/ttf' || file.originalname.endsWith('.ttf')) {
+    const allowedMimes = [
+      'font/ttf',
+      'font/otf',
+      'font/woff',
+      'font/woff2',
+      'application/x-font-ttf',
+      'application/x-font-otf',
+      'application/font-woff',
+      'application/font-woff2'
+    ];
+    const allowedExtensions = ['.ttf', '.otf', '.woff', '.woff2'];
+
+    const isValidMime = allowedMimes.includes(file.mimetype);
+    const isValidExtension = allowedExtensions.some(ext => file.originalname.toLowerCase().endsWith(ext));
+
+    if (isValidMime || isValidExtension) {
       cb(null, true);
     } else {
-      cb(new Error('Tipo de archivo no válido. Solo se permiten archivos .ttf'), false);
+      cb(new Error('Tipo de archivo no válido. Solo se permiten archivos .ttf, .otf, .woff, .woff2'), false);
     }
   },
-  limits: { fileSize: 5 * 1024 * 1024 }
+  limits: { fileSize: 10 * 1024 * 1024 } // Increased to 10MB
 });
 // --- Fin de Configuración de Multer ---
 
@@ -56,36 +71,43 @@ router.get('/:id',
   }
 );
 
-// --- Modificación de la ruta POST para manejar múltiples subidas de archivos ---
+// --- Modificación de la ruta POST para manejar subida de fuente mejorada ---
 router.post(
   '/',
-  upload.fields([
-    { name: 'fontTitleFilePath', maxCount: 1 },
-    { name: 'fontSubtitleFilePath', maxCount: 1 }
-  ]),
+  upload.single('fontFile'),
   passport.authenticate('jwt', { session: false }),
   validatorHandler(createFontSchema, 'body'),
   async (req, res, next) => {
     try {
       const bodyWithUserId = {
-        ...req.body, // Todos los campos del color (name, colorPrimary, etc.)
-        userId: req.user.sub // Sobreescribe o añade el userId del token
+        ...req.body,
+        userId: req.user.sub
       };
 
-      // Multer adjunta la información de los archivos subidos a req.files
-      // req.files será un objeto con arrays para cada campo de archivo
-      if (req.files && req.files.fontTitleFilePath && req.files.fontTitleFilePath[0]) {
-        bodyWithUserId.fontTitleFilePath = path.join('uploads/fonts/', req.files.fontTitleFilePath[0].filename);
-      } else {
-        // Si fontTitleFilePath es requerido (como en tu modelo), lanza un error
-        throw new Error('Es necesario subir el archivo de fuente para el título.');
-      }
+      // Handle file upload
+      if (req.file) {
+        bodyWithUserId.fontFilePath = path.join('uploads/fonts/', req.file.filename);
 
-      if (req.files && req.files.fontSubtitleFilePath && req.files.fontSubtitleFilePath[0]) {
-        bodyWithUserId.fontSubtitleFilePath = path.join('uploads/fonts/', req.files.fontSubtitleFilePath[0].filename);
+        // Determine font format from file extension
+        const extension = path.extname(req.file.originalname).toLowerCase();
+        switch (extension) {
+          case '.ttf':
+            bodyWithUserId.fontFormat = 'ttf';
+            break;
+          case '.otf':
+            bodyWithUserId.fontFormat = 'otf';
+            break;
+          case '.woff':
+            bodyWithUserId.fontFormat = 'woff';
+            break;
+          case '.woff2':
+            bodyWithUserId.fontFormat = 'woff2';
+            break;
+          default:
+            bodyWithUserId.fontFormat = 'ttf'; // fallback
+        }
       } else {
-        // fontSubtitleFilePath es opcional, así que si no se subió, se asigna null
-        bodyWithUserId.fontSubtitleFilePath = null;
+        throw new Error('Es necesario subir un archivo de fuente.');
       }
 
       const newFont = await service.create(bodyWithUserId);
@@ -112,13 +134,64 @@ router.patch('/:id',
   }
 );
 
+// --- Nueva ruta para asignar tipo de fuente ---
+router.patch('/:id/assign-type',
+  passport.authenticate('jwt', { session: false }),
+  validatorHandler(getFontSchema, 'params'),
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const { fontType } = req.body;
+      const userId = req.user.sub;
+
+      if (!fontType) {
+        throw new Error('fontType es requerido');
+      }
+
+      const font = await service.assignFontType(id, fontType, userId);
+      res.json(font);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+// --- Nueva ruta para obtener fuentes asignadas por usuario ---
+router.get('/user/assigned',
+  passport.authenticate('jwt', { session: false }),
+  async (req, res, next) => {
+    try {
+      const userId = req.user.sub;
+      const assignedFonts = await service.getAssignedFonts(userId);
+      res.json(assignedFonts);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+// --- Nueva ruta para obtener fuentes por tipo ---
+router.get('/user/type/:fontType',
+  passport.authenticate('jwt', { session: false }),
+  async (req, res, next) => {
+    try {
+      const { fontType } = req.params;
+      const userId = req.user.sub;
+      const fonts = await service.findByType(userId, fontType);
+      res.json(fonts);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
 router.delete('/:id',
   validatorHandler(getFontSchema, 'params'),
   async (req, res, next) => {
     try {
       const { id } = req.params;
       await service.delete(id);
-      res.status(201).json({id});
+      res.status(200).json({id});
     } catch (error) {
       next(error);
     }

@@ -2,18 +2,26 @@
   <navbar-element></navbar-element>
   <home-view></home-view>
   <footer-element></footer-element>
+  <palette-loader></palette-loader>
 </template>
 
 <script setup>
+import { onMounted, onUnmounted } from 'vue';
 import NavbarElement from "@/components/navigation/NavbarElement.vue";
 import FooterElement from "@/components/navigation/FooterElement.vue";
 import HomeView from "@/components/HomeView.vue";
+import PaletteLoader from "@/components/ui/PaletteLoader.vue";
 import "@/style/style.css";
 import DataSet from "@/utils/loadData";
+import { usePalette } from '~/composables/usePalette';
+import { useFonts } from '~/composables/useFonts';
 
 definePageMeta({
   middleware: ['auth']
 });
+
+const { setActivePalette, activePalette, defaultPalette, applyColorsToPage } = usePalette();
+const { loadAssignedFonts, applyFontsToPage } = useFonts();
 
 // Configuración de colores por defecto
 const defaultColors = {
@@ -38,9 +46,53 @@ const defaultFonts = {
 // Función para aplicar variables CSS de colores
 const applyColors = (colors) => {
   const root = document.documentElement;
+  const colorMapping = {
+    colorPrimary: '--color-primary',
+    backgroundNeutral: '--background-neutral',
+    colorAccent: '--color-accent',
+    colorSecondary: '--color-secondary',
+    colorText: '--color-text',
+    colorTextLight: '--color-text-light',
+    // Mapeos adicionales para compatibilidad
+    bgPrimary: '--bg-primary',
+    bgSecondary: '--bg-secondary',
+    bgAccent: '--bg-accent',
+    bgNeutral: '--bg-neutral',
+    borderPrimary: '--border-primary',
+    borderSecondary: '--border-secondary',
+    borderAccent: '--border-accent'
+  };
+
+  // Aplicar colores principales
   Object.entries(colors).forEach(([key, value]) => {
-    root.style.setProperty(`--${key}`, value);
+    const cssVar = colorMapping[key];
+    if (cssVar && value) {
+      root.style.setProperty(cssVar, value);
+    }
   });
+
+  // Aplicar colores derivados
+  if (colors.colorPrimary) {
+    root.style.setProperty('--bg-primary', colors.colorPrimary);
+    root.style.setProperty('--border-primary', colors.colorPrimary);
+  }
+  if (colors.colorSecondary) {
+    root.style.setProperty('--bg-secondary', colors.colorSecondary);
+    root.style.setProperty('--border-secondary', colors.colorSecondary);
+  }
+  if (colors.colorAccent) {
+    root.style.setProperty('--bg-accent', colors.colorAccent);
+    root.style.setProperty('--border-accent', colors.colorAccent);
+  }
+  if (colors.backgroundNeutral) {
+    root.style.setProperty('--bg-neutral', colors.backgroundNeutral);
+  }
+
+  // Forzar actualización de elementos dinámicos
+  setTimeout(() => {
+    const event = new CustomEvent('colorsUpdated', { detail: colors });
+    document.dispatchEvent(event);
+  }, 100);
 };
 
 // Función para aplicar variables CSS de fuentes
@@ -141,6 +193,9 @@ const fetchColors = async () => {
       colorTextLight: data?.colorTextLight || defaultColors.colorTextLight
     };
 
+    // Aplicar la paleta activa usando el composable
+    setActivePalette(backendColors);
+
     // Aplicar los colores usando DataSet
     const dataSet = new DataSet(document);
     Object.entries(backendColors).forEach(([key, value]) => {
@@ -150,14 +205,14 @@ const fetchColors = async () => {
       }
     });
 
-    applyColors(backendColors);
+    applyColorsToPage(backendColors);
     localStorage.setItem('themeColors', JSON.stringify(backendColors));
 
   } catch (error) {
     console.error("Error fetching colors:", error);
     // Intentar usar colores guardados en localStorage como fallback
     const savedColors = JSON.parse(localStorage.getItem('themeColors')) || defaultColors;
-    applyColors(savedColors);
+    applyColorsToPage(savedColors);
   }
 };
 
@@ -168,7 +223,7 @@ const fetchFonts = async () => {
 
   if (!user?.id || !token) {
     console.warn("Usuario no autenticado, usando fuentes por defecto");
-    applyFonts(defaultFonts);
+    applyFontsToPage();
     return;
   }
 
@@ -212,36 +267,49 @@ const fetchFonts = async () => {
       paragraphSize: backendFonts.paragraphSize / 16
     });
 
-    applyFonts(backendFonts);
+    applyFontsToPage();
     localStorage.setItem('themeFonts', JSON.stringify(backendFonts));
 
   } catch (error) {
     console.error("Error fetching fonts:", error);
     // Intentar usar fuentes guardadas en localStorage como fallback
     const savedFonts = JSON.parse(localStorage.getItem('themeFonts')) || defaultFonts;
-    applyFonts(savedFonts);
+    applyFontsToPage();
   }
 };
 
 // Ejecutar al montar el componente
-onMounted(() => {
+onMounted(async () => {
   // Cargar colores y fuentes de forma independiente
-  fetchColors();
-  fetchFonts();
-  
+  await fetchColors();
+  await fetchFonts();
+
+  // Cargar fuentes asignadas dinámicamente
+  await loadAssignedFonts();
+
+  // Aplicar colores iniciales desde localStorage si existen
+  const savedColors = JSON.parse(localStorage.getItem('themeColors') || 'null');
+  if (savedColors) {
+    applyColorsToPage(savedColors);
+  }
+
+  // Aplicar fuentes asignadas después de cargarlas
+  applyFontsToPage();
+
   // Escuchar cambios de autenticación
   const authListener = () => {
     if (!localStorage.getItem("token")) {
-      applyColors(defaultColors);
-      applyFonts(defaultFonts);
+      applyColorsToPage(defaultColors);
+      applyFontsToPage();
     } else {
       fetchColors();
       fetchFonts();
+      loadAssignedFonts();
     }
   };
-  
+
   window.addEventListener('storage', authListener);
-  
+
   // Limpiar listener al desmontar
   onUnmounted(() => {
     window.removeEventListener('storage', authListener);

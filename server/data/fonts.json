@@ -1,1 +1,28 @@
-[]
+[
+  {
+    "id": "1756704680524",
+    "name": "Sixty",
+    "fontFamily": "sixty",
+    "fontType": "general",
+    "fontFilePath": "uploads/fonts/1756704680508-SIXTY.ttf",
+    "fontWeight": "normal",
+    "fontStyle": "normal",
+    "fontFormat": "ttf",
+    "userId": "1756702311755",
+    "uploadedAt": "2025-09-01T05:31:20.524Z",
+    "lastUsedAt": "2025-09-01T05:33:56.025Z"
+  },
+  {
+    "id": "1756705266368",
+    "name": "Fuente",
+    "fontFamily": "poppins",
+    "fontType": "title",
+    "fontFilePath": "uploads/fonts/1756705266346-Poppins-Black.ttf",
+    "fontWeight": "normal",
+    "fontStyle": "normal",
+    "fontFormat": "ttf",
+    "userId": "1756702311755",
+    "uploadedAt": "2025-09-01T05:41:06.368Z",
+    "lastUsedAt": "2025-09-01T05:41:13.357Z"
+  }
+]

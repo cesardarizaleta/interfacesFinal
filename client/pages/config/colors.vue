@@ -353,18 +353,9 @@ const fetchUserPalettes = async () => {
     const data = await response.json();
     palettes.value = data;
 
-    // Cargar la última paleta usada
-    const lastUsedResponse = await fetch(`${BACKEND_URL}/api/profile/lastColorUsed`, {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    });
-
-    if (lastUsedResponse.ok) {
-      const lastUsed = await lastUsedResponse.json();
-      activePaletteId.value = lastUsed.id;
-      applyPalette(lastUsed);
-    }
+    // En la página de configuración, no cargar automáticamente la última paleta usada
+    // Solo mostrar las paletas disponibles
+    activePaletteId.value = null;
   } catch (error) {
     console.error('Error:', error);
     paletteFetchError.value = error.message;
@@ -377,6 +368,7 @@ const fetchUserPalettes = async () => {
 const applyPalette = (palette) => {
   if (!palette) return;
 
+  // Solo aplicar localmente en la página de configuración, no globalmente
   primaryColor.value = palette.colorPrimary || '#57534E';
   secondaryColor.value = palette.colorSecondary || '#FFFFFF';
   accentColor.value = palette.colorAccent || '#44403C';
@@ -400,7 +392,7 @@ const activatePalette = async (palette) => {
 
     const colorData = await response.json();
     
-    // Update the color values with the response data
+    // Solo actualizar localmente en la página de configuración
     primaryColor.value = colorData.colorPrimary || '#57534E';
     secondaryColor.value = colorData.colorSecondary || '#FFFFFF';
     accentColor.value = colorData.colorAccent || '#44403C';

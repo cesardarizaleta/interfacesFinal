@@ -2,10 +2,10 @@
     <!-- About section start -->
 	<section id="about-section" class="px-12 lg:px-32 py-16 border-t relative">
         <!-- Main text start -->
-		<h1 class="uppercase text-5xl mb-4 font-semibold">
+		<h1 class="uppercase text-5xl mb-4 font-semibold font-title">
 			ABOUT US
 		</h1>
-		<p class="capitalize xl:w-1/2 mb-8">
+		<p class="capitalize xl:w-1/2 mb-8 font-paragraph">
 			Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati sint quia quos, 
             nesciunt id esse magnam facere eveniet ea laborum minus illo earum! Dolorum repellat eos, 
             quod tempora omnis magni blanditiis eligendi nesciunt aut sapiente nemo distinctio placeat voluptas facilis deserunt quaerat, 

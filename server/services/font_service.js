@@ -25,7 +25,15 @@ class FontsService {
     const fonts = await this._readData();
     const newFont = {
       id: Date.now().toString(),
-      ...data,
+      name: data.name,
+      fontFamily: data.fontFamily,
+      fontType: data.fontType || 'general',
+      fontFilePath: data.fontFilePath || null,
+      fontWeight: data.fontWeight || 'normal',
+      fontStyle: data.fontStyle || 'normal',
+      fontFormat: data.fontFormat || 'ttf',
+      userId: data.userId,
+      uploadedAt: new Date().toISOString(),
       lastUsedAt: null
     };
     fonts.push(newFont);
@@ -43,6 +51,11 @@ class FontsService {
     return fonts.filter(font => font.userId === userId);
   }
 
+  async findByType(userId, fontType) {
+    const fonts = await this._readData();
+    return fonts.filter(font => font.userId === userId && font.fontType === fontType);
+  }
+
   async findOne(id) {
     const fonts = await this._readData();
     const font = fonts.find(font => font.id === id);
@@ -55,15 +68,26 @@ class FontsService {
     return font;
   }
 
-  async update(id, changes) {
+  async assignFontType(fontId, fontType, userId) {
     const fonts = await this._readData();
-    const index = fonts.findIndex(font => font.id === id);
-    if (index === -1) {
-      throw boom.notFound('Font not found');
+    const fontIndex = fonts.findIndex(font => font.id === fontId && font.userId === userId);
+    if (fontIndex === -1) {
+      throw boom.notFound('Font not found or does not belong to user');
     }
-    fonts[index] = { ...fonts[index], ...changes };
+
+    // Reset previous font of this type
+    fonts.forEach((font, index) => {
+      if (font.userId === userId && font.fontType === fontType && index !== fontIndex) {
+        font.fontType = 'general';
+      }
+    });
+
+    // Assign new type
+    fonts[fontIndex].fontType = fontType;
+    fonts[fontIndex].lastUsedAt = new Date().toISOString();
+
     await this._writeData(fonts);
-    return fonts[index];
+    return fonts[fontIndex];
   }
 
   async delete(id) {
@@ -75,19 +99,11 @@ class FontsService {
     const font = fonts[index];
 
     // Delete files
-    if (font.fontTitleFilePath) {
+    if (font.fontFilePath) {
       try {
-        await fs.unlink(path.join(process.cwd(), font.fontTitleFilePath));
+        await fs.unlink(path.join(process.cwd(), font.fontFilePath));
       } catch (err) {
-        console.error(`Error al eliminar el archivo de fuente del título: ${font.fontTitleFilePath}`, err);
-      }
-    }
-
-    if (font.fontSubtitleFilePath) {
-      try {
-        await fs.unlink(path.join(process.cwd(), font.fontSubtitleFilePath));
-      } catch (err) {
-        console.error(`Error al eliminar el archivo de fuente del subtítulo: ${font.fontSubtitleFilePath}`, err);
+        console.error(`Error al eliminar el archivo de fuente: ${font.fontFilePath}`, err);
       }
     }
 
@@ -116,6 +132,19 @@ class FontsService {
     font.lastUsedAt = new Date().toISOString();
     await this._writeData(fonts);
     return font;
+  }
+
+  async getAssignedFonts(userId) {
+    const fonts = await this._readData();
+    const assignedFonts = {};
+
+    fonts.forEach(font => {
+      if (font.userId === userId && font.fontType !== 'general') {
+        assignedFonts[font.fontType] = font;
+      }
+    });
+
+    return assignedFonts;
   }
 
 }

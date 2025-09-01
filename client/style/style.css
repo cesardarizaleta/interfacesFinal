@@ -1,6 +1,276 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
 :root {
+  /* Colores principales */
+  --color-primary: #292524;
+  --color-secondary: #57534e;
+  --color-accent: #000000;
+  --color-text: #78716c;
+  --color-text-light: #f5f5f4;
+  --background-neutral: #e5e5e5;
+
+  /* Fondos */
+  --bg-primary: var(--color-primary);
+  --bg-secondary: var(--color-secondary);
+  --bg-accent: var(--color-accent);
+  --bg-neutral: var(--background-neutral);
+  --bg-light: #ffffff;
+  --bg-dark: #000000;
+
+  /* Bordes */
+  --border-primary: var(--color-primary);
+  --border-secondary: var(--color-secondary);
+  --border-accent: var(--color-accent);
+  --border-light: #e5e5e5;
+  --border-dark: #000000;
+
+  /* Sombras */
+  --shadow-primary: rgba(41, 37, 36, 0.1);
+  --shadow-secondary: rgba(87, 83, 78, 0.1);
+  --shadow-accent: rgba(0, 0, 0, 0.1);
+
+  /* Transiciones */
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
+
+  /* Fuentes */
+  --font-default: 'Montserrat', sans-serif;
+  --font-title: var(--font-default);
+  --font-subtitle: var(--font-default);
+  --font-paragraph: var(--font-default);
+}
+
+* {
+  font-family: var(--font-paragraph);
+  color: var(--color-text);
+  transition: color var(--transition-normal), background-color var(--transition-normal), border-color var(--transition-normal);
+}
+
+/* === UTILIDADES DE COLOR === */
+
+/* Text colors */
+.text-primary { color: var(--color-primary) !important; }
+.text-secondary { color: var(--color-secondary) !important; }
+.text-accent { color: var(--color-accent) !important; }
+.text-light { color: var(--color-text-light) !important; }
+.text-dark { color: var(--color-text) !important; }
+
+/* Background colors */
+.bg-primary { background-color: var(--bg-primary) !important; }
+.bg-secondary { background-color: var(--bg-secondary) !important; }
+.bg-accent { background-color: var(--bg-accent) !important; }
+.bg-neutral { background-color: var(--bg-neutral) !important; }
+.bg-light { background-color: var(--bg-light) !important; }
+.bg-dark { background-color: var(--bg-dark) !important; }
+
+/* Border colors */
+.border-primary { border-color: var(--border-primary) !important; }
+.border-secondary { border-color: var(--border-secondary) !important; }
+.border-accent { border-color: var(--border-accent) !important; }
+.border-light { border-color: var(--border-light) !important; }
+.border-dark { border-color: var(--border-dark) !important; }
+
+/* Hover states */
+.hover\:text-primary:hover { color: var(--color-primary) !important; }
+.hover\:text-secondary:hover { color: var(--color-secondary) !important; }
+.hover\:text-accent:hover { color: var(--color-accent) !important; }
+
+.hover\:bg-primary:hover { background-color: var(--bg-primary) !important; }
+.hover\:bg-secondary:hover { background-color: var(--bg-secondary) !important; }
+.hover\:bg-accent:hover { background-color: var(--bg-accent) !important; }
+
+/* === COMPONENTES ESPECÍFICOS === */
+
+/* Botones */
+.btn-primary {
+  background-color: var(--color-primary) !important;
+  color: var(--color-text-light) !important;
+  border: 2px solid var(--color-primary) !important;
+  transition: all var(--transition-normal) !important;
+}
+
+.btn-primary:hover {
+  background-color: var(--color-secondary) !important;
+  border-color: var(--color-secondary) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--shadow-primary);
+}
+
+.btn-secondary {
+  background-color: var(--color-secondary) !important;
+  color: var(--color-text-light) !important;
+  border: 2px solid var(--color-secondary) !important;
+  transition: all var(--transition-normal) !important;
+}
+
+.btn-secondary:hover {
+  background-color: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--shadow-secondary);
+}
+
+.btn-accent {
+  background-color: var(--color-accent) !important;
+  color: var(--color-text-light) !important;
+  border: 2px solid var(--color-accent) !important;
+  transition: all var(--transition-normal) !important;
+}
+
+.btn-accent:hover {
+  background-color: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--shadow-accent);
+}
+
+/* Inputs y Formularios */
+input, textarea, select {
+  background-color: var(--bg-light) !important;
+  color: var(--color-text) !important;
+  border: 2px solid var(--border-light) !important;
+  transition: all var(--transition-normal) !important;
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 3px rgba(41, 37, 36, 0.1) !important;
+  outline: none !important;
+}
+
+input::placeholder, textarea::placeholder {
+  color: var(--color-text-light) !important;
+}
+
+/* Links */
+a {
+  color: var(--color-primary) !important;
+  text-decoration: none !important;
+  transition: all var(--transition-normal) !important;
+}
+
+a:hover {
+  color: var(--color-secondary) !important;
+  text-decoration: underline !important;
+}
+
+/* Iconos */
+i, .fa, .fas, .far, .fab, .icon {
+  color: var(--color-accent) !important;
+  transition: all var(--transition-normal) !important;
+}
+
+.icon-primary { color: var(--color-primary) !important; }
+.icon-secondary { color: var(--color-secondary) !important; }
+.icon-accent { color: var(--color-accent) !important; }
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--color-primary) !important;
+  font-weight: 600 !important;
+}
+
+h1 { font-size: 3rem !important; }
+h2 { font-size: 2.5rem !important; }
+h3 { font-size: 2rem !important; }
+h4 { font-size: 1.5rem !important; }
+h5 { font-size: 1.25rem !important; }
+h6 { font-size: 1rem !important; }
+
+/* Cards y Contenedores */
+.card {
+  background-color: var(--bg-light) !important;
+  border: 1px solid var(--border-light) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 2px 8px var(--shadow-primary) !important;
+  transition: all var(--transition-normal) !important;
+}
+
+.card:hover {
+  box-shadow: 0 4px 16px var(--shadow-primary) !important;
+  transform: translateY(-2px);
+}
+
+/* Navegación */
+.nav-link {
+  color: var(--color-text) !important;
+  transition: all var(--transition-normal) !important;
+}
+
+.nav-link:hover {
+  color: var(--color-primary) !important;
+}
+
+.nav-link.active {
+  color: var(--color-primary) !important;
+  font-weight: 600 !important;
+}
+
+/* Footer */
+.footer {
+  background-color: var(--bg-neutral) !important;
+  color: var(--color-text) !important;
+}
+
+.footer a {
+  color: var(--color-primary) !important;
+}
+
+.footer a:hover {
+  color: var(--color-secondary) !important;
+}
+
+/* === RESPONSIVE DESIGN === */
+@media (max-width: 768px) {
+  h1 { font-size: 2.5rem !important; }
+  h2 { font-size: 2rem !important; }
+  h3 { font-size: 1.75rem !important; }
+
+  .btn-primary, .btn-secondary, .btn-accent {
+    padding: 0.75rem 1.5rem !important;
+    font-size: 0.9rem !important;
+  }
+}
+
+/* === ANIMACIONES === */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fadeIn 0.6s ease-out !important;
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.slide-in-left {
+  animation: slideInLeft 0.6s ease-out !important;
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.slide-in-right {
+  animation: slideInRight 0.6s ease-out !important;
+}
+
+/* === UTILIDADES ADICIONALES === */
+.shadow-primary { box-shadow: 0 2px 8px var(--shadow-primary) !important; }
+.shadow-secondary { box-shadow: 0 2px 8px var(--shadow-secondary) !important; }
+.shadow-accent { box-shadow: 0 2px 8px var(--shadow-accent) !important; }
+
+.rounded-primary { border-radius: 8px !important; }
+.rounded-secondary { border-radius: 12px !important; }
+.rounded-accent { border-radius: 16px !important; }
+
+:root {
   --color-primary: #ff0000;
   --color-secondary: #ff0000;
   --color-accent: #ff0000;
@@ -333,6 +603,29 @@ ul li, ol li {
 .navbar a, .navbar span {
   color: var(--color-text) !important;
 }
+
+/* === UTILIDADES DE FUENTE === */
+
+/* Font families */
+.font-title { font-family: var(--font-title) !important; }
+.font-subtitle { font-family: var(--font-subtitle) !important; }
+.font-paragraph { font-family: var(--font-paragraph) !important; }
+.font-default { font-family: var(--font-default) !important; }
+
+/* Font weights */
+.font-thin { font-weight: 100 !important; }
+.font-extralight { font-weight: 200 !important; }
+.font-light { font-weight: 300 !important; }
+.font-normal { font-weight: 400 !important; }
+.font-medium { font-weight: 500 !important; }
+.font-semibold { font-weight: 600 !important; }
+.font-bold { font-weight: 700 !important; }
+.font-extrabold { font-weight: 800 !important; }
+.font-black { font-weight: 900 !important; }
+
+/* Font styles */
+.font-italic { font-style: italic !important; }
+.font-oblique { font-style: oblique !important; }
 
 /* Estilos para textos en footers */
 footer p, footer a, footer span {

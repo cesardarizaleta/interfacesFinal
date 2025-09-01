@@ -2,7 +2,7 @@
     <!-- Contact section start -->
 	<section id="contact-section" class="px-12 lg:px-32 py-16 relative">
         <!-- Main text start -->
-		<h1 class="uppercase text-5xl mb-4 font-semibold">
+		<h1 class="uppercase text-5xl mb-4 font-semibold font-title">
 			Contact us
 		</h1>
 		<!-- Main text end -->
