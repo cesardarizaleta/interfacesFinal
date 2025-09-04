@@ -70,8 +70,14 @@ class FontsService {
 
   async assignFontType(fontId, fontType, userId) {
     const fonts = await this._readData();
+    console.log('assignFontType called with:', { fontId, fontType, userId });
+    console.log('Available fonts:', fonts.map(f => ({ id: f.id, userId: f.userId })));
+    
     const fontIndex = fonts.findIndex(font => font.id === fontId && font.userId === userId);
+    console.log('Font index found:', fontIndex);
+    
     if (fontIndex === -1) {
+      console.log('Font not found or does not belong to user');
       throw boom.notFound('Font not found or does not belong to user');
     }
 

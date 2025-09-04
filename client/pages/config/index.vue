@@ -89,4 +89,12 @@ export default {
 definePageMeta({
   middleware: ['auth']
 })
+
+onMounted(() => {
+  document.body.classList.add('config-page')
+})
+
+onUnmounted(() => {
+  document.body.classList.remove('config-page')
+})
 </script>

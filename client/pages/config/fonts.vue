@@ -423,8 +423,13 @@ const deleteFont = async (fontId) => {
 
 // Lifecycle
 onMounted(async () => {
+  document.body.classList.add('config-page')
   await loadFonts()
   await loadAssignedFonts()
+})
+
+onUnmounted(() => {
+  document.body.classList.remove('config-page')
 })
 </script>
 

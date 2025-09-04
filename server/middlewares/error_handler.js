@@ -16,6 +16,7 @@ function boomErrorHandler(err, req, res, next) {
   if (err.isBoom) {
     const { output } = err;
     res.status(output.statusCode).json(output.payload);
+    return; // Don't call next() when we've handled the error
   }
   next(err);
 }

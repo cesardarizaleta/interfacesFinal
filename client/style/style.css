@@ -631,3 +631,8 @@ ul li, ol li {
 footer p, footer a, footer span {
   color: var(--color-text) !important;
 }
+
+/* Config pages - prevent transitions */
+.config-page * {
+  transition: none !important;
+}

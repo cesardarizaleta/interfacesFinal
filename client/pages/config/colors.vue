@@ -296,8 +296,9 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import { useToast } from '~/composables/useToast'
+import { usePalette } from '~/composables/usePalette'
 import ToastMessage from '~/components/ui/ToastMessage.vue'
 
 definePageMeta({
@@ -331,6 +332,9 @@ const paletteToRename = ref(null);
 
 // Toast notifications
 const { showToast, toastMessage, toastType, show: showToastMessage } = useToast()
+
+// Palette composable
+const { setActivePalette, applyColorsToPage } = usePalette()
 
 // Funciones de utilidad
 const isActivePalette = (palette) => palette.id === activePaletteId.value;
@@ -398,6 +402,10 @@ const activatePalette = async (palette) => {
     accentColor.value = colorData.colorAccent || '#44403C';
     textColor.value = colorData.colorText || '#78716C';
     neutralColor.value = colorData.backgroundNeutral || '#E7E5E4';
+
+    // Aplicar globalmente la paleta
+    setActivePalette(colorData);
+    applyColorsToPage(colorData);
 
     // Update the active palette ID
     activePaletteId.value = palette.id;
@@ -554,8 +562,13 @@ const renamePalette = async () => {
 
 // Inicialización
 onMounted(() => {
+  document.body.classList.add('config-page')
   fetchUserPalettes();
 });
+
+onUnmounted(() => {
+  document.body.classList.remove('config-page')
+})
 </script>
 
 <style scoped>
