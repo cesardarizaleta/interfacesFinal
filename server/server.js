@@ -1,30 +1,19 @@
 require('dotenv').config(); // Importar dotenv al inicio
 const express = require('express');
 const routerApi = require('./routes');
-const cors = require('cors');
-const path = require('path');
+const { setupSecurityMiddlewares, setupCors, setupStaticFiles } = require('./middlewares/setup');
+const logger = require('./utils/logger');
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Configuración de CORS
-// app.use(cors({
-//   origin: process.env.CLIENT_URL || 'http://localhost:3000',
-//   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-//   allowedHeaders: ['Content-Type', 'Authorization'],
-//   credentials: true
-// }));
+// Initialize data
+const { initializeData } = require('./utils/init-data');
+initializeData();
 
-app.use(cors());
-
-// Servir archivos estáticos de la carpeta uploads
-app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
-  setHeaders: (res, path) => {
-    if (path.endsWith('.ttf') || path.endsWith('.otf')) {
-      res.set('Access-Control-Allow-Origin', process.env.CLIENT_URL || 'http://localhost:3000');
-      res.set('Content-Type', 'font/ttf');
-    }
-  }
-}));
+// Setup middlewares
+setupSecurityMiddlewares(app);
+setupCors(app);
+setupStaticFiles(app);
 
 require('./utils/auth');
 
@@ -49,5 +38,5 @@ app.use(errorHandler);
 //swaggerDocs(app, port);
 
 app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+  logger.info(`Server running on port ${port}`);
 });

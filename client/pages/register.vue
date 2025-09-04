@@ -15,45 +15,38 @@
 
         <div class="space-y-4">
           <div>
-            <label for="name" class="block text-sm font-medium text-stone-600 mb-1">Name</label>
-            <input
-              type="text"
-              id="name"
-              v-model="name"
-              placeholder="Your Full Name"
-              class="w-full px-4 py-3 border border-stone-300 rounded focus:outline-none focus:ring-1 focus:ring-stone-500 text-sm"
-            >
-          </div>
-
-          <div>
-            <label for="email" class="block text-sm font-medium text-stone-600 mb-1">Email</label>
+            <label for="email" class="block text-sm font-medium text-stone-600 mb-1">Email *</label>
             <input
               type="email"
               id="email"
               v-model="email"
               placeholder="your@email.com"
+              required
               class="w-full px-4 py-3 border border-stone-300 rounded focus:outline-none focus:ring-1 focus:ring-stone-500 text-sm"
             >
           </div>
 
           <div>
-            <label for="password" class="block text-sm font-medium text-stone-600 mb-1">Password</label>
+            <label for="password" class="block text-sm font-medium text-stone-600 mb-1">Password *</label>
             <input
               type="password"
               id="password"
               v-model="password"
               placeholder="••••••••"
+              required
+              minlength="8"
               class="w-full px-4 py-3 border border-stone-300 rounded focus:outline-none focus:ring-1 focus:ring-stone-500 text-sm"
             >
           </div>
 
           <div>
-            <label for="confirm-password" class="block text-sm font-medium text-stone-600 mb-1">Confirm Password</label>
+            <label for="confirm-password" class="block text-sm font-medium text-stone-600 mb-1">Confirm Password *</label>
             <input
               type="password"
               id="confirm-password"
               v-model="confirmPassword"
               placeholder="••••••••"
+              required
               class="w-full px-4 py-3 border border-stone-300 rounded focus:outline-none focus:ring-1 focus:ring-stone-500 text-sm"
             >
           </div>
@@ -85,7 +78,6 @@ import { ref } from 'vue';
 import { navigateTo } from '#app'; // Importa navigateTo de Nuxt
 
 // Estados reactivos para los campos del formulario y el manejo de la UI
-const name = ref('');
 const email = ref('');
 const password = ref('');
 const confirmPassword = ref('');

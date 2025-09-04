@@ -8,19 +8,23 @@
 
       <div class="navbar-menu">
         <div class="navbar-links">
-          <NuxtLink to="/" class="navbar-link">Home</NuxtLink>
-          <NuxtLink to="/about" class="navbar-link">About</NuxtLink>
-          <NuxtLink to="/portfolio" class="navbar-link">Portfolio</NuxtLink>
-          <NuxtLink to="/services" class="navbar-link">Services</NuxtLink>
-          <NuxtLink to="/config" class="navbar-link">Config</NuxtLink>
+          <NuxtLink to="/" class="nav-link">Home</NuxtLink>
+          <NuxtLink to="/about" class="nav-link">About</NuxtLink>
+          <NuxtLink to="/portfolio" class="nav-link">Portfolio</NuxtLink>
+          <NuxtLink to="/services" class="nav-link">Services</NuxtLink>
+          <NuxtLink to="/config" class="nav-link">Config</NuxtLink>
         </div>
 
         <div class="navbar-actions">
           <template v-if="!isLoggedIn">
-            <NuxtLink to="/login" class="login-button">Login</NuxtLink>
-            <NuxtLink to="/register" class="register-button">Register</NuxtLink>
+            <NuxtLink to="/login" class="btn btn-primary">Login</NuxtLink>
+            <NuxtLink to="/register" class="btn btn-secondary">Register</NuxtLink>
           </template>
-          <button v-else @click="handleLogout" class="logout-button">Logout</button>
+          <template v-else>
+            <NuxtLink v-if="userRole === 'admin'" to="/admin" class="btn btn-primary">Dashboard</NuxtLink>
+            <NuxtLink to="/profile" class="btn btn-secondary">Perfil</NuxtLink>
+            <button @click="handleLogout" class="btn btn-accent">Logout</button>
+          </template>
         </div>
       </div>
 
@@ -39,7 +43,11 @@
         <NuxtLink to="/login" class="mobile-link" @click="closeMobileMenu">Login</NuxtLink>
         <NuxtLink to="/register" class="mobile-link" @click="closeMobileMenu">Register</NuxtLink>
       </template>
-      <button v-else @click="handleLogout" class="mobile-link">Logout</button>
+      <template v-else>
+        <NuxtLink v-if="userRole === 'admin'" to="/admin" class="mobile-link" @click="closeMobileMenu">Dashboard</NuxtLink>
+        <NuxtLink to="/profile" class="mobile-link" @click="closeMobileMenu">Perfil</NuxtLink>
+        <button @click="handleLogout" class="mobile-link">Logout</button>
+      </template>
     </div>
   </nav>
 </template>
@@ -51,11 +59,25 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 const isMobileMenuOpen = ref(false)
 const isLoggedIn = ref(false)
+const userRole = ref('')
 
 onMounted(() => {
   // Verificar si hay un token en localStorage
   const token = localStorage.getItem('token')
-  isLoggedIn.value = !!token
+  const user = localStorage.getItem('user')
+
+  if (token) {
+    isLoggedIn.value = true
+    if (user) {
+      try {
+        const userData = JSON.parse(user)
+        userRole.value = userData.role || 'user'
+      } catch (error) {
+        console.error('Error parsing user data:', error)
+        userRole.value = 'user'
+      }
+    }
+  }
 })
 
 const toggleMobileMenu = () => {
@@ -206,27 +228,16 @@ const handleLogout = () => {
 }
 
 .logout-button {
-  background-color: var(--bg-accent);
-  color: var(--color-text-light);
-  border-color: var(--border-accent);
-}
-
-.logout-button:hover {
-  background-color: var(--bg-primary);
-  border-color: var(--border-primary);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px var(--shadow-accent);
-}
-
-.logout-button {
-  background-color: transparent;
-  color: var(--color-text);
-  border: 1px solid var(--color-primary);
+  background-color: var(--color-accent);
+  color: var(--color-primary-contrast);
+  border-color: var(--color-accent);
 }
 
 .logout-button:hover {
   background-color: var(--color-primary);
-  color: white;
+  border-color: var(--color-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--shadow-accent);
 }
 
 .mobile-menu-button {

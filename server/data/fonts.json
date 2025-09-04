@@ -24,5 +24,31 @@
     "userId": "1756702311755",
     "uploadedAt": "2025-09-01T05:41:06.368Z",
     "lastUsedAt": "2025-09-01T05:41:13.357Z"
+  },
+  {
+    "id": "1756989518859",
+    "name": "Poppins",
+    "fontFamily": "poppins",
+    "fontType": "title",
+    "fontFilePath": "uploads\\fonts\\1756989518852-Poppins-Black.ttf",
+    "fontWeight": "normal",
+    "fontStyle": "normal",
+    "fontFormat": "ttf",
+    "userId": "1756852821414",
+    "uploadedAt": "2025-09-04T12:38:38.859Z",
+    "lastUsedAt": "2025-09-04T12:45:52.837Z"
+  },
+  {
+    "id": "1756989946830",
+    "name": "Poppins Black",
+    "fontFamily": "PoppinsBlack",
+    "fontType": "general",
+    "fontFilePath": "uploads\\fonts\\1756989946823-Poppins-Black.ttf",
+    "fontWeight": "900",
+    "fontStyle": "normal",
+    "fontFormat": "ttf",
+    "userId": "1756852821414",
+    "uploadedAt": "2025-09-04T12:45:46.830Z",
+    "lastUsedAt": null
   }
 ]

@@ -59,6 +59,9 @@
 <script setup>
 import { ref } from 'vue';
 import { navigateTo } from '#app';
+import { useToast } from '~/composables/useToast';
+
+const { show } = useToast();
 
 const email = ref('');
 const password = ref('');
@@ -91,14 +94,16 @@ const handleLogin = async () => {
     if (data.token) {
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
+      show('Inicio de sesión exitoso', 'success');
       await navigateTo('/');
     } else {
       throw new Error('Token no recibido de la API.');
     }
 
   } catch (err) {
-    console.error('Error durante el login:', err);
-    error.value = err.message || 'Ocurrió un error inesperado al iniciar sesión.';
+    const errorMessage = err.message || 'Ocurrió un error inesperado al iniciar sesión.';
+    show(errorMessage, 'error');
+    error.value = errorMessage;
   } finally {
     loading.value = false;
   }

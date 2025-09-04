@@ -50,129 +50,145 @@
       <h2 class="text-2xl font-bold mb-6 text-center">
         Subir Nueva Fuente
       </h2>
-      <div class="max-w-md mx-auto">
-        <form @submit.prevent="handleFontUpload" class="space-y-4">
+
+      <!-- Drag and Drop Area -->
+      <div class="mb-6">
+        <div
+          @dragover="handleDragOver"
+          @dragleave="handleDragLeave"
+          @drop="handleDrop"
+          class="relative border-2 border-dashed border-stone-300 rounded-lg p-8 text-center transition-colors hover:border-stone-400"
+          :class="{ 'border-blue-400 bg-blue-50': isDragOver }"
+        >
+          <input
+            type="file"
+            accept=".ttf,.otf,.woff,.woff2"
+            @change="handleFileSelect"
+            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+            ref="fileInput"
+          />
+          <div v-if="!selectedFile" class="space-y-4">
+            <svg class="mx-auto h-12 w-12 text-stone-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+              <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+            <div>
+              <p class="text-lg font-medium text-stone-900">Arrastra y suelta tu fuente aquí</p>
+              <p class="text-stone-500">o <span class="text-blue-600 hover:text-blue-500 cursor-pointer">haz clic para seleccionar</span></p>
+            </div>
+            <p class="text-sm text-stone-400">Formatos soportados: TTF, OTF, WOFF, WOFF2 (máx. 10MB)</p>
+          </div>
+
+          <div v-else class="space-y-4">
+            <div class="flex items-center justify-center space-x-4">
+              <svg class="h-8 w-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              <div class="text-left">
+                <p class="font-medium text-stone-900">{{ selectedFile.name }}</p>
+                <p class="text-sm text-stone-500">{{ (selectedFile.size / 1024 / 1024).toFixed(2) }} MB</p>
+              </div>
+            </div>
+            <button
+              @click="clearFile"
+              class="text-red-600 hover:text-red-700 text-sm font-medium"
+            >
+              Cambiar archivo
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Font Preview -->
+      <div v-if="selectedFile && fontPreview" class="mb-6 p-4 bg-stone-50 rounded-lg">
+        <h3 class="font-medium text-stone-900 mb-3">Vista Previa</h3>
+        <div class="space-y-3">
+          <div :style="{ fontFamily: fontPreview.fontFamily, fontWeight: fontPreview.fontWeight, fontStyle: fontPreview.fontStyle }">
+            <p class="text-2xl">Título de ejemplo</p>
+            <p class="text-lg">Subtítulo de ejemplo</p>
+            <p class="text-base">Este es un párrafo de ejemplo con la fuente seleccionada.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Simplified Form -->
+      <form @submit.prevent="handleFontUpload" class="space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label class="block text-sm font-medium text-stone-600 mb-2">
-              Nombre de la Fuente
+              Nombre de la Fuente *
             </label>
             <input
               v-model="uploadForm.name"
               type="text"
               required
               class="w-full px-3 py-2 border border-stone-300 rounded-md focus:outline-none focus:ring-2 focus:ring-stone-500"
-              placeholder="Ej: Mi Fuente Personalizada"
+              :placeholder="fontPreview?.name || 'Ej: Mi Fuente Personalizada'"
             />
           </div>
 
           <div>
             <label class="block text-sm font-medium text-stone-600 mb-2">
-              Familia de Fuente (CSS)
+              Familia de Fuente (CSS) *
             </label>
             <input
               v-model="uploadForm.fontFamily"
               type="text"
               required
               class="w-full px-3 py-2 border border-stone-300 rounded-md focus:outline-none focus:ring-2 focus:ring-stone-500"
-              placeholder="Ej: MiFuentePersonalizada"
+              :placeholder="fontPreview?.fontFamily || 'Ej: MiFuentePersonalizada'"
             />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-stone-600 mb-2">
+              Peso
+            </label>
+            <select
+              v-model="uploadForm.fontWeight"
+              class="w-full px-3 py-2 border border-stone-300 rounded-md focus:outline-none focus:ring-2 focus:ring-stone-500"
+            >
+              <option value="normal">Normal</option>
+              <option value="bold">Bold</option>
+              <option value="100">100</option>
+              <option value="200">200</option>
+              <option value="300">300</option>
+              <option value="400">400</option>
+              <option value="500">500</option>
+              <option value="600">600</option>
+              <option value="700">700</option>
+              <option value="800">800</option>
+              <option value="900">900</option>
+            </select>
           </div>
 
           <div>
             <label class="block text-sm font-medium text-stone-600 mb-2">
-              Archivo de Fuente (.ttf, .otf, .woff, .woff2)
+              Estilo
             </label>
-            <input
-              type="file"
-              accept=".ttf,.otf,.woff,.woff2"
-              required
-              @change="handleFileSelect"
+            <select
+              v-model="uploadForm.fontStyle"
               class="w-full px-3 py-2 border border-stone-300 rounded-md focus:outline-none focus:ring-2 focus:ring-stone-500"
-            />
+            >
+              <option value="normal">Normal</option>
+              <option value="italic">Italic</option>
+              <option value="oblique">Oblique</option>
+            </select>
           </div>
+        </div>
 
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label class="block text-sm font-medium text-stone-600 mb-2">
-                Peso
-              </label>
-              <select
-                v-model="uploadForm.fontWeight"
-                class="w-full px-3 py-2 border border-stone-300 rounded-md focus:outline-none focus:ring-2 focus:ring-stone-500"
-              >
-                <option value="normal">Normal</option>
-                <option value="bold">Bold</option>
-                <option value="100">100</option>
-                <option value="200">200</option>
-                <option value="300">300</option>
-                <option value="400">400</option>
-                <option value="500">500</option>
-                <option value="600">600</option>
-                <option value="700">700</option>
-                <option value="800">800</option>
-                <option value="900">900</option>
-              </select>
-            </div>
-
-            <div>
-              <label class="block text-sm font-medium text-stone-600 mb-2">
-                Estilo
-              </label>
-              <select
-                v-model="uploadForm.fontStyle"
-                class="w-full px-3 py-2 border border-stone-300 rounded-md focus:outline-none focus:ring-2 focus:ring-stone-500"
-              >
-                <option value="normal">Normal</option>
-                <option value="italic">Italic</option>
-                <option value="oblique">Oblique</option>
-              </select>
-            </div>
-          </div>
-
-          <button
-            type="submit"
-            :disabled="isLoading"
-            class="w-full bg-stone-800 text-white py-2 px-4 rounded-md hover:bg-stone-700 focus:outline-none focus:ring-2 focus:ring-stone-500 disabled:opacity-50"
-          >
-            {{ isLoading ? 'Subiendo...' : 'Subir Fuente' }}
-          </button>
-        </form>
-      </div>
+        <button
+          type="submit"
+          :disabled="isLoading || !selectedFile"
+          class="w-full bg-stone-800 text-white py-3 px-4 rounded-md hover:bg-stone-700 focus:outline-none focus:ring-2 focus:ring-stone-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        >
+          {{ isLoading ? 'Subiendo...' : 'Subir Fuente' }}
+        </button>
+      </form>
     </div>
 
     <!-- Font Preview -->
-    <div class="bg-white rounded-xl shadow-lg p-6 mb-8 border border-stone-200">
-      <h2 class="text-2xl font-bold mb-6 text-center">
-        Vista Previa
-      </h2>
-      <div class="text-center space-y-6">
-        <div>
-          <h3 class="text-3xl font-bold">
-            Título de Ejemplo
-          </h3>
-          <p class="text-sm text-stone-500 mt-1">
-            Fuente asignada: {{ assignedFonts.title?.name || 'Ninguna' }}
-          </p>
-        </div>
-        <div>
-          <h4 class="text-xl font-semibold">
-            Subtítulo de Ejemplo
-          </h4>
-          <p class="text-sm text-stone-500 mt-1">
-            Fuente asignada: {{ assignedFonts.subtitle?.name || 'Ninguna' }}
-          </p>
-        </div>
-        <div class="max-w-md mx-auto">
-          <p class="text-base leading-relaxed">
-            Este es un párrafo de ejemplo para mostrar cómo se ve el texto con la fuente asignada.
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-          </p>
-          <p class="text-sm text-stone-500 mt-2">
-            Fuente asignada: {{ assignedFonts.paragraph?.name || 'Ninguna' }}
-          </p>
-        </div>
-      </div>
-    </div>
     <div class="bg-white rounded-xl shadow-lg p-6 mb-8 border border-stone-200">
       <h2 class="text-2xl font-bold mb-6 text-center">
         Vista Previa
@@ -341,17 +357,154 @@ const uploadForm = ref({
   fontStyle: 'normal'
 })
 
+// File handling
+const selectedFile = ref(null)
+const isDragOver = ref(false)
+const fontPreview = ref(null)
+const fileInput = ref(null)
+
 // Modal state
 const showAssignModal = ref(false)
 const selectedFont = ref(null)
 
 // Methods
 const handleFileSelect = (event) => {
-  uploadForm.value.file = event.target.files[0]
+  const file = event.target.files[0]
+  if (file) {
+    processFile(file)
+  }
+}
+
+const handleDrop = (event) => {
+  isDragOver.value = false
+  const file = event.dataTransfer.files[0]
+  if (file) {
+    processFile(file)
+  }
+}
+
+const handleDragOver = (event) => {
+  event.preventDefault()
+  isDragOver.value = true
+}
+
+const handleDragLeave = (event) => {
+  event.preventDefault()
+  isDragOver.value = false
+}
+
+const processFile = async (file) => {
+  // Validate file type
+  const allowedTypes = ['font/ttf', 'font/otf', 'application/x-font-ttf', 'application/x-font-otf', 'font/woff', 'font/woff2']
+  const allowedExtensions = ['.ttf', '.otf', '.woff', '.woff2']
+  const fileExtension = file.name.toLowerCase().substring(file.name.lastIndexOf('.'))
+
+  if (!allowedTypes.includes(file.type) && !allowedExtensions.includes(fileExtension)) {
+    alert('Tipo de archivo no válido. Solo se permiten archivos .ttf, .otf, .woff, .woff2')
+    return
+  }
+
+  // Validate file size (10MB)
+  if (file.size > 10 * 1024 * 1024) {
+    alert('El archivo es demasiado grande. El tamaño máximo es 10MB.')
+    return
+  }
+
+  selectedFile.value = file
+  uploadForm.value.file = file
+
+  // Try to extract font info
+  await extractFontInfo(file)
+}
+
+const extractFontInfo = async (file) => {
+  try {
+    // For now, we'll use basic extraction from filename
+    const fileName = file.name.replace(/\.[^/.]+$/, '') // Remove extension
+    const cleanName = fileName.replace(/[-_]/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
+
+    // Auto-generate font family name
+    const fontFamily = fileName.replace(/[^a-zA-Z0-9]/g, '')
+
+    // Try to detect weight from filename
+    const weightPatterns = {
+      'thin': '100',
+      'extralight': '200',
+      'light': '300',
+      'regular': '400',
+      'medium': '500',
+      'semibold': '600',
+      'bold': '700',
+      'extrabold': '800',
+      'black': '900'
+    }
+
+    let detectedWeight = 'normal'
+    const lowerFileName = fileName.toLowerCase()
+    for (const [pattern, weight] of Object.entries(weightPatterns)) {
+      if (lowerFileName.includes(pattern)) {
+        detectedWeight = weight
+        break
+      }
+    }
+
+    // Try to detect style
+    let detectedStyle = 'normal'
+    if (lowerFileName.includes('italic') || lowerFileName.includes('oblique')) {
+      detectedStyle = 'italic'
+    }
+
+    // Create font face for preview
+    const fontUrl = URL.createObjectURL(file)
+    const fontFace = new FontFace(fontFamily, `url(${fontUrl})`)
+    await fontFace.load()
+    document.fonts.add(fontFace)
+
+    fontPreview.value = {
+      name: cleanName,
+      fontFamily: fontFamily,
+      fontWeight: detectedWeight,
+      fontStyle: detectedStyle,
+      fontUrl: fontUrl
+    }
+
+    // Auto-fill form
+    uploadForm.value.name = cleanName
+    uploadForm.value.fontFamily = fontFamily
+    uploadForm.value.fontWeight = detectedWeight
+    uploadForm.value.fontStyle = detectedStyle
+
+  } catch (error) {
+    console.error('Error extracting font info:', error)
+    // Fallback to basic info
+    const fileName = file.name.replace(/\.[^/.]+$/, '')
+    fontPreview.value = {
+      name: fileName,
+      fontFamily: fileName.replace(/[^a-zA-Z0-9]/g, ''),
+      fontWeight: 'normal',
+      fontStyle: 'normal'
+    }
+    uploadForm.value.name = fileName
+    uploadForm.value.fontFamily = fileName.replace(/[^a-zA-Z0-9]/g, '')
+  }
+}
+
+const clearFile = () => {
+  selectedFile.value = null
+  uploadForm.value.file = null
+  fontPreview.value = null
+  uploadForm.value.name = ''
+  uploadForm.value.fontFamily = ''
+  uploadForm.value.fontWeight = 'normal'
+  uploadForm.value.fontStyle = 'normal'
+
+  if (fileInput.value) {
+    fileInput.value.value = ''
+  }
 }
 
 const handleFontUpload = async () => {
-  if (!uploadForm.value.file) {
+  if (!selectedFile.value) {
     alert('Por favor selecciona un archivo de fuente')
     return
   }
@@ -359,7 +512,7 @@ const handleFontUpload = async () => {
   const formData = new FormData()
   formData.append('name', uploadForm.value.name)
   formData.append('fontFamily', uploadForm.value.fontFamily)
-  formData.append('fontFile', uploadForm.value.file)
+  formData.append('fontFile', selectedFile.value)
   formData.append('fontWeight', uploadForm.value.fontWeight)
   formData.append('fontStyle', uploadForm.value.fontStyle)
 
@@ -367,17 +520,7 @@ const handleFontUpload = async () => {
     await uploadFont(formData)
 
     // Reset form
-    uploadForm.value = {
-      name: '',
-      fontFamily: '',
-      file: null,
-      fontWeight: 'normal',
-      fontStyle: 'normal'
-    }
-
-    // Reset file input
-    const fileInput = document.querySelector('input[type="file"]')
-    if (fileInput) fileInput.value = ''
+    clearFile()
 
     alert('Fuente subida exitosamente')
   } catch (err) {

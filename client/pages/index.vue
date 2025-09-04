@@ -23,6 +23,9 @@ definePageMeta({
 const { setActivePalette, activePalette, defaultPalette, applyColorsToPage } = usePalette();
 const { loadAssignedFonts, applyFontsToPage } = useFonts();
 
+// Referencia para el listener de autenticación
+const authListenerRef = ref(null);
+
 // Configuración de colores por defecto
 const defaultColors = {
   colorPrimary: '#292524',
@@ -110,7 +113,7 @@ const loadCustomFonts = async (fonts) => {
   try {
     if (fonts.fontTitleFilePath) {
       const fontUrl = `${useRuntimeConfig().public.BACKEND_URL}/${fonts.fontTitleFilePath}`;
-      console.log('Loading font from:', fontUrl);
+      console.warn('Loading font from:', fontUrl);
       
       const fontTitle = new FontFace(fonts.fontFamily, `url(${fontUrl})`, {
         weight: '900', // Black weight
@@ -120,7 +123,7 @@ const loadCustomFonts = async (fonts) => {
       try {
         const loadedFont = await fontTitle.load();
         document.fonts.add(loadedFont);
-        console.log('Font loaded successfully:', fonts.fontFamily);
+        console.warn('Font loaded successfully:', fonts.fontFamily);
       } catch (fontError) {
         console.error('Error loading font file:', fontError);
         // Si falla la carga de la fuente personalizada, usar una fuente del sistema
@@ -130,7 +133,7 @@ const loadCustomFonts = async (fonts) => {
     
     if (fonts.fontSubtitleFilePath) {
       const fontUrl = `${useRuntimeConfig().public.BACKEND_URL}/${fonts.fontSubtitleFilePath}`;
-      console.log('Loading subtitle font from:', fontUrl);
+      console.warn('Loading subtitle font from:', fontUrl);
       
       const fontSubtitle = new FontFace(`${fonts.fontFamily}-subtitle`, `url(${fontUrl})`, {
         weight: '400', // Regular weight
@@ -140,7 +143,7 @@ const loadCustomFonts = async (fonts) => {
       try {
         const loadedFont = await fontSubtitle.load();
         document.fonts.add(loadedFont);
-        console.log('Subtitle font loaded successfully:', `${fonts.fontFamily}-subtitle`);
+        console.warn('Subtitle font loaded successfully:', `${fonts.fontFamily}-subtitle`);
       } catch (fontError) {
         console.error('Error loading subtitle font file:', fontError);
         // Si falla la carga de la fuente personalizada, usar la fuente principal
@@ -244,7 +247,7 @@ const fetchFonts = async () => {
     }
 
     const data = await response.json();
-    console.log('Received font data:', data);
+    console.warn('Received font data:', data);
 
     const backendFonts = {
       fontFamily: data?.fontFamily || defaultFonts.fontFamily,
@@ -310,10 +313,15 @@ onMounted(async () => {
 
   window.addEventListener('storage', authListener);
 
-  // Limpiar listener al desmontar
-  onUnmounted(() => {
-    window.removeEventListener('storage', authListener);
-  });
+  // Guardar referencia para limpiar después
+  authListenerRef.value = authListener;
+});
+
+// Limpiar listeners al desmontar
+onUnmounted(() => {
+  if (authListenerRef.value) {
+    window.removeEventListener('storage', authListenerRef.value);
+  }
 });
 </script>
 

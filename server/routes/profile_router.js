@@ -1,5 +1,6 @@
 const express = require('express');
 const passport = require('passport');
+const logger = require('../utils/logger');
 
 const ColorsService = require('../services/color_service');
 const {getColorSchema} = require('../schemas/color_schema');
@@ -22,7 +23,7 @@ router.get('/my-colors',
     try {
         const user = req.user;
         const colors = await colorService.findByUser(user.sub);
-        console.log(colors);
+        logger.debug('User colors:', colors);
         res.json(colors);
     }catch (error) {
         next(error);
@@ -36,7 +37,7 @@ router.get('/my-fonts',
       try {
         const user = req.user;
         const fonts = await fontService.findByUser(user.sub);
-        console.log(fonts);
+        logger.debug('User fonts:', fonts);
         res.json(fonts);
       } catch (error) {
         next(error);

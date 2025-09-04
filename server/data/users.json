@@ -8,5 +8,77 @@
     "id": "1756852821414",
     "email": "fibex@gmail.com",
     "password": "$2b$10$AiWkd.CyEubtvDYFYy5Na.tlLDLbvKEP2zWXGnbUPhlsMFRExrTs6"
+  },
+  {
+    "id": "admin-001",
+    "firstName": "Admin",
+    "lastName": "User",
+    "maidenName": "",
+    "age": 30,
+    "gender": "male",
+    "email": "admin@example.com",
+    "phone": "+1234567890",
+    "username": "admin",
+    "password": "$2b$10$iKxiVeNE2U21AGvKXCDb.eNq6AMi9EoBONpW4/LMi6h3eiik8NyPe",
+    "birthDate": "1994-01-01",
+    "image": "",
+    "bloodGroup": "O+",
+    "height": 175,
+    "weight": 70,
+    "eyeColor": "Brown",
+    "hair": {
+      "color": "Black",
+      "type": "Straight"
+    },
+    "ip": "127.0.0.1",
+    "address": {
+      "address": "123 Admin Street",
+      "city": "Admin City",
+      "state": "Admin State",
+      "stateCode": "AS",
+      "postalCode": "12345",
+      "coordinates": {
+        "lat": 0,
+        "lng": 0
+      },
+      "country": "Admin Country"
+    },
+    "macAddress": "00:00:00:00:00:00",
+    "university": "Admin University",
+    "bank": {
+      "cardExpire": "12/25",
+      "cardNumber": "1234567890123456",
+      "cardType": "Admin Card",
+      "currency": "USD",
+      "iban": "ADMIN123456789"
+    },
+    "company": {
+      "department": "IT",
+      "name": "Admin Company",
+      "title": "Administrator",
+      "address": {
+        "address": "123 Admin Street",
+        "city": "Admin City",
+        "state": "Admin State",
+        "stateCode": "AS",
+        "postalCode": "12345",
+        "coordinates": {
+          "lat": 0,
+          "lng": 0
+        },
+        "country": "Admin Country"
+      }
+    },
+    "ein": "12-3456789",
+    "ssn": "123-45-6789",
+    "userAgent": "Admin Browser",
+    "crypto": {
+      "coin": "Bitcoin",
+      "wallet": "0x123456789abcdef",
+      "network": "Ethereum"
+    },
+    "role": "admin",
+    "createdAt": "2025-09-04T18:38:40.338Z",
+    "updatedAt": "2025-09-04T18:38:40.339Z"
   }
 ]
