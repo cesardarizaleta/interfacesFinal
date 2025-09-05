@@ -113,13 +113,36 @@ import landscapeImg from "~/assets/carousel/landscape.webp";
 import eventsImg from "~/assets/carousel/events.webp";
 import fashionImg from "~/assets/carousel/fashion.webp";
 import familyImg from "~/assets/carousel/family.webp";
+import climbImg from "~/assets/carousel/climb.webp"
+import landscapeWaterImg from "~/assets/carousel/landscapeWater.webp"
+import montainImg from "~/assets/carousel/mountain-climbing.webp"
+import veneciaImg from "~/assets/carousel/venecia.webp"
 
 export default {
   name: "ImageCarousel",
   data() {
     return {
       swiper: null,
-      images: [
+      images: [],
+    };
+  },
+  async mounted() {
+    this.loadImages();
+    await this.initSwiper();
+
+    // Listen for storage changes to update carousel dynamically
+    window.addEventListener('storage', this.handleStorageChange);
+  },
+  beforeUnmount() {
+    if (this.swiper) {
+      this.swiper.destroy(true, true);
+    }
+    window.removeEventListener('storage', this.handleStorageChange);
+  },
+  methods: {
+    loadImages() {
+      // Static images
+      const staticImages = [
         {
           src: weddingImg,
           alt: "Wedding Photography 1",
@@ -162,18 +185,67 @@ export default {
           description: "Precious family memories captured forever",
           category: "Family",
         },
-      ],
-    };
-  },
-  async mounted() {
-    await this.initSwiper();
-  },
-  beforeUnmount() {
-    if (this.swiper) {
-      this.swiper.destroy(true, true);
-    }
-  },
-  methods: {
+        {
+          src: climbImg,
+          alt: "Climb Photography",
+          title: "Beautiful Moments",
+          description: "Precious motains memories captured forever",
+          category: "Montain",
+        },
+        {
+          src: landscapeWaterImg,
+          alt: "Climb Photography",
+          title: "Beautiful Moments",
+          description: "Precious motains memories captured forever",
+          category: "Montain",
+        },
+        {
+          src: montainImg,
+          alt: "Climb Photography",
+          title: "Beautiful Moments",
+          description: "Precious motains memories captured forever",
+          category: "Montain",
+        },
+        {
+          src: veneciaImg,
+          alt: "Climb Photography",
+          title: "Beautiful Moments",
+          description: "Precious motains memories captured forever",
+          category: "Montain",
+        },
+      ];
+
+      // Load uploaded images from localStorage
+      const uploadedImages = JSON.parse(localStorage.getItem('uploadedImages') || '[]');
+
+      // Transform uploaded images to carousel format
+      const transformedUploadedImages = uploadedImages.map(img => ({
+        src: img.url,
+        alt: img.name || 'Uploaded Image',
+        title: img.name || 'Custom Image',
+        description: `Imagen personalizada - ${img.dimensions || 'Sin dimensiones'}`,
+        category: "Custom",
+      }));
+
+      // Combine static and uploaded images
+      this.images = [...staticImages, ...transformedUploadedImages];
+
+      console.log('Carousel images loaded:', this.images.length);
+    },
+
+    handleStorageChange(event) {
+      if (event.key === 'uploadedImages') {
+        console.log('Uploaded images changed, updating carousel...');
+        this.loadImages();
+        // Reinitialize swiper with new images
+        this.$nextTick(() => {
+          if (this.swiper) {
+            this.swiper.destroy(true, true);
+          }
+          this.initSwiper();
+        });
+      }
+    },
     async initSwiper() {
       try {
         // Importación dinámica para Nuxt

@@ -9,7 +9,6 @@
     </div>
 
     <div class="relative z-10 w-full max-w-full mx-auto">
-      <!-- Header -->
       <div class="text-center mb-8 sm:mb-10">
         <NuxtLink
           to="/config"
@@ -28,7 +27,6 @@
         </p>
       </div>
 
-      <!-- Error/Success Messages -->
       <div v-if="error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
         {{ error }}
       </div>
@@ -36,7 +34,6 @@
         {{ success }}
       </div>
 
-      <!-- Tabs -->
       <div class="mb-6 border-b border-stone-200">
         <nav class="-mb-px flex space-x-8" aria-label="Tabs">
           <button
@@ -64,7 +61,6 @@
         </nav>
       </div>
 
-      <!-- Videos Tab -->
       <div v-if="activeTab === 'videos'">
         <div class="flex justify-center mb-8">
           <button
@@ -115,11 +111,10 @@
         </div>
       </div>
 
-      <!-- Images Tab -->
       <div v-if="activeTab === 'images'">
         <div class="flex justify-center mb-8">
           <button
-            @click="showImageCropper = true"
+            @click="openCropperModal"
             class="relative bg-gradient-to-r from-green-600 to-teal-600 text-white font-bold py-4 px-8 rounded-xl shadow-2xl hover:shadow-green-500/25 hover:scale-105 transition-all duration-300 overflow-hidden group"
           >
             <span class="absolute inset-0 bg-gradient-to-r from-green-400 to-teal-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
@@ -169,7 +164,6 @@
         </div>
       </div>
 
-      <!-- Video Modal -->
       <div
         v-if="showVideoModal && selectedVideo"
         class="fixed inset-0 bg-stone-900 bg-opacity-90 flex items-center justify-center z-50 p-4 cursor-pointer"
@@ -218,7 +212,6 @@
         </div>
       </div>
 
-      <!-- Image Modal -->
       <div
         v-if="showImageModal && selectedImage"
         class="fixed inset-0 bg-stone-900 bg-opacity-90 flex items-center justify-center z-50 p-4 cursor-pointer"
@@ -253,7 +246,6 @@
         </div>
       </div>
 
-      <!-- Image Cropper Modal -->
       <div
         v-if="showImageCropper"
         class="fixed inset-0 bg-stone-900 bg-opacity-90 flex items-center justify-center z-50 p-4"
@@ -279,7 +271,7 @@
               class="mb-4 p-3 border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-500"
             />
 
-            <div class="flex-1 flex items-center justify-center min-h-[300px] bg-stone-50 rounded-lg border-2 border-dashed border-stone-300">
+            <div class="flex-1 flex items-center justify-center min-h-[300px] bg-stone-50 rounded-lg border-2 border-dashed border-stone-300 relative">
               <img
                 ref="imagePreview"
                 :src="previewImage"
@@ -291,6 +283,14 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                 </svg>
                 <p>Selecciona una imagen para recortar</p>
+              </div>
+
+              <div v-if="previewImage" class="absolute top-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded font-mono max-w-xs">
+                <div>Cropper: {{ cropper ? '✅ Active' : '❌ Inactive' }}</div>
+                <div v-if="cropper">Modern: {{ typeof cropper.getCropperCanvas }}</div>
+                <div v-if="cropper">Legacy: {{ typeof cropper.getCroppedCanvas }}</div>
+                <div v-if="cropper">Data: {{ typeof cropper.getData }}</div>
+                <div>Preview: {{ previewImage ? '✅ Set' : '❌ Empty' }}</div>
               </div>
             </div>
 
@@ -362,21 +362,88 @@ const cropper = ref(null)
 const fileInput = ref(null)
 const imagePreview = ref(null)
 
-// Static videos data (simplified version)
+// Static videos data - Replace with your actual video imports
+import dog1 from '~/assets/videos/dog1.mp4'
+import dog2 from '~/assets/videos/dog2.mp4'
+import dog3 from '~/assets/videos/dog3.mp4'
+import dog4 from '~/assets/videos/dog4.mp4'
+import dog5 from '~/assets/videos/dog5.mp4'
+import dog6 from '~/assets/videos/dog6.mp4'
+import forest from '~/assets/videos/forest.mp4'
+import sunshine from '~/assets/videos/sunshine.mp4'
+import mountain from '~/assets/videos/mountain.mp4'
+import mountain2 from '~/assets/videos/mountain2.mp4'
+
 const STATIC_VIDEOS = [
   {
     id: "v1",
-    url: "/videos/sample1.mp4", // You'll need to add actual video files
-    name: "Video de Muestra 1",
+    url: dog1,
+    name: "Dog Adventures 1",
     subtitles: [],
     thumbnail: "/images/video-thumb1.jpg"
   },
   {
     id: "v2",
-    url: "/videos/sample2.mp4", // You'll need to add actual video files
-    name: "Video de Muestra 2",
+    url: dog2,
+    name: "Dog Adventures 2",
     subtitles: [],
     thumbnail: "/images/video-thumb2.jpg"
+  },
+  {
+    id: "v3",
+    url: dog3,
+    name: "Dog Adventures 3",
+    subtitles: [],
+    thumbnail: "/images/video-thumb3.jpg"
+  },
+  {
+    id: "v4",
+    url: dog4,
+    name: "Dog Adventures 4",
+    subtitles: [],
+    thumbnail: "/images/video-thumb4.jpg"
+  },
+  {
+    id: "v5",
+    url: dog5,
+    name: "Dog Adventures 5",
+    subtitles: [],
+    thumbnail: "/images/video-thumb5.jpg"
+  },
+  {
+    id: "v6",
+    url: dog6,
+    name: "Dog Adventures 6",
+    subtitles: [],
+    thumbnail: "/images/video-thumb6.jpg"
+  },
+  {
+    id: "v7",
+    url: forest,
+    name: "Forest Journey",
+    subtitles: [],
+    thumbnail: "/images/video-thumb7.jpg"
+  },
+  {
+    id: "v8",
+    url: sunshine,
+    name: "Sunshine Moments",
+    subtitles: [],
+    thumbnail: "/images/video-thumb8.jpg"
+  },
+  {
+    id: "v9",
+    url: mountain,
+    name: "Mountain Views",
+    subtitles: [],
+    thumbnail: "/images/video-thumb9.jpg"
+  },
+  {
+    id: "v10",
+    url: mountain2,
+    name: "Mountain Adventures",
+    subtitles: [],
+    thumbnail: "/images/video-thumb10.jpg"
   },
 ]
 
@@ -516,22 +583,70 @@ const closeAllModals = () => {
   selectedImage.value = null
 }
 
+const openCropperModal = () => {
+  console.log('Opening cropper modal')
+  resetCropperState()
+  showImageCropper.value = true
+  console.log('Cropper modal opened with clean state')
+}
+
 const closeCropperModal = () => {
+  console.log('Closing cropper modal')
   showImageCropper.value = false
-  if (cropper.value && typeof cropper.value.destroy === 'function') {
-    try {
-      cropper.value.destroy()
-    } catch (error) {
-      console.warn('Error destroying cropper:', error)
+
+  // Properly destroy cropper instance
+  if (cropper.value) {
+    console.log('Destroying cropper instance')
+    if (typeof cropper.value.destroy === 'function') {
+      try {
+        cropper.value.destroy()
+        console.log('Cropper destroyed successfully')
+      } catch (error) {
+        console.warn('Error destroying cropper:', error)
+      }
     }
     cropper.value = null
   }
+
+  // Reset all cropper-related state
   previewImage.value = ''
   imageName.value = ''
+
   // Clear file input
   if (fileInput.value) {
     fileInput.value.value = ''
   }
+
+  console.log('Cropper modal closed and state reset')
+}
+
+const resetCropperState = () => {
+  console.log('Resetting cropper state for new use')
+
+  // Destroy existing cropper
+  if (cropper.value) {
+    if (typeof cropper.value.destroy === 'function') {
+      try {
+        cropper.value.destroy()
+      } catch (error) {
+        console.warn('Error destroying cropper during reset:', error)
+      }
+    }
+    cropper.value = null
+  }
+
+  // Reset all state variables
+  previewImage.value = ''
+  imageName.value = ''
+  error.value = ''
+  success.value = ''
+
+  // Clear file input
+  if (fileInput.value) {
+    fileInput.value.value = ''
+  }
+
+  console.log('Cropper state reset completed')
 }
 
 const handleFileSelect = (event) => {
@@ -540,123 +655,336 @@ const handleFileSelect = (event) => {
   console.log('Selected file:', file)
 
   if (file) {
+    // First, clean up any existing cropper
+    if (cropper.value) {
+      console.log('Cleaning up existing cropper before new file')
+      if (typeof cropper.value.destroy === 'function') {
+        try {
+          cropper.value.destroy()
+          console.log('Existing cropper destroyed')
+        } catch (error) {
+          console.warn('Error destroying existing cropper:', error)
+        }
+      }
+      cropper.value = null
+    }
+
     const reader = new FileReader()
     reader.onload = (e) => {
       console.log('File loaded, setting preview image')
+      console.log('Preview image data length:', e.target.result.length)
       previewImage.value = e.target.result
+
+      // Use nextTick to ensure DOM is updated
       nextTick(() => {
-        console.log('Initializing cropper...')
-        if (cropper.value) {
-          console.log('Destroying existing cropper')
-          cropper.value.destroy()
-          cropper.value = null
-        }
+        console.log('Initializing cropper after DOM update...')
         const image = imagePreview.value
         console.log('Image element:', image)
+        console.log('Image element complete:', image?.complete)
+        console.log('Image element src:', image?.src?.substring(0, 50) + '...')
+
         if (image) {
-          console.log('Creating new cropper instance')
-          try {
-            cropper.value = new Cropper(image, {
-              aspectRatio: 16 / 9,
-              viewMode: 1,
-              autoCropArea: 0.8,
-              responsive: true,
-              restore: false,
-            })
-            console.log('Cropper created successfully')
-            console.log('Cropper instance type:', typeof cropper.value)
-            console.log('Cropper has getCroppedCanvas:', typeof cropper.value.getCroppedCanvas)
-          } catch (error) {
-            console.error('Error creating cropper:', error)
-            cropper.value = null
+          // Ensure image is fully loaded before creating cropper
+          const initializeCropper = () => {
+            console.log('Image loaded, creating cropper...')
+            createCropper(image)
+          }
+
+          if (image.complete) {
+            console.log('Image already complete, initializing immediately')
+            initializeCropper()
+          } else {
+            console.log('Image not complete, waiting for load...')
+            image.onload = () => {
+              console.log('Image onload triggered')
+              initializeCropper()
+            }
+            image.onerror = () => {
+              console.error('Image failed to load')
+              error.value = 'Error al cargar la imagen'
+              setTimeout(() => error.value = '', 3000)
+            }
           }
         } else {
           console.error('Image element not found')
+          error.value = 'Elemento de imagen no encontrado'
+          setTimeout(() => error.value = '', 3000)
         }
       })
     }
+
+    reader.onerror = () => {
+      console.error('File reading error')
+      error.value = 'Error al leer el archivo'
+      setTimeout(() => error.value = '', 3000)
+    }
+
     reader.readAsDataURL(file)
   } else {
     console.log('No file selected')
   }
 }
 
+const createCropper = (image) => {
+  console.log('Creating new cropper instance')
+  console.log('Image dimensions:', image.naturalWidth, 'x', image.naturalHeight)
+  console.log('Image src length:', image.src.length)
+
+  try {
+    // Ensure image has proper dimensions
+    if (image.naturalWidth === 0 || image.naturalHeight === 0) {
+      throw new Error('Image has no dimensions')
+    }
+
+    const cropperOptions = {
+      aspectRatio: 16 / 9,
+      viewMode: 1,
+      autoCropArea: 0.8,
+      responsive: true,
+      restore: false,
+      checkCrossOrigin: false,
+      checkOrientation: false,
+      modal: true,
+      guides: true,
+      center: true,
+      highlight: false,
+      background: false,
+      scalable: true,
+      zoomable: true,
+      zoomOnTouch: true,
+      zoomOnWheel: true,
+      wheelZoomRatio: 0.1,
+      cropBoxMovable: true,
+      cropBoxResizable: true,
+      toggleDragModeOnDblclick: true,
+      ready: function() {
+        console.log('🎉 Cropper ready event fired - cropper is fully initialized')
+        // Mark cropper as ready
+        if (cropper.value) {
+          cropper.value._ready = true
+        }
+      },
+      crop: function(event) {
+        console.log('✂️ Crop event:', {
+          x: Math.round(event.detail.x),
+          y: Math.round(event.detail.y),
+          width: Math.round(event.detail.width),
+          height: Math.round(event.detail.height)
+        })
+      }
+    }
+
+    console.log('Creating cropper with options:', cropperOptions)
+    cropper.value = new Cropper(image, cropperOptions)
+
+    console.log('Cropper created successfully')
+    console.log('Cropper instance type:', typeof cropper.value)
+    console.log('Available methods:', Object.getOwnPropertyNames(Cropper.prototype))
+    console.log('getCropperCanvas available:', typeof cropper.value.getCropperCanvas)
+    console.log('getCroppedCanvas available:', typeof cropper.value.getCroppedCanvas)
+    console.log('getData available:', typeof cropper.value.getData)
+
+    // Verify cropper is working after a short delay
+    setTimeout(() => {
+      if (cropper.value) {
+        try {
+          // Use the correct method for the modern API
+          const data = cropper.value.getCropperSelection()
+          console.log('✅ Cropper data after creation:', data)
+          console.log('Cropper ready state:', cropper.value._ready || 'checking...')
+        } catch (e) {
+          console.warn('⚠️ Could not get cropper data:', e)
+        }
+      }
+    }, 200)
+
+  } catch (error) {
+    console.error('❌ Error creating cropper:', error)
+    console.error('Error stack:', error.stack)
+    cropper.value = null
+    error.value = 'Error al crear el recortador de imagen: ' + error.message
+    setTimeout(() => error.value = '', 3000)
+  }
+}
+
 const cropAndSaveImage = async () => {
-  console.log('cropAndSaveImage called')
-  console.log('cropper.value:', cropper.value)
+  console.log('=== cropAndSaveImage called ===')
+  console.log('cropper.value exists:', !!cropper.value)
   console.log('imageName.value:', imageName.value)
+  console.log('previewImage.value exists:', !!previewImage.value)
 
   if (!cropper.value) {
-    console.error('No cropper instance found')
+    console.error('❌ No cropper instance found')
     error.value = 'No hay instancia de cropper. Por favor selecciona una imagen primero.'
     setTimeout(() => error.value = '', 3000)
     return
   }
 
   if (!imageName.value.trim()) {
-    console.error('No image name provided')
+    console.error('❌ No image name provided')
     error.value = 'Por favor ingresa un nombre para la imagen'
     setTimeout(() => error.value = '', 3000)
     return
   }
 
   try {
-    console.log('Cropper instance type:', typeof cropper.value)
-    console.log('Cropper instance:', cropper.value)
+    // Small delay to ensure cropper is ready
+    console.log('⏳ Waiting for cropper to be ready...')
+    await new Promise(resolve => setTimeout(resolve, 200))
 
-    // Check if cropper has the expected methods
+    console.log('🔍 Checking cropper instance...')
+    console.log('Cropper type:', typeof cropper.value)
+    console.log('Cropper constructor:', cropper.value?.constructor?.name)
+
     if (!cropper.value || typeof cropper.value !== 'object') {
-      console.error('Invalid cropper instance')
+      console.error('❌ Invalid cropper instance')
       throw new Error('Instancia de cropper inválida')
     }
 
-    // Try to get cropped canvas with different approaches
-    let croppedCanvas = null
-
-    if (typeof cropper.value.getCroppedCanvas === 'function') {
-      console.log('Using getCroppedCanvas method')
-      croppedCanvas = cropper.value.getCroppedCanvas({
-        width: 800,
-        height: 450,
-        fillColor: '#fff',
-      })
-    } else {
-      console.log('getCroppedCanvas method not available, trying alternative approach')
-      // Fallback: create canvas from original image
-      const img = new Image()
-      img.src = previewImage.value
-      await new Promise(resolve => {
-        img.onload = resolve
-      })
-
-      const canvas = document.createElement('canvas')
-      const ctx = canvas.getContext('2d')
-      canvas.width = 800
-      canvas.height = 450
-
-      // Simple center crop
-      const aspectRatio = img.width / img.height
-      let sourceWidth = img.width
-      let sourceHeight = img.height
-      let sourceX = 0
-      let sourceY = 0
-
-      if (aspectRatio > 16/9) {
-        sourceWidth = img.height * (16/9)
-        sourceX = (img.width - sourceWidth) / 2
-      } else {
-        sourceHeight = img.width / (16/9)
-        sourceY = (img.height - sourceHeight) / 2
+    // Get cropper data first (try different methods)
+    console.log('📊 Getting cropper data...')
+    let cropperData;
+    try {
+      // Try getData first (legacy)
+      if (typeof cropper.value.getData === 'function') {
+        cropperData = cropper.value.getData();
+        console.log('✅ Cropper data (legacy):', cropperData);
+      } else if (typeof cropper.value.getCropperSelection === 'function') {
+        cropperData = cropper.value.getCropperSelection();
+        console.log('✅ Cropper selection data:', cropperData);
       }
 
-      ctx.drawImage(img, sourceX, sourceY, sourceWidth, sourceHeight, 0, 0, 800, 450)
-      croppedCanvas = canvas
+      if (cropperData && (cropperData.width === 0 || cropperData.height === 0)) {
+        console.warn('⚠️ Cropper data seems invalid');
+      }
+    } catch (dataError) {
+      console.warn('⚠️ Could not get cropper data:', dataError);
     }
 
+    // Try to get cropped canvas - simplified approach
+    let croppedCanvas = null;
+
+    console.log('🎯 Attempting to get cropped canvas...');
+
+    // Try getCroppedCanvas first (legacy method)
+    if (typeof cropper.value.getCroppedCanvas === 'function') {
+      console.log('🔄 Using getCroppedCanvas (legacy method)');
+      try {
+        croppedCanvas = cropper.value.getCroppedCanvas({
+          width: 800,
+          height: 450,
+          fillColor: '#fff',
+          imageSmoothingEnabled: true,
+          imageSmoothingQuality: 'high'
+        });
+        console.log('✅ getCroppedCanvas succeeded');
+      } catch (cropError) {
+        console.error('❌ getCroppedCanvas failed:', cropError.message);
+      }
+    }
+
+    // If getCroppedCanvas failed or not available, try getCropperCanvas
+    if (!croppedCanvas && typeof cropper.value.getCropperCanvas === 'function') {
+      console.log('🎯 Using getCropperCanvas (modern method)');
+      try {
+        croppedCanvas = cropper.value.getCropperCanvas({
+          width: 800,
+          height: 450,
+          minWidth: 256,
+          minHeight: 256,
+          maxWidth: 4096,
+          maxHeight: 4096,
+          fillColor: '#fff',
+          imageSmoothingEnabled: true,
+          imageSmoothingQuality: 'high'
+        });
+        console.log('✅ getCropperCanvas succeeded');
+      } catch (cropError) {
+        console.error('❌ getCropperCanvas failed:', cropError.message);
+      }
+    }
+
+    // If still no canvas, try to create one manually
+    if (!croppedCanvas) {
+      console.log('🔧 Attempting manual canvas creation...');
+      try {
+        // Get cropper data to create canvas manually
+        const cropData = cropper.value.getData();
+        console.log('Crop data:', cropData);
+
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = 800;
+        canvas.height = 450;
+
+        // Create image from preview
+        const img = new Image();
+        img.src = previewImage.value;
+
+        await new Promise((resolve, reject) => {
+          img.onload = resolve;
+          img.onerror = () => reject(new Error('Failed to load image'));
+        });
+
+        // Calculate crop dimensions
+        const scaleX = img.width / cropData.naturalWidth;
+        const scaleY = img.height / cropData.naturalHeight;
+
+        const cropX = cropData.x * scaleX;
+        const cropY = cropData.y * scaleY;
+        const cropWidth = cropData.width * scaleX;
+        const cropHeight = cropData.height * scaleY;
+
+        // Draw cropped image
+        ctx.drawImage(
+          img,
+          cropX, cropY, cropWidth, cropHeight,
+          0, 0, canvas.width, canvas.height
+        );
+
+        croppedCanvas = canvas;
+        console.log('✅ Manual canvas creation succeeded');
+      } catch (manualError) {
+        console.error('❌ Manual canvas creation failed:', manualError.message);
+        throw new Error('No se pudo crear el canvas recortado');
+      }
+    }
+
+    console.log('Canvas type:', croppedCanvas?.constructor?.name);
+    console.log('Canvas dimensions:', croppedCanvas?.width, 'x', croppedCanvas?.height);
+
     if (croppedCanvas) {
-      console.log('Converting to data URL...')
-      const croppedDataUrl = croppedCanvas.toDataURL('image/png', 0.9)
-      console.log('Data URL length:', croppedDataUrl.length)
+      console.log('🖼️ Converting to data URL...');
+
+      // Ensure we have a proper HTML5 canvas
+      let finalCanvas = croppedCanvas;
+
+      // If it's not a canvas element, try to get the actual canvas
+      if (croppedCanvas.tagName !== 'CANVAS') {
+        console.log('🔍 Canvas is not a native element, attempting to extract...');
+
+        // Try different methods to get the actual canvas
+        if (croppedCanvas.canvas) {
+          finalCanvas = croppedCanvas.canvas;
+          console.log('✅ Found canvas via .canvas property');
+        } else if (croppedCanvas.querySelector) {
+          const foundCanvas = croppedCanvas.querySelector('canvas');
+          if (foundCanvas) {
+            finalCanvas = foundCanvas;
+            console.log('✅ Found canvas via querySelector');
+          }
+        } else if (croppedCanvas.shadowRoot) {
+          const foundCanvas = croppedCanvas.shadowRoot.querySelector('canvas');
+          if (foundCanvas) {
+            finalCanvas = foundCanvas;
+            console.log('✅ Found canvas via shadowRoot');
+          }
+        }
+      }
+
+      // Convert to data URL
+      const croppedDataUrl = finalCanvas.toDataURL('image/png', 0.9);
+      console.log('✅ Data URL created, length:', croppedDataUrl.length);
 
       // Create new image object
       const newImage = {
@@ -666,35 +994,46 @@ const cropAndSaveImage = async () => {
         dimensions: `${croppedCanvas.width} x ${croppedCanvas.height} px`,
         size: `${((croppedDataUrl.length * 3) / 4 / 1024).toFixed(2)} KB`,
         format: 'PNG',
-      }
+      };
 
-      console.log('New image object:', newImage)
+      console.log('📦 New image object created:', newImage);
 
       // Add to images array
-      images.value.unshift(newImage)
-      console.log('Image added to array, new length:', images.value.length)
+      images.value.unshift(newImage);
+      console.log('✅ Image added to array, new length:', images.value.length);
 
       // Save to localStorage for persistence
-      const savedImages = JSON.parse(localStorage.getItem('uploadedImages') || '[]')
-      savedImages.unshift(newImage)
-      localStorage.setItem('uploadedImages', JSON.stringify(savedImages))
-      console.log('Image saved to localStorage')
+      const savedImages = JSON.parse(localStorage.getItem('uploadedImages') || '[]');
+      savedImages.unshift(newImage);
+      localStorage.setItem('uploadedImages', JSON.stringify(savedImages));
+
+      // Trigger storage event to update carousel
+      window.dispatchEvent(new StorageEvent('storage', {
+        key: 'uploadedImages',
+        newValue: JSON.stringify(savedImages),
+        oldValue: JSON.stringify(savedImages.slice(1)),
+        storageArea: localStorage
+      }));
+
+      console.log('💾 Image saved to localStorage and carousel updated');
 
       // Show success message
-      success.value = `Imagen "${imageName.value}" guardada exitosamente`
-      setTimeout(() => success.value = '', 3000)
+      success.value = `Imagen "${imageName.value}" guardada exitosamente`;
+      setTimeout(() => success.value = '', 3000);
 
       // Close modal
-      closeCropperModal()
-      console.log('Modal closed')
+      closeCropperModal();
+      console.log('✅ Modal closed - Process completed successfully');
     } else {
-      throw new Error('No se pudo crear el canvas recortado')
+      console.error('❌ No cropped canvas returned');
+      throw new Error('No se pudo crear el canvas recortado');
     }
   } catch (error) {
-    console.error('Error cropping image:', error)
+    console.error('❌ Error cropping image:', error);
+    console.error('Error stack:', error.stack);
 
     // Fallback: save original image
-    console.log('Attempting fallback with original image...')
+    console.log('🔄 Attempting fallback with original image...');
     if (previewImage.value) {
       const newImage = {
         id: `img-${Date.now()}`,
@@ -703,22 +1042,30 @@ const cropAndSaveImage = async () => {
         dimensions: 'Original',
         size: 'Original',
         format: 'Original',
-      }
+      };
 
-      images.value.unshift(newImage)
-      const savedImages = JSON.parse(localStorage.getItem('uploadedImages') || '[]')
-      savedImages.unshift(newImage)
-      localStorage.setItem('uploadedImages', JSON.stringify(savedImages))
+      images.value.unshift(newImage);
+      const savedImages = JSON.parse(localStorage.getItem('uploadedImages') || '[]');
+      savedImages.unshift(newImage);
+      localStorage.setItem('uploadedImages', JSON.stringify(savedImages));
 
-      success.value = `Imagen "${imageName.value}" guardada (sin recorte)`
-      setTimeout(() => success.value = '', 3000)
-      closeCropperModal()
-      console.log('Fallback save completed')
-      return
+      // Trigger storage event to update carousel
+      window.dispatchEvent(new StorageEvent('storage', {
+        key: 'uploadedImages',
+        newValue: JSON.stringify(savedImages),
+        oldValue: JSON.stringify(savedImages.slice(1)),
+        storageArea: localStorage
+      }));
+
+      success.value = `Imagen "${imageName.value}" guardada (sin recorte)`;
+      setTimeout(() => success.value = '', 3000);
+      closeCropperModal();
+      console.log('✅ Fallback save completed');
+      return;
     }
 
-    error.value = 'Error al procesar la imagen: ' + error.message
-    setTimeout(() => error.value = '', 3000)
+    error.value = 'Error al procesar la imagen: ' + error.message;
+    setTimeout(() => error.value = '', 3000);
   }
 }
 
@@ -765,16 +1112,30 @@ onMounted(async () => {
 })
 
 onUnmounted(() => {
+  console.log('Component unmounting, cleaning up...')
   document.body.classList.remove('config-page')
+
   // Clean up cropper instance
-  if (cropper.value && typeof cropper.value.destroy === 'function') {
-    try {
-      cropper.value.destroy()
-    } catch (error) {
-      console.warn('Error destroying cropper on unmount:', error)
+  if (cropper.value) {
+    console.log('Destroying cropper instance on unmount')
+    if (typeof cropper.value.destroy === 'function') {
+      try {
+        cropper.value.destroy()
+        console.log('Cropper destroyed successfully on unmount')
+      } catch (error) {
+        console.warn('Error destroying cropper on unmount:', error)
+      }
     }
     cropper.value = null
   }
+
+  // Clear all reactive refs to prevent memory leaks
+  previewImage.value = ''
+  imageName.value = ''
+  error.value = ''
+  success.value = ''
+
+  console.log('Component cleanup completed')
 })
 </script>
 

@@ -12,6 +12,10 @@
 	<image-carousel></image-carousel>
 	<!-- Image Carousel end -->
 
+	<!-- Video Carousel start -->
+	<video-carousel></video-carousel>
+	<!-- Video Carousel end -->
+
 	<!-- Services section start -->
 	<service-section></service-section>
 	<!-- Services section end -->
@@ -33,7 +37,8 @@ import AboutSection from '@/components/sections/AboutSection.vue';
 import ServiceSection from '@/components/sections/ServiceSection.vue';
 import PortfolioSection from '@/components/sections/PortfolioSection.vue';
 import ContactSection from '@/components/sections/ContactSection.vue';
-import ImageCarousel from '@/components/ImageCarousel.vue'
+import ImageCarousel from '@/components/ImageCarousel.vue';
+import VideoCarousel from '@/components/VideoCarousel.vue';
 
 export default {
 	components: {
@@ -43,6 +48,7 @@ export default {
 		PortfolioSection,
 		ContactSection,
 		ImageCarousel,
+		VideoCarousel,
 	}
 }
 </script>
