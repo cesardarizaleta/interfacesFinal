@@ -3,6 +3,7 @@ const express = require('express');
 const routerApi = require('./routes');
 const { setupSecurityMiddlewares, setupCors, setupStaticFiles } = require('./middlewares/setup');
 const logger = require('./utils/logger');
+const container = require('./container'); // Initialize dependency injection container
 const app = express();
 const port = process.env.PORT || 3000;
 

@@ -1,160 +1,118 @@
 const boom = require('@hapi/boom');
-const fs = require('fs').promises;
-const path = require('path');
 
 class ColorsService {
-
-  constructor(){
-    this.filePath = path.join(__dirname, '../data/colors.json');
+  constructor(repository) {
+    this.repository = repository;
   }
 
-  async _readData() {
-    try {
-      const data = await fs.readFile(this.filePath, 'utf8');
-      return JSON.parse(data);
-    } catch (error) {
-      console.error('Error reading colors data:', error.message);
-      // Return empty array if file doesn't exist or is corrupted
-      return [];
-    }
+  async find() {
+    return await this.repository.findAll();
   }
 
-  async _writeData(data) {
-    try {
-      await fs.writeFile(this.filePath, JSON.stringify(data, null, 2));
-    } catch (error) {
-      console.error('Error writing colors data:', error.message);
-      throw boom.internal('Failed to save color data');
+  async findOne(id) {
+    return await this.repository.findById(id);
+  }
+
+  async findByUser(userId) {
+    const colors = await this.repository.findAll();
+    return colors.filter(color => color.userId === userId);
+  }
+
+  async findByName(name) {
+    const color = await this.repository.findByName(name);
+    if (!color) {
+      throw boom.notFound('Color not found');
     }
+    return color;
+  }
+
+  async findByHex(hex) {
+    const color = await this.repository.findByHex(hex);
+    if (!color) {
+      throw boom.notFound('Color not found');
+    }
+    return color;
   }
 
   async create(data) {
-    const colors = await this._readData();
-    const newColor = {
-      id: Date.now().toString(),
+    const colorData = {
       ...data,
       lastUsedAt: null,
       isDefault: data.isDefault || false,
       isActive: data.isActive || false
     };
-    colors.push(newColor);
-    await this._writeData(colors);
-    return newColor;
+    return await this.repository.create(colorData);
   }
 
-  async find() {
-    const colors = await this._readData();
-    return colors;
-  }
-
-  async findByUser(userId){
-    const colors = await this._readData();
-    return colors.filter(color => color.userId === userId);
-  }
-
-  async findOne(id) {
-    const colors = await this._readData();
-    const color = colors.find(color => color.id === id);
-    if (!color) {
-      throw boom.notFound('Color not found');
-    }
-    // Update lastUsedAt
-    color.lastUsedAt = new Date().toISOString();
-    await this._writeData(colors);
-    return color;
-  }
-
-  async update(id, changes) {
-    const colors = await this._readData();
-    const index = colors.findIndex(color => color.id === id);
-    if (index === -1) {
-      throw boom.notFound('Color not found');
-    }
-    colors[index] = { ...colors[index], ...changes };
-    await this._writeData(colors);
-    return colors[index];
+  async update(id, data) {
+    const colorData = {
+      ...data,
+      lastUsedAt: data.lastUsedAt || new Date().toISOString()
+    };
+    return await this.repository.update(id, colorData);
   }
 
   async delete(id) {
-    const colors = await this._readData();
-    const index = colors.findIndex(color => color.id === id);
-    if (index === -1) {
-      throw boom.notFound('Color not found');
+    return await this.repository.delete(id);
+  }
+
+  async toggleActive(id) {
+    const color = await this.repository.findById(id);
+    const updatedColor = await this.repository.update(id, {
+      isActive: !color.isActive
+    });
+    return updatedColor;
+  }
+
+  async setAsDefault(id, userId) {
+    const colors = await this.repository.findAll();
+    const userColors = colors.filter(color => color.userId === userId);
+
+    // Remove default from all user colors
+    for (const color of userColors) {
+      if (color.isDefault) {
+        await this.repository.update(color.id, { isDefault: false });
+      }
     }
-    if (colors[index].isDefault) {
-      throw boom.badRequest('Cannot delete default palette');
-    }
-    colors.splice(index, 1);
-    await this._writeData(colors);
-    return { id };
+
+    // Set the specified color as default
+    return await this.repository.update(id, { isDefault: true });
   }
 
   async findLastUsedByUserId(userId) {
-    const colors = await this._readData();
-    const userColors = colors.filter(color => color.userId === userId && color.lastUsedAt);
-    if (userColors.length === 0) {
-      // Return null so route handlers can decide how to respond
-      return null;
-    }
-    userColors.sort((a, b) => new Date(b.lastUsedAt) - new Date(a.lastUsedAt));
-    return userColors[0];
+    const colors = await this.repository.findAll();
+    const userColors = colors.filter(color => color.userId === userId);
+    return userColors.sort((a, b) => new Date(b.lastUsedAt || 0) - new Date(a.lastUsedAt || 0));
   }
 
   async findActiveByUserId(userId) {
-    const colors = await this._readData();
-    const activeColor = colors.find(color => color.userId === userId && color.isActive);
-    if (!activeColor) {
-      // Return default palette if no active palette found
-      const defaultPalette = colors.find(color => color.isDefault);
-      return defaultPalette || null;
-    }
-    return activeColor;
+    const colors = await this.repository.findAll();
+    return colors.filter(color => color.userId === userId && color.isActive);
   }
 
   async activatePalette(id, userId) {
-    const colors = await this._readData();
-    const index = colors.findIndex(color => color.id === id && color.userId === userId);
-    if (index === -1) {
-      throw boom.notFound('Color not found');
+    const color = await this.repository.findById(id);
+    if (color.userId !== userId) {
+      throw boom.forbidden('Access denied');
     }
-    // Deactivate all palettes for this user
-    colors.forEach(color => {
-      if (color.userId === userId) {
-        color.isActive = false;
-      }
-    });
-    // Activate the selected palette
-    colors[index].isActive = true;
-    colors[index].lastUsedAt = new Date().toISOString();
-    await this._writeData(colors);
-    return colors[index];
+    return await this.repository.update(id, { isActive: true });
   }
 
   async deactivatePalette(id, userId) {
-    const colors = await this._readData();
-    const index = colors.findIndex(color => color.id === id && color.userId === userId);
-    if (index === -1) {
-      throw boom.notFound('Color not found');
+    const color = await this.repository.findById(id);
+    if (color.userId !== userId) {
+      throw boom.forbidden('Access denied');
     }
-    if (colors[index].isDefault) {
-      throw boom.badRequest('Cannot deactivate default palette');
-    }
-    colors[index].isActive = false;
-    await this._writeData(colors);
-    return colors[index];
+    return await this.repository.update(id, { isActive: false });
   }
 
   async findOneByIdAndUserId(colorId, userId) {
-    const colors = await this._readData();
-    const color = colors.find(color => color.id === colorId && color.userId === userId);
-    if (!color) {
-      throw boom.notFound('Color not found or does not belong to the authenticated user.');
+    const color = await this.repository.findById(colorId);
+    if (color.userId !== userId) {
+      throw boom.forbidden('Access denied');
     }
-    // Update lastUsedAt
-    color.lastUsedAt = new Date().toISOString();
-    await this._writeData(colors);
     return color;
   }
 }
 
-module.exports = ColorsService;
+module.exports = { ColorsService };
