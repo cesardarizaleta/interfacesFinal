@@ -33,7 +33,9 @@ class ColorsService {
     const newColor = {
       id: Date.now().toString(),
       ...data,
-      lastUsedAt: null
+      lastUsedAt: null,
+      isDefault: data.isDefault || false,
+      isActive: data.isActive || false
     };
     colors.push(newColor);
     await this._writeData(colors);
@@ -79,6 +81,9 @@ class ColorsService {
     if (index === -1) {
       throw boom.notFound('Color not found');
     }
+    if (colors[index].isDefault) {
+      throw boom.badRequest('Cannot delete default palette');
+    }
     colors.splice(index, 1);
     await this._writeData(colors);
     return { id };
@@ -93,6 +98,50 @@ class ColorsService {
     }
     userColors.sort((a, b) => new Date(b.lastUsedAt) - new Date(a.lastUsedAt));
     return userColors[0];
+  }
+
+  async findActiveByUserId(userId) {
+    const colors = await this._readData();
+    const activeColor = colors.find(color => color.userId === userId && color.isActive);
+    if (!activeColor) {
+      // Return default palette if no active palette found
+      const defaultPalette = colors.find(color => color.isDefault);
+      return defaultPalette || null;
+    }
+    return activeColor;
+  }
+
+  async activatePalette(id, userId) {
+    const colors = await this._readData();
+    const index = colors.findIndex(color => color.id === id && color.userId === userId);
+    if (index === -1) {
+      throw boom.notFound('Color not found');
+    }
+    // Deactivate all palettes for this user
+    colors.forEach(color => {
+      if (color.userId === userId) {
+        color.isActive = false;
+      }
+    });
+    // Activate the selected palette
+    colors[index].isActive = true;
+    colors[index].lastUsedAt = new Date().toISOString();
+    await this._writeData(colors);
+    return colors[index];
+  }
+
+  async deactivatePalette(id, userId) {
+    const colors = await this._readData();
+    const index = colors.findIndex(color => color.id === id && color.userId === userId);
+    if (index === -1) {
+      throw boom.notFound('Color not found');
+    }
+    if (colors[index].isDefault) {
+      throw boom.badRequest('Cannot deactivate default palette');
+    }
+    colors[index].isActive = false;
+    await this._writeData(colors);
+    return colors[index];
   }
 
   async findOneByIdAndUserId(colorId, userId) {

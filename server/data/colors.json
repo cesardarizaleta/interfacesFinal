@@ -1,5 +1,18 @@
 [
   {
+    "id": "default-landing-palette",
+    "name": "Paleta Landing Predeterminada",
+    "colorPrimary": "#57534E",
+    "colorSecondary": "#FFFFFF",
+    "colorAccent": "#44403C",
+    "colorText": "#78716C",
+    "backgroundNeutral": "#E7E5E4",
+    "userId": "system",
+    "lastUsedAt": null,
+    "isDefault": true,
+    "isActive": true
+  },
+  {
     "id": "1756702749775",
     "name": "Palet",
     "colorPrimary": "#ff8c00",
@@ -8,6 +21,8 @@
     "colorText": "#78716C",
     "backgroundNeutral": "#E7E5E4",
     "userId": "1756702311755",
-    "lastUsedAt": "2025-09-01T05:09:07.326Z"
+    "lastUsedAt": "2025-09-01T05:09:07.326Z",
+    "isDefault": false,
+    "isActive": false
   }
 ]

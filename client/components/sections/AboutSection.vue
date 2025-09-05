@@ -117,7 +117,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-xs);
-  background: rgba(59, 130, 246, 0.1);
+  background: rgba(var(--color-primary-rgb, 87, 83, 78), 0.1);
   color: var(--color-primary);
   padding: var(--spacing-xs) var(--spacing-md);
   border-radius: var(--radius-full);
@@ -126,7 +126,7 @@
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: var(--spacing-lg);
-  border: 1px solid rgba(59, 130, 246, 0.2);
+  border: 1px solid rgba(var(--color-primary-rgb, 87, 83, 78), 0.2);
 }
 
 .section-badge i {

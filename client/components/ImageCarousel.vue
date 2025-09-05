@@ -3,10 +3,10 @@
     <!--Verdad-->
     <!-- Título del carrusel -->
     <div class="text-center mb-12">
-      <h2 class="uppercase text-4xl lg:text-5xl font-semibold mb-4">
+      <h2 class="text-4xl lg:text-5xl font-semibold mb-4 text-primary">
         Featured Gallery
       </h2>
-      <p class="text-stone-500 max-w-2xl mx-auto">
+      <p class="text-secondary max-w-2xl mx-auto">
         Explore our most stunning photography work through this interactive
         gallery
       </p>
@@ -21,7 +21,7 @@
             class="swiper-slide"
           >
             <div
-              class="relative overflow-hidden rounded-2xl group cursor-pointer bg-gray-200"
+              class="relative overflow-hidden rounded-2xl group cursor-pointer bg-neutral"
             >
               <img
                 :src="image.src"
@@ -45,9 +45,9 @@
 
               <!-- Badge de categoría -->
               <div
-                class="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full"
+                class="absolute top-4 left-4 bg-secondary/90 backdrop-blur-sm px-3 py-1 rounded-full"
               >
-                <span class="text-xs font-medium text-gray-800">{{
+                <span class="text-xs font-medium text-primary">{{
                   image.category
                 }}</span>
               </div>
@@ -57,10 +57,10 @@
 
         <!-- Navegación personalizada -->
         <div
-          class="swiper-button-prev-custom absolute left-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center cursor-pointer shadow-lg hover:bg-white transition-all duration-300 group"
+          class="swiper-button-prev-custom absolute left-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-secondary/90 backdrop-blur-sm rounded-full flex items-center justify-center cursor-pointer shadow-lg hover:bg-secondary transition-all duration-300 group"
         >
           <svg
-            class="w-5 h-5 text-gray-700 group-hover:text-gray-900 transition-colors"
+            class="w-5 h-5 text-primary group-hover:text-accent transition-colors"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -75,10 +75,10 @@
         </div>
 
         <div
-          class="swiper-button-next-custom absolute right-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center cursor-pointer shadow-lg hover:bg-white transition-all duration-300 group"
+          class="swiper-button-next-custom absolute right-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-secondary/90 backdrop-blur-sm rounded-full flex items-center justify-center cursor-pointer shadow-lg hover:bg-secondary transition-all duration-300 group"
         >
           <svg
-            class="w-5 h-5 text-gray-700 group-hover:text-gray-900 transition-colors"
+            class="w-5 h-5 text-primary group-hover:text-accent transition-colors"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -101,7 +101,7 @@
 
     <!-- Círculo decorativo -->
     <div
-      class="bg-stone-100 h-32 w-32 rounded-full absolute -top-10 -right-10 -z-10 opacity-50"
+      class="bg-neutral h-32 w-32 rounded-full absolute -top-10 -right-10 -z-10 opacity-50"
     ></div>
   </div>
 </template>
@@ -300,7 +300,7 @@ export default {
 }
 
 :deep(.swiper-pagination-custom .swiper-pagination-bullet-active) {
-  background: #374151;
+  background: var(--color-primary);
   transform: scale(1.2);
 }
 
@@ -337,5 +337,26 @@ export default {
 /* Asegurar que el contenedor padre no cause overflow */
 :global(.swiper-container-horizontal) {
   overflow: visible !important;
+}
+
+/* Clases de color dinámicas */
+.text-primary {
+  color: var(--text-primary);
+}
+
+.text-secondary {
+  color: var(--text-secondary);
+}
+
+.text-accent {
+  color: var(--color-accent);
+}
+
+.bg-neutral {
+  background-color: var(--background-neutral);
+}
+
+.bg-secondary {
+  background-color: var(--color-secondary);
 }
 </style>

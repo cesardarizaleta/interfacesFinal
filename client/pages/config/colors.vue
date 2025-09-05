@@ -246,14 +246,30 @@
               </td>
             </tr>
             <tr v-for="palette in palettes" :key="palette.id" class="border-b border-stone-200">
-              <td class="py-4 px-4">{{ palette.name }}</td>
+              <td class="py-4 px-4">
+                <div class="flex items-center space-x-2">
+                  <i 
+                    :class="[
+                      'fas',
+                      palette.isDefault ? 'fa-palette' : 'fa-swatchbook',
+                      'text-stone-400'
+                    ]"
+                  ></i>
+                  <div>
+                    <p class="font-medium text-stone-900">{{ palette.name }}</p>
+                    <p class="text-xs text-stone-500">
+                      {{ palette.isDefault ? 'Predeterminada' : 'Personalizada' }}
+                    </p>
+                  </div>
+                </div>
+              </td>
               <td class="py-4 px-4">
                 <div class="flex gap-2">
-                  <div class="w-6 h-6 rounded-full" :style="{ backgroundColor: palette.colorPrimary }"></div>
-                  <div class="w-6 h-6 rounded-full" :style="{ backgroundColor: palette.colorSecondary }"></div>
-                  <div class="w-6 h-6 rounded-full" :style="{ backgroundColor: palette.colorAccent }"></div>
-                  <div class="w-6 h-6 rounded-full" :style="{ backgroundColor: palette.colorText }"></div>
-                  <div class="w-6 h-6 rounded-full" :style="{ backgroundColor: palette.backgroundNeutral }"></div>
+                  <div class="w-6 h-6 rounded-full border border-stone-200" :style="{ backgroundColor: palette.colorPrimary }"></div>
+                  <div class="w-6 h-6 rounded-full border border-stone-200" :style="{ backgroundColor: palette.colorSecondary }"></div>
+                  <div class="w-6 h-6 rounded-full border border-stone-200" :style="{ backgroundColor: palette.colorAccent }"></div>
+                  <div class="w-6 h-6 rounded-full border border-stone-200" :style="{ backgroundColor: palette.colorText }"></div>
+                  <div class="w-6 h-6 rounded-full border border-stone-200" :style="{ backgroundColor: palette.backgroundNeutral }"></div>
                 </div>
               </td>
               <td class="py-4 px-4">
@@ -263,23 +279,40 @@
               <td class="py-4 px-4 text-center">
                 <button
                   @click="activatePalette(palette)"
-                  class="text-blue-600 hover:text-blue-800 mr-3"
+                  :class="[
+                    'px-3 py-1 rounded text-xs font-medium transition-colors mr-2',
+                    isActivePalette(palette)
+                      ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                      : 'bg-blue-500 text-white hover:bg-blue-600'
+                  ]"
                   :disabled="isActivePalette(palette)"
                 >
-                  <i class="fas fa-check-circle"></i>
+                  <i class="fas fa-check-circle mr-1"></i>
+                  {{ isActivePalette(palette) ? 'Activa' : 'Aplicar' }}
                 </button>
                 <button
+                  v-if="!palette.isDefault"
                   @click="openRenameModal(palette)"
-                  class="text-yellow-600 hover:text-yellow-800 mr-3"
+                  class="px-3 py-1 bg-stone-500 text-white rounded text-xs font-medium hover:bg-stone-600 transition-colors mr-2"
                 >
-                  <i class="fas fa-edit"></i>
+                  <i class="fas fa-edit mr-1"></i>
+                  Renombrar
                 </button>
                 <button
+                  v-if="!palette.isDefault"
                   @click="confirmDeletePalette(palette)"
-                  class="text-red-600 hover:text-red-800"
+                  class="px-3 py-1 bg-red-500 text-white rounded text-xs font-medium hover:bg-red-600 transition-colors"
                 >
-                  <i class="fas fa-trash"></i>
+                  <i class="fas fa-trash mr-1"></i>
+                  Eliminar
                 </button>
+                <span
+                  v-if="palette.isDefault"
+                  class="px-3 py-1 bg-gray-100 text-gray-500 rounded text-xs font-medium cursor-not-allowed"
+                >
+                  <i class="fas fa-lock mr-1"></i>
+                  Predeterminada
+                </span>
               </td>
             </tr>
           </tbody>
@@ -346,7 +379,11 @@ const fetchUserPalettes = async () => {
 
   try {
     const token = localStorage.getItem('token');
-    const response = await fetch(`${BACKEND_URL}/api/profile/my-colors`, {
+    const user = localStorage.getItem('user');
+    if (!user) throw new Error('Usuario no encontrado');
+
+    const userData = JSON.parse(user);
+    const response = await fetch(`${BACKEND_URL}/api/colors/user/${userData.id}`, {
       headers: {
         'Authorization': `Bearer ${token}`
       }
@@ -357,9 +394,12 @@ const fetchUserPalettes = async () => {
     const data = await response.json();
     palettes.value = data;
 
-    // En la página de configuración, no cargar automáticamente la última paleta usada
-    // Solo mostrar las paletas disponibles
-    activePaletteId.value = null;
+    // Encontrar la paleta activa
+    const activePalette = data.find(p => p.isActive);
+    if (activePalette) {
+      activePaletteId.value = activePalette.id;
+      applyPalette(activePalette);
+    }
   } catch (error) {
     console.error('Error:', error);
     paletteFetchError.value = error.message;
@@ -385,8 +425,8 @@ const activatePalette = async (palette) => {
 
   try {
     const token = localStorage.getItem('token');
-    const response = await fetch(`${BACKEND_URL}/api/profile/my-colors/${palette.id}`, {
-      method: 'GET',
+    const response = await fetch(`${BACKEND_URL}/api/colors/${palette.id}/activate`, {
+      method: 'PATCH',
       headers: {
         'Authorization': `Bearer ${token}`
       }
@@ -394,24 +434,18 @@ const activatePalette = async (palette) => {
 
     if (!response.ok) throw new Error('Error al activar la paleta');
 
-    const colorData = await response.json();
+    const activatedPalette = await response.json();
     
-    // Solo actualizar localmente en la página de configuración
-    primaryColor.value = colorData.colorPrimary || '#57534E';
-    secondaryColor.value = colorData.colorSecondary || '#FFFFFF';
-    accentColor.value = colorData.colorAccent || '#44403C';
-    textColor.value = colorData.colorText || '#78716C';
-    neutralColor.value = colorData.backgroundNeutral || '#E7E5E4';
+    // Actualizar la paleta activa
+    activePaletteId.value = activatedPalette.id;
+    applyPalette(activatedPalette);
+    
+    // Actualizar la lista de paletas
+    const index = palettes.value.findIndex(p => p.id === activatedPalette.id);
+    if (index !== -1) {
+      palettes.value[index] = activatedPalette;
+    }
 
-    // Aplicar globalmente la paleta
-    setActivePalette(colorData);
-    applyColorsToPage(colorData);
-
-    // Update the active palette ID
-    activePaletteId.value = palette.id;
-
-    // Refresh the palettes list to update the UI
-    await fetchUserPalettes();
     showToastMessage('Paleta activada exitosamente', 'success');
   } catch (error) {
     console.error('Error al activar la paleta:', error);

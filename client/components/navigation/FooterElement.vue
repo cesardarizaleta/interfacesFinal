@@ -128,10 +128,10 @@ export default {
 /* Base Styles */
 .photography-footer {
   width: 100%;
-  background-color: var(--color-background);
+  background-color: var(--bg-card);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: var(--color-text);
-  border-top: 1px solid var(--color-primary);
+  color: var(--text-primary);
+  border-top: 1px solid var(--border-light);
 }
 
 .footer-container {
@@ -141,7 +141,7 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  background-color: var(--color-background);
+  background-color: var(--bg-card);
 }
 
 /* Brand Section */
@@ -160,7 +160,7 @@ export default {
   font-size: 1.5rem;
   font-weight: 700;
   letter-spacing: 0.05em;
-  color: var(--color-text);
+  color: var(--text-primary);
   margin: 0;
 }
 
@@ -168,13 +168,13 @@ export default {
   font-size: 1.25rem;
   font-weight: 300;
   letter-spacing: 0.05em;
-  color: var(--color-text);
+  color: var(--text-secondary);
   margin: 0;
 }
 
 .brand-description {
   font-size: 0.875rem;
-  color: var(--color-text);
+  color: var(--text-tertiary);
   text-align: center;
   margin: 0;
   max-width: 600px;

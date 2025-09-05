@@ -1,46 +1,55 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap');
 
 :root {
-  /* Modern Corporate Color Palette */
-  --color-primary: #1a365d; /* slate-800 */
-  --color-primary-dark: #0f172a; /* slate-900 */
-  --color-primary-light: #334155; /* slate-700 */
+  /* Dynamic Color Palette - Updated by usePalette composable */
+  --color-primary: #57534E;
+  --color-primary-rgb: 87, 83, 78;
+  --color-secondary: #FFFFFF;
+  --color-secondary-rgb: 255, 255, 255;
+  --color-accent: #44403C;
+  --color-accent-rgb: 68, 64, 60;
+  --color-text: #78716C;
+  --color-text-rgb: 120, 113, 108;
+  --background-neutral: #E7E5E4;
+  --background-neutral-rgb: 231, 229, 228;
+
+  /* Derived colors for better UX */
+  --color-primary-dark: #44403C;
+  --color-primary-light: #78716C;
   --color-primary-contrast: #ffffff;
 
-  --color-secondary: #f59e0b; /* amber-500 */
-  --color-secondary-dark: #d97706; /* amber-600 */
-  --color-secondary-light: #fbbf24; /* amber-400 */
-  --color-secondary-contrast: #ffffff;
+  --color-secondary-dark: #E7E5E4;
+  --color-secondary-light: #F5F5F4;
+  --color-secondary-contrast: #57534E;
 
-  --color-accent: #3b82f6; /* blue-500 */
-  --color-accent-dark: #2563eb; /* blue-600 */
-  --color-accent-light: #60a5fa; /* blue-400 */
+  --color-accent-dark: #292524;
+  --color-accent-light: #78716C;
 
-  --color-success: #10b981; /* emerald-500 */
-  --color-warning: #f59e0b; /* amber-500 */
-  --color-error: #ef4444; /* red-500 */
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
 
-  --color-muted: #64748b; /* slate-500 */
-  --color-muted-light: #94a3b8; /* slate-400 */
-  --color-muted-dark: #475569; /* slate-600 */
+  --color-muted: #78716C;
+  --color-muted-light: #A8A29E;
+  --color-muted-dark: #44403C;
 
   /* Background Colors */
-  --bg-page: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-  --bg-card: #ffffff;
-  --bg-secondary: #f8fafc;
-  --bg-tertiary: #f1f5f9;
+  --bg-page: linear-gradient(135deg, var(--background-neutral) 0%, var(--color-secondary) 100%);
+  --bg-card: var(--color-secondary);
+  --bg-secondary: var(--background-neutral);
+  --bg-tertiary: var(--color-secondary);
   --bg-overlay: rgba(15, 23, 42, 0.8);
 
   /* Text Colors */
-  --text-primary: #0f172a; /* slate-900 */
-  --text-secondary: #475569; /* slate-600 */
-  --text-tertiary: #64748b; /* slate-500 */
-  --text-light: #f8fafc; /* slate-50 */
+  --text-primary: var(--color-primary);
+  --text-secondary: var(--color-accent);
+  --text-tertiary: var(--color-text);
+  --text-light: var(--background-neutral);
 
   /* Border Colors */
-  --border-light: #e2e8f0; /* slate-200 */
-  --border-medium: #cbd5e1; /* slate-300 */
-  --border-dark: #94a3b8; /* slate-400 */
+  --border-light: var(--background-neutral);
+  --border-medium: var(--color-text);
+  --border-dark: var(--color-accent);
 
   /* Shadow System */
   --shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.05);

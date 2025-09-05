@@ -22,11 +22,11 @@
     </td>
     <td class="py-4 px-4">
       <div class="flex items-center space-x-2">
-        <div class="w-6 h-6 rounded-full border border-stone-200" :style="{ backgroundColor: palette.colors.primary }"></div>
-        <div class="w-6 h-6 rounded-full border border-stone-200" :style="{ backgroundColor: palette.colors.secondary }"></div>
-        <div class="w-6 h-6 rounded-full border border-stone-200" :style="{ backgroundColor: palette.colors.accent }"></div>
-        <div class="w-6 h-6 rounded-full border border-stone-200" :style="{ backgroundColor: palette.colors.text }"></div>
-        <div class="w-6 h-6 rounded-full border border-stone-200" :style="{ backgroundColor: palette.colors.neutral }"></div>
+        <div class="w-6 h-6 rounded-full border border-stone-200" :style="{ backgroundColor: palette.colorPrimary }"></div>
+        <div class="w-6 h-6 rounded-full border border-stone-200" :style="{ backgroundColor: palette.colorSecondary }"></div>
+        <div class="w-6 h-6 rounded-full border border-stone-200" :style="{ backgroundColor: palette.colorAccent }"></div>
+        <div class="w-6 h-6 rounded-full border border-stone-200" :style="{ backgroundColor: palette.colorText }"></div>
+        <div class="w-6 h-6 rounded-full border border-stone-200" :style="{ backgroundColor: palette.backgroundNeutral }"></div>
       </div>
     </td>
     <td class="py-4 px-4">

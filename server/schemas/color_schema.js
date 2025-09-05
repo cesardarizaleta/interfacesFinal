@@ -7,6 +7,8 @@ const colorSecondary = Joi.string().length(7).pattern(/^#([A-Fa-f0-9]{6})$/) // 
 const colorAccent = Joi.string().length(7).pattern(/^#([A-Fa-f0-9]{6})$/) // Valida el formato del hexcode
 const colorText = Joi.string().length(7).pattern(/^#([A-Fa-f0-9]{6})$/) // Valida el formato del hexcode
 const backgroundNeutral = Joi.string().length(7).pattern(/^#([A-Fa-f0-9]{6})$/) // Valida el formato del hexcode
+const isDefault = Joi.boolean().default(false);
+const isActive = Joi.boolean().default(false);
 
 const createColorSchema = Joi.object({
   name: name.required(),
@@ -15,6 +17,8 @@ const createColorSchema = Joi.object({
   colorAccent: colorAccent.required(),
   colorText: colorText.required(),
   backgroundNeutral: backgroundNeutral.required(),
+  isDefault: isDefault,
+  isActive: isActive
 });
 
 const updateColorSchema = Joi.object({
@@ -24,6 +28,7 @@ const updateColorSchema = Joi.object({
   colorAccent,
   colorText,
   backgroundNeutral,
+  isActive
 });
 
 const getColorSchema = Joi.object({

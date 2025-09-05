@@ -17,12 +17,53 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-router.get('/:id',
+router.get('/user/:userId', async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+    const colors = await service.findByUser(userId);
+    res.json(colors);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get('/user/:userId/active', async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+    const color = await service.findActiveByUserId(userId);
+    if (!color) {
+      res.status(404).json({ message: 'No active palette found' });
+    } else {
+      res.json(color);
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.patch('/:id/activate',
   validatorHandler(getColorSchema, 'params'),
+  passport.authenticate('jwt', { session: false }),
   async (req, res, next) => {
     try {
       const { id } = req.params;
-      const color = await service.findOne(id);
+      const userId = req.user.sub;
+      const color = await service.activatePalette(id, userId);
+      res.json(color);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+router.patch('/:id/deactivate',
+  validatorHandler(getColorSchema, 'params'),
+  passport.authenticate('jwt', { session: false }),
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const userId = req.user.sub;
+      const color = await service.deactivatePalette(id, userId);
       res.json(color);
     } catch (error) {
       next(error);
