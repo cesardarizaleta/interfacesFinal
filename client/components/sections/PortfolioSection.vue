@@ -89,6 +89,16 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
+import portfolio1Img from '~/assets/portfolio/portfolio1.jpg'
+import portfolio2Img from '~/assets/portfolio/portfolio2.jpg'
+import portfolio3Img from '~/assets/portfolio/portfolio3.jpg'
+import portfolio4Img from '~/assets/portfolio/portfolio4.jpg'
+import portfolio5Img from '~/assets/portfolio/portfolio5.jpg'
+import portfolio6Img from '~/assets/portfolio/portfolio6.jpg'
+import portfolio7Img from '~/assets/portfolio/portfolio7.jpg'
+import portfolio8Img from '~/assets/portfolio/portfolio8.jpg'
+import portfolio9Img from '~/assets/portfolio/portfolio9.jpg'
+import portfolio10Img from '~/assets/portfolio/portfolio10.jpg'
 
 interface PortfolioItem {
   id: number
@@ -112,16 +122,16 @@ const currentPage = ref(1)
 
 // Portfolio items data
 const portfolioItems = ref<PortfolioItem[]>([
-  { id: 1, title: 'Wedding Ceremony', category: 'Wedding', image: '~/assets/portfolio/portfolio1.jpg' },
-  { id: 2, title: 'Bridal Portrait', category: 'Wedding', image: '~/assets/portfolio/portfolio2.jpg' },
-  { id: 3, title: 'Family Gathering', category: 'Family', image: '~/assets/portfolio/portfolio3.jpg' },
-  { id: 4, title: 'Portrait Session', category: 'Portrait', image: '~/assets/portfolio/portfolio4.jpg' },
-  { id: 5, title: 'Landscape View', category: 'Landscape', image: '~/assets/portfolio/portfolio5.jpg' },
-  { id: 6, title: 'Event Photography', category: 'Events', image: '~/assets/portfolio/portfolio6.jpg' },
-  { id: 7, title: 'Fashion Shoot', category: 'Fashion', image: '~/assets/portfolio/portfolio7.jpg' },
-  { id: 8, title: 'Nature Photography', category: 'Landscape', image: '~/assets/portfolio/portfolio8.jpg' },
-  { id: 9, title: 'Corporate Event', category: 'Events', image: '~/assets/portfolio/portfolio9.jpg' },
-  { id: 10, title: 'Lifestyle Portrait', category: 'Portrait', image: '~/assets/portfolio/portfolio10.jpg' }
+  { id: 1, title: 'Wedding Ceremony', category: 'Wedding', image: portfolio1Img },
+  { id: 2, title: 'Bridal Portrait', category: 'Wedding', image: portfolio2Img },
+  { id: 3, title: 'Family Gathering', category: 'Family', image: portfolio3Img },
+  { id: 4, title: 'Portrait Session', category: 'Portrait', image: portfolio4Img },
+  { id: 5, title: 'Landscape View', category: 'Landscape', image: portfolio5Img },
+  { id: 6, title: 'Event Photography', category: 'Events', image: portfolio6Img },
+  { id: 7, title: 'Fashion Shoot', category: 'Fashion', image: portfolio7Img },
+  { id: 8, title: 'Nature Photography', category: 'Landscape', image: portfolio8Img },
+  { id: 9, title: 'Corporate Event', category: 'Events', image: portfolio9Img },
+  { id: 10, title: 'Lifestyle Portrait', category: 'Portrait', image: portfolio10Img }
 ])
 
 // Filter options
