@@ -13,12 +13,19 @@ class ColorsService {
       const data = await fs.readFile(this.filePath, 'utf8');
       return JSON.parse(data);
     } catch (error) {
+      console.error('Error reading colors data:', error.message);
+      // Return empty array if file doesn't exist or is corrupted
       return [];
     }
   }
 
   async _writeData(data) {
-    await fs.writeFile(this.filePath, JSON.stringify(data, null, 2));
+    try {
+      await fs.writeFile(this.filePath, JSON.stringify(data, null, 2));
+    } catch (error) {
+      console.error('Error writing colors data:', error.message);
+      throw boom.internal('Failed to save color data');
+    }
   }
 
   async create(data) {
@@ -81,7 +88,8 @@ class ColorsService {
     const colors = await this._readData();
     const userColors = colors.filter(color => color.userId === userId && color.lastUsedAt);
     if (userColors.length === 0) {
-      throw boom.notFound('No se ha encontrado ninguna configuración de color reciente para este usuario.');
+      // Return null so route handlers can decide how to respond
+      return null;
     }
     userColors.sort((a, b) => new Date(b.lastUsedAt) - new Date(a.lastUsedAt));
     return userColors[0];

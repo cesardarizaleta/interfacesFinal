@@ -3,121 +3,108 @@
     <div class="form-intro">
       <div class="intro-icon">
         <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-          <line x1="8" y1="21" x2="16" y2="21"></line>
-          <line x1="12" y1="17" x2="12" y2="21"></line>
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+          <circle cx="12" cy="10" r="3"></circle>
         </svg>
       </div>
-      <h4>¿A qué te dedicas?</h4>
-      <p>Cuéntanos sobre tu carrera profesional y experiencia laboral</p>
+      <h4>¿Dónde vives?</h4>
+      <p>Ingresa tu dirección residencial completa</p>
     </div>
 
     <div class="form-grid">
-      <!-- Job Information -->
       <div class="form-section">
-        <h5>Información Laboral</h5>
-        <div class="form-group">
-          <label for="title">Cargo/Título</label>
-          <input
-            id="title"
-            v-model="localProfile.title"
-            type="text"
-            class="form-input"
-            placeholder="Ej: Desarrollador Frontend, Gerente de Ventas"
-            @input="updateField('title', $event.target.value)"
-          />
-        </div>
+        <h5>Dirección Residencial</h5>
 
-        <div class="form-group">
-          <label for="department">Departamento/Área</label>
-          <input
-            id="department"
-            v-model="localProfile.department"
-            type="text"
-            class="form-input"
-            placeholder="Ej: Tecnología, Recursos Humanos"
-            @input="updateField('department', $event.target.value)"
-          />
-        </div>
-
-        <div class="form-group">
-          <label for="companyName">Nombre de la Empresa</label>
-          <input
-            id="companyName"
-            v-model="localProfile.companyName"
-            type="text"
-            class="form-input"
-            placeholder="Nombre de tu empresa actual"
-            @input="updateField('companyName', $event.target.value)"
-          />
-        </div>
-      </div>
-
-      <!-- Company Address -->
-      <div class="form-section">
-        <h5>Dirección de la Empresa</h5>
         <div class="form-group full-width">
-          <label for="companyAddress">Dirección de Empresa</label>
+          <label for="address">
+            Dirección <span class="required">*</span>
+          </label>
           <input
-            id="companyAddress"
-            v-model="localProfile.companyAddress"
+            id="address"
+            v-model="localProfile.address"
             type="text"
-            class="form-input"
-            placeholder="Dirección completa de tu oficina"
-            @input="updateField('companyAddress', $event.target.value)"
+            class="form-input required"
+            placeholder="Calle, número, colonia/barrio"
+            @input="updateField('address', $event.target.value)"
           />
         </div>
 
         <div class="form-row">
           <div class="form-group">
-            <label for="companyCity">Ciudad</label>
+            <label for="city">Ciudad</label>
             <input
-              id="companyCity"
-              v-model="localProfile.companyCity"
+              id="city"
+              v-model="localProfile.city"
               type="text"
               class="form-input"
               placeholder="Ciudad"
-              @input="updateField('companyCity', $event.target.value)"
+              @input="updateField('city', $event.target.value)"
             />
           </div>
 
           <div class="form-group">
-            <label for="companyState">Estado</label>
+            <label for="state">Estado/Provincia</label>
             <input
-              id="companyState"
-              v-model="localProfile.companyState"
+              id="state"
+              v-model="localProfile.state"
               type="text"
               class="form-input"
               placeholder="Estado"
-              @input="updateField('companyState', $event.target.value)"
+              @input="updateField('state', $event.target.value)"
             />
           </div>
         </div>
 
         <div class="form-row">
           <div class="form-group">
-            <label for="companyPostalCode">Código Postal</label>
+            <label for="stateCode">Código de Estado</label>
             <input
-              id="companyPostalCode"
-              v-model="localProfile.companyPostalCode"
+              id="stateCode"
+              v-model="localProfile.stateCode"
               type="text"
               class="form-input"
-              placeholder="Código postal"
-              @input="updateField('companyPostalCode', $event.target.value)"
+              placeholder="Ej: CA, TX"
+              @input="updateField('stateCode', $event.target.value)"
             />
           </div>
 
           <div class="form-group">
-            <label for="companyCountry">País</label>
+            <label for="postalCode">Código Postal</label>
             <input
-              id="companyCountry"
-              v-model="localProfile.companyCountry"
+              id="postalCode"
+              v-model="localProfile.postalCode"
               type="text"
               class="form-input"
-              placeholder="País"
-              @input="updateField('companyCountry', $event.target.value)"
+              placeholder="Código postal"
+              @input="updateField('postalCode', $event.target.value)"
             />
           </div>
+        </div>
+
+        <div class="form-group">
+          <label for="country">País</label>
+          <select
+            id="country"
+            v-model="localProfile.country"
+            class="form-input"
+            @change="updateField('country', $event.target.value)"
+          >
+            <option value="">Seleccionar país</option>
+            <option value="MX">México</option>
+            <option value="US">Estados Unidos</option>
+            <option value="CA">Canadá</option>
+            <option value="ES">España</option>
+            <option value="AR">Argentina</option>
+            <option value="CO">Colombia</option>
+            <option value="PE">Perú</option>
+            <option value="CL">Chile</option>
+            <option value="EC">Ecuador</option>
+            <option value="VE">Venezuela</option>
+            <option value="UY">Uruguay</option>
+            <option value="PY">Paraguay</option>
+            <option value="BO">Bolivia</option>
+            <option value="other">Otro</option>
+          </select>
         </div>
       </div>
     </div>
@@ -234,6 +221,14 @@ emit('validate', {})
   color: var(--color-text);
   margin-bottom: 0.5rem;
   font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.required {
+  color: var(--color-error);
+  font-weight: 700;
 }
 
 .form-input {
@@ -256,6 +251,11 @@ emit('validate', {})
   border-color: var(--color-secondary);
 }
 
+.form-input.required:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.15);
+}
+
 @media (max-width: 768px) {
   .form-intro {
     padding: 1rem;
@@ -275,5 +275,3 @@ emit('validate', {})
   }
 }
 </style>
-
-

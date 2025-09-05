@@ -8,7 +8,14 @@ const port = process.env.PORT || 3000;
 
 // Initialize data
 const { initializeData } = require('./utils/init-data');
-initializeData();
+(async () => {
+  try {
+    await initializeData();
+    logger.info('Data initialization completed successfully');
+  } catch (error) {
+    logger.error('Error initializing data:', error);
+  }
+})();
 
 // Setup middlewares
 setupSecurityMiddlewares(app);

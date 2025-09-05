@@ -14,12 +14,19 @@ class FontsService {
       const data = await fs.readFile(this.filePath, 'utf8');
       return JSON.parse(data);
     } catch (error) {
+      console.error('Error reading fonts data:', error.message);
+      // Return empty array if file doesn't exist or is corrupted
       return [];
     }
   }
 
   async _writeData(data) {
-    await fs.writeFile(this.filePath, JSON.stringify(data, null, 2));
+    try {
+      await fs.writeFile(this.filePath, JSON.stringify(data, null, 2));
+    } catch (error) {
+      console.error('Error writing fonts data:', error.message);
+      throw boom.internal('Failed to save font data');
+    }
   }
 
   async create(data) {
@@ -123,7 +130,8 @@ class FontsService {
     const fonts = await this._readData();
     const userFonts = fonts.filter(font => font.userId === userId && font.lastUsedAt);
     if (userFonts.length === 0) {
-      throw boom.notFound('No se ha encontrado ninguna configuración de fuente reciente para este usuario.');
+      // Return null so callers can handle "not found" gracefully
+      return null;
     }
     userFonts.sort((a, b) => new Date(b.lastUsedAt) - new Date(a.lastUsedAt));
     return userFonts[0];

@@ -36,45 +36,53 @@ import FooterElement from "@/components/navigation/FooterElement.vue";
 import PaletteLoader from "@/components/ui/PaletteLoader.vue";
 import "@/style/style.css";
 
+// Import portfolio images
+import portfolio1 from "~/assets/portfolio/portfolio1.jpg";
+import portfolio2 from "~/assets/portfolio/portfolio2.jpg";
+import portfolio3 from "~/assets/portfolio/portfolio3.jpg";
+import portfolio4 from "~/assets/portfolio/portfolio4.jpg";
+import portfolio5 from "~/assets/portfolio/portfolio5.jpg";
+import portfolio6 from "~/assets/portfolio/portfolio6.jpg";
+
 const portfolioImages = ref([
   {
     id: 1,
-    src: '/portfolio/portfolio1.jpg',
+    src: portfolio1,
     alt: 'Sesión de fotos de boda',
     title: 'Boda Elegante',
     category: 'Bodas'
   },
   {
     id: 2,
-    src: '/portfolio/portfolio2.jpg',
+    src: portfolio2,
     alt: 'Retrato familiar',
     title: 'Familia Feliz',
     category: 'Retratos'
   },
   {
     id: 3,
-    src: '/portfolio/portfolio3.jpg',
+    src: portfolio3,
     alt: 'Evento corporativo',
     title: 'Conferencia Anual',
     category: 'Eventos'
   },
   {
     id: 4,
-    src: '/portfolio/portfolio4.jpg',
+    src: portfolio4,
     alt: 'Sesión de fotos de maternidad',
     title: 'Maternidad',
     category: 'Retratos'
   },
   {
     id: 5,
-    src: '/portfolio/portfolio5.jpg',
+    src: portfolio5,
     alt: 'Boda al atardecer',
     title: 'Atardecer Romántico',
     category: 'Bodas'
   },
   {
     id: 6,
-    src: '/portfolio/portfolio6.jpg',
+    src: portfolio6,
     alt: 'Graduación universitaria',
     title: 'Graduación 2024',
     category: 'Eventos'

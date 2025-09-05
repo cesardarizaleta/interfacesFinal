@@ -17,6 +17,26 @@ const colorService = new ColorsService();
 const router = express.Router();
 const service = new UsersService();
 
+// Temporary endpoint to check admin users (remove in production)
+router.get('/check-admins',
+  async (req, res, next) => {
+    try {
+      const users = await service.find();
+      const adminUsers = users.filter(user => user.role === 'admin');
+      res.json({
+        totalUsers: users.length,
+        adminUsers: adminUsers.map(user => ({
+          id: user.id,
+          email: user.email,
+          role: user.role
+        }))
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
 
 router.get('/', async (req, res, next) => {
   try {
@@ -33,6 +53,7 @@ router.get('/admin/stats',
   checkRole(['admin']),
   async (req, res, next) => {
     try {
+      console.log('User accessing admin/stats:', req.user);
       const stats = await service.getUserStats();
       res.json(stats);
     } catch (error) {
@@ -235,8 +256,8 @@ router.patch('/:id/role',
       const { id } = req.params;
       const { role } = req.body;
 
-      if (!['admin', 'moderator', 'user'].includes(role)) {
-        return res.status(400).json({ message: 'Invalid role' });
+      if (!['admin', 'user'].includes(role)) {
+        return res.status(400).json({ message: 'Invalid role. Only admin and user roles are allowed.' });
       }
 
       const user = await service.updateRole(id, role);

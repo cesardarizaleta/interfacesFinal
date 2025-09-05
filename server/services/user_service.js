@@ -14,12 +14,19 @@ class UsersService {
       const data = await fs.readFile(this.filePath, 'utf8');
       return JSON.parse(data);
     } catch (error) {
+      console.error('Error reading users data:', error.message);
+      // Return empty array if file doesn't exist or is corrupted
       return [];
     }
   }
 
   async _writeData(data) {
-    await fs.writeFile(this.filePath, JSON.stringify(data, null, 2));
+    try {
+      await fs.writeFile(this.filePath, JSON.stringify(data, null, 2));
+    } catch (error) {
+      console.error('Error writing users data:', error.message);
+      throw boom.internal('Failed to save user data');
+    }
   }
 
   async create(data) {
@@ -127,21 +134,31 @@ class UsersService {
   }
 
   async update(id, changes) {
-    const users = await this._readData();
+  const users = await this._readData();
     const index = users.findIndex(user => user.id === id);
     if (index === -1) {
       throw boom.notFound('User not found');
     }
 
-    // Handle nested objects properly
-    const updatedUser = { ...users[index] };
+  // Guard against undefined changes object
+  changes = changes || {};
+
+  // Handle nested objects properly
+  const updatedUser = { ...users[index] };
+
+  // Ensure nested structures exist to avoid reading properties of undefined
+  updatedUser.hair = updatedUser.hair || { color: '', type: '' };
+  updatedUser.address = updatedUser.address || { address: '', city: '', state: '', stateCode: '', postalCode: '', coordinates: { lat: null, lng: null }, country: '' };
+  updatedUser.bank = updatedUser.bank || { cardExpire: '', cardNumber: '', cardType: '', currency: '', iban: '' };
+  updatedUser.company = updatedUser.company || { department: '', name: '', title: '', address: { address: '', city: '', state: '', stateCode: '', postalCode: '', coordinates: { lat: null, lng: null }, country: '' } };
+  updatedUser.crypto = updatedUser.crypto || { coin: '', wallet: '', network: '' };
 
     // Handle hair object
     if (changes.hairColor !== undefined || changes.hairType !== undefined) {
       updatedUser.hair = {
         ...updatedUser.hair,
-        color: changes.hairColor !== undefined ? changes.hairColor : updatedUser.hair?.color || '',
-        type: changes.hairType !== undefined ? changes.hairType : updatedUser.hair?.type || ''
+        color: changes.hairColor !== undefined ? changes.hairColor : updatedUser.hair.color,
+        type: changes.hairType !== undefined ? changes.hairType : updatedUser.hair.type
       };
     }
 
@@ -252,6 +269,10 @@ class UsersService {
   }
 
   async updateRole(id, role) {
+    if (!['admin', 'user'].includes(role)) {
+      throw boom.badRequest('Invalid role. Only admin and user roles are allowed.');
+    }
+
     const users = await this._readData();
     const index = users.findIndex(user => user.id === id);
     if (index === -1) {
@@ -269,7 +290,6 @@ class UsersService {
     const stats = {
       total: users.length,
       admin: users.filter(u => u.role === 'admin').length,
-      moderator: users.filter(u => u.role === 'moderator').length,
       user: users.filter(u => u.role === 'user').length
     };
     return stats;

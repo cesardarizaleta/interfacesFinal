@@ -15,7 +15,7 @@
         <div class="services-grid">
           <div class="service-card">
             <div class="service-icon">
-              <img src="/services/wedding.png" alt="Bodas" />
+              <img src="~/assets/services/wedding.png" alt="Bodas" />
             </div>
             <h3>Fotografía de Bodas</h3>
             <p>
@@ -33,7 +33,7 @@
 
           <div class="service-card">
             <div class="service-icon">
-              <img src="/services/moments.png" alt="Momentos" />
+              <img src="~/assets/services/moments.png" alt="Momentos" />
             </div>
             <h3>Sesiones de Retratos</h3>
             <p>
@@ -51,7 +51,7 @@
 
           <div class="service-card">
             <div class="service-icon">
-              <img src="/services/lifestyle.png" alt="Estilo de Vida" />
+              <img src="~/assets/services/lifestyle.png" alt="Estilo de Vida" />
             </div>
             <h3>Eventos Corporativos</h3>
             <p>

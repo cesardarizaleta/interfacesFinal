@@ -1,53 +1,159 @@
 <template>
   <nav class="navbar">
     <div class="navbar-container">
+      <!-- Logo/Brand -->
       <div class="navbar-brand">
-        <p class="brand-main">Photography</p>
-        <p class="brand-sub">Studio</p>
+        <NuxtLink to="/" class="brand-link">
+          <div class="brand-logo">
+            <div class="logo-icon">
+              <i class="fas fa-camera-retro"></i>
+            </div>
+            <div class="brand-text">
+              <span class="brand-main">LANDING</span>
+              <span class="brand-sub">Photography</span>
+            </div>
+          </div>
+        </NuxtLink>
       </div>
 
+      <!-- Desktop Navigation -->
       <div class="navbar-menu">
         <div class="navbar-links">
-          <NuxtLink to="/" class="nav-link">Home</NuxtLink>
-          <NuxtLink to="/about" class="nav-link">About</NuxtLink>
-          <NuxtLink to="/portfolio" class="nav-link">Portfolio</NuxtLink>
-          <NuxtLink to="/services" class="nav-link">Services</NuxtLink>
-          <NuxtLink to="/config" class="nav-link">Config</NuxtLink>
+          <NuxtLink to="/" class="nav-link" exact>
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+          </NuxtLink>
+          <NuxtLink to="/about" class="nav-link">
+            <i class="fas fa-user"></i>
+            <span>About</span>
+          </NuxtLink>
+          <NuxtLink to="/portfolio" class="nav-link">
+            <i class="fas fa-images"></i>
+            <span>Portfolio</span>
+          </NuxtLink>
+          <NuxtLink to="/services" class="nav-link">
+            <i class="fas fa-concierge-bell"></i>
+            <span>Services</span>
+          </NuxtLink>
+          <NuxtLink to="/config" class="nav-link" v-if="isLoggedIn">
+            <i class="fas fa-cog"></i>
+            <span>Config</span>
+          </NuxtLink>
         </div>
 
+        <!-- User Actions -->
         <div class="navbar-actions">
           <template v-if="!isLoggedIn">
-            <NuxtLink to="/login" class="btn btn-primary">Login</NuxtLink>
-            <NuxtLink to="/register" class="btn btn-secondary">Register</NuxtLink>
+            <NuxtLink to="/login" class="btn btn-outline">
+              <i class="fas fa-sign-in-alt"></i>
+              <span>Login</span>
+            </NuxtLink>
+            <NuxtLink to="/register" class="btn btn-primary">
+              <i class="fas fa-user-plus"></i>
+              <span>Register</span>
+            </NuxtLink>
           </template>
           <template v-else>
-            <NuxtLink v-if="userRole === 'admin'" to="/admin" class="btn btn-primary">Dashboard</NuxtLink>
-            <NuxtLink to="/profile" class="btn btn-secondary">Perfil</NuxtLink>
-            <button @click="handleLogout" class="btn btn-accent">Logout</button>
+            <div class="user-menu">
+              <button @click="toggleUserDropdown" class="user-button">
+                <div class="user-avatar">
+                  <i class="fas fa-user"></i>
+                </div>
+                <span class="user-name">{{ userName || 'User' }}</span>
+                <i class="fas fa-chevron-down" :class="{ 'rotate-180': isUserDropdownOpen }"></i>
+              </button>
+
+              <!-- User Dropdown -->
+              <div v-if="isUserDropdownOpen" class="user-dropdown">
+                <NuxtLink to="/profile" class="dropdown-item">
+                  <i class="fas fa-user-circle"></i>
+                  <span>Profile</span>
+                </NuxtLink>
+                <NuxtLink v-if="userRole === 'admin'" to="/admin" class="dropdown-item">
+                  <i class="fas fa-tachometer-alt"></i>
+                  <span>Dashboard</span>
+                </NuxtLink>
+                <div class="dropdown-divider"></div>
+                <button @click="handleLogout" class="dropdown-item text-error">
+                  <i class="fas fa-sign-out-alt"></i>
+                  <span>Logout</span>
+                </button>
+              </div>
+            </div>
           </template>
         </div>
       </div>
 
-      <button class="mobile-menu-button" @click="toggleMobileMenu">
-        <span class="menu-icon"></span>
+      <!-- Mobile Menu Button -->
+      <button class="mobile-menu-button" @click="toggleMobileMenu" :aria-expanded="isMobileMenuOpen">
+        <span class="menu-icon" :class="{ 'open': isMobileMenuOpen }"></span>
       </button>
     </div>
 
+    <!-- Mobile Menu Overlay -->
+    <div v-if="isMobileMenuOpen" class="mobile-menu-overlay" @click="closeMobileMenu"></div>
+
+    <!-- Mobile Menu -->
     <div v-if="isMobileMenuOpen" class="mobile-menu">
-      <NuxtLink to="/" class="mobile-link" @click="closeMobileMenu">Home</NuxtLink>
-      <NuxtLink to="/about" class="mobile-link" @click="closeMobileMenu">About</NuxtLink>
-      <NuxtLink to="/portfolio" class="mobile-link" @click="closeMobileMenu">Portfolio</NuxtLink>
-      <NuxtLink to="/services" class="mobile-link" @click="closeMobileMenu">Services</NuxtLink>
-      <NuxtLink to="/config" class="mobile-link" @click="closeMobileMenu">Config</NuxtLink>
-      <template v-if="!isLoggedIn">
-        <NuxtLink to="/login" class="mobile-link" @click="closeMobileMenu">Login</NuxtLink>
-        <NuxtLink to="/register" class="mobile-link" @click="closeMobileMenu">Register</NuxtLink>
-      </template>
-      <template v-else>
-        <NuxtLink v-if="userRole === 'admin'" to="/admin" class="mobile-link" @click="closeMobileMenu">Dashboard</NuxtLink>
-        <NuxtLink to="/profile" class="mobile-link" @click="closeMobileMenu">Perfil</NuxtLink>
-        <button @click="handleLogout" class="mobile-link">Logout</button>
-      </template>
+      <div class="mobile-menu-header">
+        <div class="mobile-brand">
+          <i class="fas fa-camera-retro"></i>
+          <span>LANDING</span>
+        </div>
+        <button @click="closeMobileMenu" class="mobile-close">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <div class="mobile-menu-content">
+        <NuxtLink to="/" class="mobile-link" @click="closeMobileMenu">
+          <i class="fas fa-home"></i>
+          <span>Home</span>
+        </NuxtLink>
+        <NuxtLink to="/about" class="mobile-link" @click="closeMobileMenu">
+          <i class="fas fa-user"></i>
+          <span>About</span>
+        </NuxtLink>
+        <NuxtLink to="/portfolio" class="mobile-link" @click="closeMobileMenu">
+          <i class="fas fa-images"></i>
+          <span>Portfolio</span>
+        </NuxtLink>
+        <NuxtLink to="/services" class="mobile-link" @click="closeMobileMenu">
+          <i class="fas fa-concierge-bell"></i>
+          <span>Services</span>
+        </NuxtLink>
+        <NuxtLink to="/config" class="mobile-link" @click="closeMobileMenu" v-if="isLoggedIn">
+          <i class="fas fa-cog"></i>
+          <span>Config</span>
+        </NuxtLink>
+
+        <div class="mobile-divider"></div>
+
+        <template v-if="!isLoggedIn">
+          <NuxtLink to="/login" class="mobile-link" @click="closeMobileMenu">
+            <i class="fas fa-sign-in-alt"></i>
+            <span>Login</span>
+          </NuxtLink>
+          <NuxtLink to="/register" class="mobile-link primary" @click="closeMobileMenu">
+            <i class="fas fa-user-plus"></i>
+            <span>Register</span>
+          </NuxtLink>
+        </template>
+        <template v-else>
+          <NuxtLink to="/profile" class="mobile-link" @click="closeMobileMenu">
+            <i class="fas fa-user-circle"></i>
+            <span>Profile</span>
+          </NuxtLink>
+          <NuxtLink v-if="userRole === 'admin'" to="/admin" class="mobile-link" @click="closeMobileMenu">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+          </NuxtLink>
+          <button @click="handleLogoutAndClose" class="mobile-link text-error">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Logout</span>
+          </button>
+        </template>
+      </div>
     </div>
   </nav>
 </template>
@@ -58,8 +164,10 @@ import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const isMobileMenuOpen = ref(false)
+const isUserDropdownOpen = ref(false)
 const isLoggedIn = ref(false)
 const userRole = ref('')
+const userName = ref('')
 
 onMounted(() => {
   // Verificar si hay un token en localStorage
@@ -72,9 +180,11 @@ onMounted(() => {
       try {
         const userData = JSON.parse(user)
         userRole.value = userData.role || 'user'
+        userName.value = userData.firstName || userData.email || 'User'
       } catch (error) {
         console.error('Error parsing user data:', error)
         userRole.value = 'user'
+        userName.value = 'User'
       }
     }
   }
@@ -82,10 +192,17 @@ onMounted(() => {
 
 const toggleMobileMenu = () => {
   isMobileMenuOpen.value = !isMobileMenuOpen.value
+  if (isUserDropdownOpen.value) {
+    isUserDropdownOpen.value = false
+  }
 }
 
 const closeMobileMenu = () => {
   isMobileMenuOpen.value = false
+}
+
+const toggleUserDropdown = () => {
+  isUserDropdownOpen.value = !isUserDropdownOpen.value
 }
 
 const handleLogout = () => {
@@ -93,168 +210,348 @@ const handleLogout = () => {
   localStorage.removeItem('token')
   localStorage.removeItem('user')
   isLoggedIn.value = false
+  isUserDropdownOpen.value = false
   // Redirigir al login
   router.push('/login')
+}
+
+const handleLogoutAndClose = () => {
+  handleLogout()
+  closeMobileMenu()
 }
 </script>
 
 <style scoped>
 .navbar {
-  width: 100%;
-  background-color: var(--color-background);
-  padding: 1rem;
   position: fixed;
   top: 0;
   left: 0;
+  right: 0;
   z-index: 1000;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border-light);
+  transition: all var(--transition-normal);
 }
 
 .navbar-container {
   max-width: 1200px;
   margin: 0 auto;
+  padding: 0 var(--spacing-lg);
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  height: 70px;
 }
 
-.navbar-brand {
+/* Brand Styles */
+.navbar-brand .brand-link {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  transition: transform var(--transition-fast);
+}
+
+.navbar-brand .brand-link:hover {
+  transform: translateY(-1px);
+}
+
+.brand-logo {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.logo-icon {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: var(--text-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.brand-text {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  line-height: 1.2;
 }
 
 .brand-main {
-  font-size: 1.5rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  color: var(--color-primary);
-  margin: 0;
-  transition: color var(--transition-normal);
+  font-family: var(--font-heading);
+  font-size: var(--text-xl);
+  font-weight: var(--font-bold);
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
 }
 
 .brand-sub {
-  font-size: 1.25rem;
-  font-weight: 300;
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--text-secondary);
+  text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--color-text);
-  margin: 0;
-  transition: color var(--transition-normal);
 }
 
+/* Navigation Links */
 .navbar-menu {
   display: flex;
   align-items: center;
-  gap: 2rem;
+  gap: var(--spacing-2xl);
 }
 
 .navbar-links {
   display: flex;
-  gap: 1.5rem;
+  align-items: center;
+  gap: var(--spacing-lg);
 }
 
-.navbar-link {
-  color: var(--color-text);
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm) var(--spacing-md);
+  color: var(--text-secondary);
   text-decoration: none;
-  font-size: 1rem;
-  font-weight: 500;
-  transition: all var(--transition-normal);
+  font-weight: var(--font-medium);
+  font-size: var(--text-sm);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-link::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+  transition: left var(--transition-normal);
+}
+
+.nav-link:hover::before {
+  left: 100%;
+}
+
+.nav-link:hover {
+  color: var(--text-primary);
+  background: var(--bg-secondary);
+  transform: translateY(-1px);
+}
+
+.nav-link.nuxt-link-active {
+  color: var(--color-primary);
+  background: rgba(26, 54, 93, 0.1);
+}
+
+.nav-link i {
+  font-size: var(--text-base);
+}
+
+/* User Menu */
+.user-menu {
   position: relative;
 }
 
-.navbar-link:hover {
-  color: var(--color-primary);
+.user-button {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
 }
 
-.navbar-link::after {
+.user-button:hover {
+  background: var(--bg-tertiary);
+  border-color: var(--border-medium);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: var(--text-sm);
+}
+
+.user-name {
+  color: var(--text-primary);
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.user-button i:last-child {
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+  transition: transform var(--transition-fast);
+}
+
+.user-button i:last-child.rotate-180 {
+  transform: rotate(180deg);
+}
+
+/* User Dropdown */
+.user-dropdown {
+  position: absolute;
+  top: calc(100% + var(--spacing-sm));
+  right: 0;
+  min-width: 200px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  overflow: hidden;
+  animation: slideDown var(--transition-normal) ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  transition: all var(--transition-fast);
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+
+.dropdown-item:hover {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.dropdown-item.text-error {
+  color: var(--color-error);
+}
+
+.dropdown-item.text-error:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--color-error);
+}
+
+.dropdown-divider {
+  height: 1px;
+  background: var(--border-light);
+  margin: var(--spacing-xs) 0;
+}
+
+/* Button Styles */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border-radius: var(--radius-lg);
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  text-decoration: none;
+  transition: all var(--transition-fast);
+  cursor: pointer;
+  border: 2px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::before {
   content: '';
   position: absolute;
-  bottom: -5px;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background-color: var(--color-primary);
-  transition: width var(--transition-normal);
-}
-
-.navbar-link:hover::after {
+  top: 0;
+  left: -100%;
   width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left var(--transition-normal);
 }
 
-.navbar-actions {
-  display: flex;
-  gap: 1rem;
+.btn:hover::before {
+  left: 100%;
 }
 
-.login-button,
-.register-button,
-.logout-button {
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all var(--transition-normal);
-  text-decoration: none;
-  display: inline-block;
-  border: 2px solid transparent;
+.btn-primary {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  color: white;
+  box-shadow: var(--shadow-md);
 }
 
-.login-button {
-  background-color: var(--bg-primary);
-  color: var(--color-text-light);
-  border-color: var(--border-primary);
-}
-
-.login-button:hover {
-  background-color: var(--bg-secondary);
-  border-color: var(--border-secondary);
+.btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px var(--shadow-primary);
+  box-shadow: var(--shadow-lg);
 }
 
-.register-button {
-  background-color: transparent;
-  color: var(--color-text);
-  border-color: var(--border-primary);
+.btn-outline {
+  background: transparent;
+  color: var(--text-primary);
+  border-color: var(--border-medium);
 }
 
-.register-button:hover {
-  background-color: var(--bg-primary);
-  color: var(--color-text-light);
-  border-color: var(--border-primary);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px var(--shadow-primary);
-}
-
-.logout-button {
-  background-color: var(--color-accent);
-  color: var(--color-primary-contrast);
-  border-color: var(--color-accent);
-}
-
-.logout-button:hover {
-  background-color: var(--color-primary);
+.btn-outline:hover {
+  background: var(--bg-secondary);
   border-color: var(--color-primary);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px var(--shadow-accent);
+  color: var(--color-primary);
+  transform: translateY(-1px);
 }
 
+/* Mobile Menu */
 .mobile-menu-button {
   display: none;
   background: none;
   border: none;
   cursor: pointer;
-  padding: 0.5rem;
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-md);
+  transition: background var(--transition-fast);
+}
+
+.mobile-menu-button:hover {
+  background: var(--bg-secondary);
 }
 
 .menu-icon {
   display: block;
   width: 24px;
   height: 2px;
-  background-color: var(--color-text);
+  background: var(--text-primary);
   position: relative;
-  transition: background-color 0.3s ease;
+  transition: all var(--transition-fast);
 }
 
 .menu-icon::before,
@@ -263,54 +560,195 @@ const handleLogout = () => {
   position: absolute;
   width: 24px;
   height: 2px;
-  background-color: var(--color-text);
-  transition: transform 0.3s ease;
+  background: var(--text-primary);
+  transition: all var(--transition-fast);
 }
 
 .menu-icon::before {
-  top: -6px;
+  top: -8px;
 }
 
 .menu-icon::after {
-  bottom: -6px;
+  bottom: -8px;
 }
 
-.mobile-menu {
-  display: none;
-  position: absolute;
-  top: 100%;
+.menu-icon.open {
+  background: transparent;
+}
+
+.menu-icon.open::before {
+  transform: rotate(45deg) translate(6px, 6px);
+}
+
+.menu-icon.open::after {
+  transform: rotate(-45deg) translate(6px, -6px);
+}
+
+/* Mobile Menu Overlay */
+.mobile-menu-overlay {
+  position: fixed;
+  top: 70px;
   left: 0;
   right: 0;
-  background-color: var(--color-background);
-  padding: 1rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 999;
+}
+
+/* Mobile Menu */
+.mobile-menu {
+  position: fixed;
+  top: 70px;
+  left: 0;
+  right: 0;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border-light);
+  box-shadow: var(--shadow-xl);
+  z-index: 1000;
+  animation: slideDownMobile var(--transition-normal) ease-out;
+}
+
+@keyframes slideDownMobile {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mobile-menu-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-lg);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.mobile-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-family: var(--font-heading);
+  font-weight: var(--font-bold);
+  color: var(--text-primary);
+}
+
+.mobile-brand i {
+  color: var(--color-primary);
+}
+
+.mobile-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  transition: all var(--transition-fast);
+}
+
+.mobile-close:hover {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.mobile-menu-content {
+  padding: var(--spacing-lg);
 }
 
 .mobile-link {
-  display: block;
-  padding: 0.75rem 0;
-  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  color: var(--text-secondary);
   text-decoration: none;
-  font-size: 1rem;
-  transition: color 0.3s ease;
+  font-size: var(--text-base);
+  font-weight: var(--font-medium);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+  margin-bottom: var(--spacing-xs);
 }
 
 .mobile-link:hover {
-  color: var(--color-secondary);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  transform: translateX(4px);
 }
 
+.mobile-link.primary {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  color: white;
+  margin-top: var(--spacing-md);
+}
+
+.mobile-link.primary:hover {
+  background: linear-gradient(135deg, var(--color-primary-dark), var(--color-primary));
+  transform: translateX(4px);
+}
+
+.mobile-link.text-error {
+  color: var(--color-error);
+}
+
+.mobile-link.text-error:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--color-error);
+}
+
+.mobile-divider {
+  height: 1px;
+  background: var(--border-light);
+  margin: var(--spacing-lg) 0;
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
   .navbar-menu {
     display: none;
   }
 
   .mobile-menu-button {
-    display: block;
+    display: flex;
+  }
+
+  .navbar-container {
+    padding: 0 var(--spacing-md);
+  }
+
+  .brand-main {
+    font-size: var(--text-lg);
+  }
+
+  .brand-sub {
+    font-size: var(--text-xs);
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar-container {
+    height: 60px;
   }
 
   .mobile-menu {
-    display: flex;
-    flex-direction: column;
+    top: 60px;
+  }
+
+  .mobile-menu-overlay {
+    top: 60px;
+  }
+
+  .logo-icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .brand-main {
+    font-size: var(--text-base);
   }
 }
 </style>

@@ -17,12 +17,10 @@ const checkRole = (roles) => {
 };
 
 const isAdmin = checkRole(['admin']);
-const isModerator = checkRole(['admin', 'moderator']);
-const isUser = checkRole(['admin', 'moderator', 'user']);
+const isUser = checkRole(['admin', 'user']);
 
 module.exports = {
   checkRole,
   isAdmin,
-  isModerator,
   isUser
 };

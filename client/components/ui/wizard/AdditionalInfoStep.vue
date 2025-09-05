@@ -3,121 +3,138 @@
     <div class="form-intro">
       <div class="intro-icon">
         <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-          <line x1="8" y1="21" x2="16" y2="21"></line>
-          <line x1="12" y1="17" x2="12" y2="21"></line>
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+          <path d="M12 17h.01"></path>
         </svg>
       </div>
-      <h4>¿A qué te dedicas?</h4>
-      <p>Cuéntanos sobre tu carrera profesional y experiencia laboral</p>
+      <h4>Información Adicional</h4>
+      <p>Completa estos datos opcionales para tener un perfil más completo</p>
     </div>
 
     <div class="form-grid">
-      <!-- Job Information -->
+      <!-- Academic Information -->
       <div class="form-section">
-        <h5>Información Laboral</h5>
+        <h5>Información Académica</h5>
         <div class="form-group">
-          <label for="title">Cargo/Título</label>
+          <label for="university">Universidad</label>
           <input
-            id="title"
-            v-model="localProfile.title"
+            id="university"
+            v-model="localProfile.university"
             type="text"
             class="form-input"
-            placeholder="Ej: Desarrollador Frontend, Gerente de Ventas"
-            @input="updateField('title', $event.target.value)"
-          />
-        </div>
-
-        <div class="form-group">
-          <label for="department">Departamento/Área</label>
-          <input
-            id="department"
-            v-model="localProfile.department"
-            type="text"
-            class="form-input"
-            placeholder="Ej: Tecnología, Recursos Humanos"
-            @input="updateField('department', $event.target.value)"
-          />
-        </div>
-
-        <div class="form-group">
-          <label for="companyName">Nombre de la Empresa</label>
-          <input
-            id="companyName"
-            v-model="localProfile.companyName"
-            type="text"
-            class="form-input"
-            placeholder="Nombre de tu empresa actual"
-            @input="updateField('companyName', $event.target.value)"
+            placeholder="Nombre de tu universidad"
+            @input="updateField('university', $event.target.value)"
           />
         </div>
       </div>
 
-      <!-- Company Address -->
+      <!-- Technical Information -->
       <div class="form-section">
-        <h5>Dirección de la Empresa</h5>
-        <div class="form-group full-width">
-          <label for="companyAddress">Dirección de Empresa</label>
+        <h5>Información Técnica</h5>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="ip">Dirección IP</label>
+            <input
+              id="ip"
+              v-model="localProfile.ip"
+              type="text"
+              class="form-input"
+              placeholder="192.168.1.1"
+              @input="updateField('ip', $event.target.value)"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="macAddress">Dirección MAC</label>
+            <input
+              id="macAddress"
+              v-model="localProfile.macAddress"
+              type="text"
+              class="form-input"
+              placeholder="00:1B:44:11:3A:B7"
+              @input="updateField('macAddress', $event.target.value)"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Financial Information -->
+      <div class="form-section">
+        <h5>Información Financiera</h5>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="cardNumber">Número de Tarjeta</label>
+            <input
+              id="cardNumber"
+              v-model="localProfile.cardNumber"
+              type="text"
+              class="form-input"
+              placeholder="**** **** **** ****"
+              @input="updateField('cardNumber', $event.target.value)"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="cardExpire">Vencimiento</label>
+            <input
+              id="cardExpire"
+              v-model="localProfile.cardExpire"
+              type="text"
+              class="form-input"
+              placeholder="MM/YY"
+              @input="updateField('cardExpire', $event.target.value)"
+            />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="cardType">Tipo de Tarjeta</label>
+            <select
+              id="cardType"
+              v-model="localProfile.cardType"
+              class="form-input"
+              @change="updateField('cardType', $event.target.value)"
+            >
+              <option value="">Seleccionar</option>
+              <option value="visa">Visa</option>
+              <option value="mastercard">Mastercard</option>
+              <option value="amex">American Express</option>
+              <option value="discover">Discover</option>
+              <option value="other">Otro</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="currency">Moneda</label>
+            <select
+              id="currency"
+              v-model="localProfile.currency"
+              class="form-input"
+              @change="updateField('currency', $event.target.value)"
+            >
+              <option value="">Seleccionar</option>
+              <option value="USD">USD - Dólar estadounidense</option>
+              <option value="EUR">EUR - Euro</option>
+              <option value="MXN">MXN - Peso mexicano</option>
+              <option value="CAD">CAD - Dólar canadiense</option>
+              <option value="GBP">GBP - Libra esterlina</option>
+              <option value="other">Otra</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="iban">IBAN</label>
           <input
-            id="companyAddress"
-            v-model="localProfile.companyAddress"
+            id="iban"
+            v-model="localProfile.iban"
             type="text"
             class="form-input"
-            placeholder="Dirección completa de tu oficina"
-            @input="updateField('companyAddress', $event.target.value)"
+            placeholder="Código IBAN internacional"
+            @input="updateField('iban', $event.target.value)"
           />
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label for="companyCity">Ciudad</label>
-            <input
-              id="companyCity"
-              v-model="localProfile.companyCity"
-              type="text"
-              class="form-input"
-              placeholder="Ciudad"
-              @input="updateField('companyCity', $event.target.value)"
-            />
-          </div>
-
-          <div class="form-group">
-            <label for="companyState">Estado</label>
-            <input
-              id="companyState"
-              v-model="localProfile.companyState"
-              type="text"
-              class="form-input"
-              placeholder="Estado"
-              @input="updateField('companyState', $event.target.value)"
-            />
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label for="companyPostalCode">Código Postal</label>
-            <input
-              id="companyPostalCode"
-              v-model="localProfile.companyPostalCode"
-              type="text"
-              class="form-input"
-              placeholder="Código postal"
-              @input="updateField('companyPostalCode', $event.target.value)"
-            />
-          </div>
-
-          <div class="form-group">
-            <label for="companyCountry">País</label>
-            <input
-              id="companyCountry"
-              v-model="localProfile.companyCountry"
-              type="text"
-              class="form-input"
-              placeholder="País"
-              @input="updateField('companyCountry', $event.target.value)"
-            />
-          </div>
         </div>
       </div>
     </div>
@@ -218,10 +235,6 @@ emit('validate', {})
   margin-bottom: 1.5rem;
 }
 
-.form-group.full-width {
-  grid-column: 1 / -1;
-}
-
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -275,5 +288,3 @@ emit('validate', {})
   }
 }
 </style>
-
-

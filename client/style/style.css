@@ -1,33 +1,116 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap');
 
 :root {
-  /* Palette (aligned with landing styles) */
-  --color-primary: #1e40af; /* indigo-800 */
-  --color-primary-dark: #1e3a8a; /* indigo-900 */
+  /* Modern Corporate Color Palette */
+  --color-primary: #1a365d; /* slate-800 */
+  --color-primary-dark: #0f172a; /* slate-900 */
+  --color-primary-light: #334155; /* slate-700 */
   --color-primary-contrast: #ffffff;
-  --color-secondary: #f97316; /* orange-400 */
+
+  --color-secondary: #f59e0b; /* amber-500 */
+  --color-secondary-dark: #d97706; /* amber-600 */
+  --color-secondary-light: #fbbf24; /* amber-400 */
   --color-secondary-contrast: #ffffff;
-  --color-accent: #06b6d4; /* cyan-500 */
-  --color-muted: #6b7280;
-  --bg-page: linear-gradient(180deg,#ffffff,#fbfdff);
-  /* Aliases usados por usePalette y componentes */
+
+  --color-accent: #3b82f6; /* blue-500 */
+  --color-accent-dark: #2563eb; /* blue-600 */
+  --color-accent-light: #60a5fa; /* blue-400 */
+
+  --color-success: #10b981; /* emerald-500 */
+  --color-warning: #f59e0b; /* amber-500 */
+  --color-error: #ef4444; /* red-500 */
+
+  --color-muted: #64748b; /* slate-500 */
+  --color-muted-light: #94a3b8; /* slate-400 */
+  --color-muted-dark: #475569; /* slate-600 */
+
+  /* Background Colors */
+  --bg-page: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  --bg-card: #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-tertiary: #f1f5f9;
+  --bg-overlay: rgba(15, 23, 42, 0.8);
+
+  /* Text Colors */
+  --text-primary: #0f172a; /* slate-900 */
+  --text-secondary: #475569; /* slate-600 */
+  --text-tertiary: #64748b; /* slate-500 */
+  --text-light: #f8fafc; /* slate-50 */
+
+  /* Border Colors */
+  --border-light: #e2e8f0; /* slate-200 */
+  --border-medium: #cbd5e1; /* slate-300 */
+  --border-dark: #94a3b8; /* slate-400 */
+
+  /* Shadow System */
+  --shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.1), 0 2px 4px -1px rgba(15, 23, 42, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.1), 0 4px 6px -2px rgba(15, 23, 42, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(15, 23, 42, 0.1), 0 10px 10px -5px rgba(15, 23, 42, 0.04);
+  --shadow-2xl: 0 25px 50px -12px rgba(15, 23, 42, 0.25);
+
+  /* Spacing System */
+  --spacing-xs: 0.25rem; /* 4px */
+  --spacing-sm: 0.5rem; /* 8px */
+  --spacing-md: 1rem; /* 16px */
+  --spacing-lg: 1.5rem; /* 24px */
+  --spacing-xl: 2rem; /* 32px */
+  --spacing-2xl: 3rem; /* 48px */
+  --spacing-3xl: 4rem; /* 64px */
+
+  /* Border Radius */
+  --radius-sm: 0.25rem; /* 4px */
+  --radius-md: 0.5rem; /* 8px */
+  --radius-lg: 0.75rem; /* 12px */
+  --radius-xl: 1rem; /* 16px */
+  --radius-2xl: 1.5rem; /* 24px */
+  --radius-full: 9999px;
+
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Typography */
+  --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-heading: 'Playfair Display', serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  /* Font Sizes */
+  --text-xs: 0.75rem; /* 12px */
+  --text-sm: 0.875rem; /* 14px */
+  --text-base: 1rem; /* 16px */
+  --text-lg: 1.125rem; /* 18px */
+  --text-xl: 1.25rem; /* 20px */
+  --text-2xl: 1.5rem; /* 24px */
+  --text-3xl: 1.875rem; /* 30px */
+  --text-4xl: 2.25rem; /* 36px */
+  --text-5xl: 3rem; /* 48px */
+  --text-6xl: 3.75rem; /* 60px */
+  --text-7xl: 4.5rem; /* 72px */
+
+  /* Font Weights */
+  --font-light: 300;
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+  --font-extrabold: 800;
+  --font-black: 900;
+
+  /* Legacy support for existing components */
   --bg-primary: var(--color-primary);
   --border-primary: var(--color-primary);
   --bg-secondary: var(--color-secondary);
   --border-secondary: var(--color-secondary);
   --bg-accent: var(--color-accent);
   --border-accent: var(--color-accent);
-  --color-text: #0f172a;
-  --color-text-light: #6b7280;
-  --bg-light: #ffffff;
-  --border-light: #e6eef8;
-  --shadow-primary: rgba(15,23,42,0.06);
-  --shadow-secondary: rgba(30,64,175,0.08);
-  --shadow-accent: rgba(6,182,212,0.08);
-  --bg-neutral: #f8fafc;
-  --radius: 12px;
-  --transition-fast: 150ms;
-  --transition-normal: 250ms;
+  --color-text: var(--text-primary);
+  --color-text-light: var(--text-light);
+  --bg-light: var(--bg-card);
+  --bg-neutral: var(--bg-secondary);
+  --shadow-primary: var(--shadow-md);
+  --radius: var(--radius-lg);
 }
 
 html, body, #__nuxt {
@@ -65,6 +148,12 @@ html, body, #__nuxt {
   .btn-primary {
     background: var(--color-primary);
     color: var(--color-primary-contrast);
+  }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--color-primary);
+    border: 2px solid rgba(30, 64, 175, 0.2);
   }
 
   .btn-primary:hover {
