@@ -6,7 +6,7 @@
         <NuxtLink to="/" class="brand-link">
           <div class="brand-logo">
             <div class="logo-icon">
-              <i class="fas fa-camera-retro"></i>
+              <Icon name="heroicons:camera" class="icon" />
             </div>
             <div class="brand-text">
               <span class="brand-main">LANDING</span>
@@ -20,23 +20,27 @@
       <div class="navbar-menu">
         <div class="navbar-links">
           <NuxtLink to="/" class="nav-link" exact>
-            <i class="fas fa-home"></i>
+            <Icon name="heroicons:home" class="icon" />
             <span>Home</span>
           </NuxtLink>
           <NuxtLink to="/about" class="nav-link">
-            <i class="fas fa-user"></i>
+            <Icon name="heroicons:user" class="icon" />
             <span>About</span>
           </NuxtLink>
           <NuxtLink to="/portfolio" class="nav-link">
-            <i class="fas fa-images"></i>
+            <Icon name="heroicons:photo" class="icon" />
             <span>Portfolio</span>
           </NuxtLink>
+          <NuxtLink to="/gallery" class="nav-link" v-if="isLoggedIn">
+            <Icon name="heroicons:rectangle-stack" class="icon" />
+            <span>Mi Galería</span>
+          </NuxtLink>
           <NuxtLink to="/services" class="nav-link">
-            <i class="fas fa-concierge-bell"></i>
+            <Icon name="heroicons:briefcase" class="icon" />
             <span>Services</span>
           </NuxtLink>
           <NuxtLink to="/config" class="nav-link" v-if="isLoggedIn">
-            <i class="fas fa-cog"></i>
+            <Icon name="heroicons:cog-6-tooth" class="icon" />
             <span>Config</span>
           </NuxtLink>
         </div>
@@ -45,11 +49,11 @@
         <div class="navbar-actions">
           <template v-if="!isLoggedIn">
             <NuxtLink to="/login" class="btn btn-outline">
-              <i class="fas fa-sign-in-alt"></i>
+              <Icon name="heroicons:arrow-right-on-rectangle" class="icon" />
               <span>Login</span>
             </NuxtLink>
             <NuxtLink to="/register" class="btn btn-primary">
-              <i class="fas fa-user-plus"></i>
+              <Icon name="heroicons:user-plus" class="icon" />
               <span>Register</span>
             </NuxtLink>
           </template>
@@ -57,25 +61,29 @@
             <div class="user-menu">
               <button @click="toggleUserDropdown" class="user-button">
                 <div class="user-avatar">
-                  <i class="fas fa-user"></i>
+                  <Icon name="heroicons:user" class="icon" />
                 </div>
                 <span class="user-name">{{ userName || 'User' }}</span>
-                <i class="fas fa-chevron-down" :class="{ 'rotate-180': isUserDropdownOpen }"></i>
+                <Icon name="heroicons:chevron-down" :class="{ 'rotate-180': isUserDropdownOpen }" class="icon" />
               </button>
 
               <!-- User Dropdown -->
               <div v-if="isUserDropdownOpen" class="user-dropdown">
                 <NuxtLink to="/profile" class="dropdown-item">
-                  <i class="fas fa-user-circle"></i>
+                  <Icon name="heroicons:user-circle" class="icon" />
                   <span>Profile</span>
                 </NuxtLink>
                 <NuxtLink v-if="userRole === 'admin'" to="/admin" class="dropdown-item">
-                  <i class="fas fa-tachometer-alt"></i>
+                  <Icon name="heroicons:chart-bar" class="icon" />
                   <span>Dashboard</span>
+                </NuxtLink>
+                <NuxtLink v-if="userRole === 'admin'" to="/admin/gallery" class="dropdown-item">
+                  <Icon name="heroicons:photo" class="icon" />
+                  <span>Galería</span>
                 </NuxtLink>
                 <div class="dropdown-divider"></div>
                 <button @click="handleLogout" class="dropdown-item text-error">
-                  <i class="fas fa-sign-out-alt"></i>
+                  <Icon name="heroicons:arrow-left-on-rectangle" class="icon" />
                   <span>Logout</span>
                 </button>
               </div>
@@ -97,33 +105,33 @@
     <div v-if="isMobileMenuOpen" class="mobile-menu">
       <div class="mobile-menu-header">
         <div class="mobile-brand">
-          <i class="fas fa-camera-retro"></i>
+          <Icon name="heroicons:camera" class="icon" />
           <span>LANDING</span>
         </div>
         <button @click="closeMobileMenu" class="mobile-close">
-          <i class="fas fa-times"></i>
+          <Icon name="heroicons:x-mark" class="icon" />
         </button>
       </div>
 
       <div class="mobile-menu-content">
         <NuxtLink to="/" class="mobile-link" @click="closeMobileMenu">
-          <i class="fas fa-home"></i>
+          <Icon name="heroicons:home" class="icon" />
           <span>Home</span>
         </NuxtLink>
         <NuxtLink to="/about" class="mobile-link" @click="closeMobileMenu">
-          <i class="fas fa-user"></i>
+          <Icon name="heroicons:user" class="icon" />
           <span>About</span>
         </NuxtLink>
         <NuxtLink to="/portfolio" class="mobile-link" @click="closeMobileMenu">
-          <i class="fas fa-images"></i>
+          <Icon name="heroicons:photo" class="icon" />
           <span>Portfolio</span>
         </NuxtLink>
         <NuxtLink to="/services" class="mobile-link" @click="closeMobileMenu">
-          <i class="fas fa-concierge-bell"></i>
+          <Icon name="heroicons:briefcase" class="icon" />
           <span>Services</span>
         </NuxtLink>
         <NuxtLink to="/config" class="mobile-link" @click="closeMobileMenu" v-if="isLoggedIn">
-          <i class="fas fa-cog"></i>
+          <Icon name="heroicons:cog-6-tooth" class="icon" />
           <span>Config</span>
         </NuxtLink>
 
@@ -131,25 +139,29 @@
 
         <template v-if="!isLoggedIn">
           <NuxtLink to="/login" class="mobile-link" @click="closeMobileMenu">
-            <i class="fas fa-sign-in-alt"></i>
+            <Icon name="heroicons:arrow-right-on-rectangle" class="icon" />
             <span>Login</span>
           </NuxtLink>
           <NuxtLink to="/register" class="mobile-link primary" @click="closeMobileMenu">
-            <i class="fas fa-user-plus"></i>
+            <Icon name="heroicons:user-plus" class="icon" />
             <span>Register</span>
           </NuxtLink>
         </template>
         <template v-else>
           <NuxtLink to="/profile" class="mobile-link" @click="closeMobileMenu">
-            <i class="fas fa-user-circle"></i>
+            <Icon name="heroicons:user-circle" class="icon" />
             <span>Profile</span>
           </NuxtLink>
           <NuxtLink v-if="userRole === 'admin'" to="/admin" class="mobile-link" @click="closeMobileMenu">
-            <i class="fas fa-tachometer-alt"></i>
+            <Icon name="heroicons:chart-bar" class="icon" />
             <span>Dashboard</span>
           </NuxtLink>
+          <NuxtLink v-if="userRole === 'admin'" to="/admin/gallery" class="mobile-link" @click="closeMobileMenu">
+            <Icon name="heroicons:photo" class="icon" />
+            <span>Galería</span>
+          </NuxtLink>
           <button @click="handleLogoutAndClose" class="mobile-link text-error">
-            <i class="fas fa-sign-out-alt"></i>
+            <Icon name="heroicons:arrow-left-on-rectangle" class="icon" />
             <span>Logout</span>
           </button>
         </template>

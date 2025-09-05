@@ -4,7 +4,7 @@
       <!-- Section Header -->
       <div class="section-header">
         <div class="section-badge">
-          <i class="fas fa-info-circle"></i>
+          <Icon name="heroicons:information-circle" class="icon" />
           <span>About Us</span>
         </div>
         <h2 class="section-title">
@@ -21,7 +21,7 @@
         <div class="about-content">
           <div class="content-block">
             <h3 class="content-title">
-              <i class="fas fa-camera-retro"></i>
+              <Icon name="heroicons:camera" class="icon" />
               Our Story
             </h3>
             <p class="content-text">
@@ -31,7 +31,7 @@
 
           <div class="content-block">
             <h3 class="content-title">
-              <i class="fas fa-heart"></i>
+              <Icon name="heroicons:heart" class="icon" />
               Our Passion
             </h3>
             <p class="content-text">
@@ -41,7 +41,7 @@
 
           <div class="content-block">
             <h3 class="content-title">
-              <i class="fas fa-award"></i>
+              <Icon name="heroicons:trophy" class="icon" />
               Our Commitment
             </h3>
             <p class="content-text">
@@ -85,7 +85,7 @@
           <p class="cta-text">Let's discuss how we can capture your special moments.</p>
           <a href="#contact" class="cta-button">
             <span>Get In Touch</span>
-            <i class="fas fa-arrow-right"></i>
+            <Icon name="heroicons:arrow-right" class="icon" />
           </a>
         </div>
       </div>
@@ -96,7 +96,7 @@
 <style scoped>
 .about-section {
   padding: var(--spacing-4xl) 0;
-  background: var(--bg-page);
+  background: linear-gradient(135deg, rgba(139, 69, 19, 0.02) 0%, var(--background-neutral) 100%);
   position: relative;
   overflow: hidden;
 }

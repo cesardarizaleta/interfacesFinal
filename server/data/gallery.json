@@ -1,0 +1,25 @@
+[
+  {
+    "id": "gallery-001",
+    "title": "Sesión de Boda Primavera",
+    "description": "Hermosa sesión de fotos de boda en el jardín botánico",
+    "category": "bodas",
+    "type": "image",
+    "filename": "wedding-spring-001.jpg",
+    "originalName": "wedding_spring.jpg",
+    "mimeType": "image/jpeg",
+    "size": 2048576,
+    "path": "/uploads/gallery/wedding-spring-001.jpg",
+    "thumbnail": "/uploads/gallery/thumbnails/wedding-spring-001_thumb.jpg",
+    "uploadedBy": "admin-001",
+    "uploadedAt": "2024-01-15T10:30:00Z",
+    "isActive": true,
+    "tags": ["boda", "primavera", "jardín", "romántico"],
+    "metadata": {
+      "width": 1920,
+      "height": 1280,
+      "camera": "Canon EOS R5",
+      "lens": "RF 50mm f/1.2L USM"
+    }
+  }
+]

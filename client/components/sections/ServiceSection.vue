@@ -4,7 +4,7 @@
       <!-- Section Header -->
       <div class="section-header">
         <div class="section-badge">
-          <i class="fas fa-concierge-bell"></i>
+          <Icon name="heroicons:briefcase" class="icon" />
           <span>Our Services</span>
         </div>
         <h2 class="section-title">
@@ -20,7 +20,7 @@
         <!-- Wedding Service -->
         <div class="service-card">
           <div class="service-icon">
-            <i class="fas fa-heart"></i>
+            <Icon name="heroicons:heart" class="icon" />
           </div>
           <div class="service-image-container">
             <img src="~/assets/services/wedding.png" alt="Wedding Photography" class="service-image">
@@ -42,7 +42,7 @@
         <!-- Lifestyle Service -->
         <div class="service-card">
           <div class="service-icon">
-            <i class="fas fa-camera"></i>
+            <Icon name="heroicons:camera" class="icon" />
           </div>
           <div class="service-image-container">
             <img src="~/assets/services/lifestyle.png" alt="Lifestyle Photography" class="service-image">
@@ -64,7 +64,7 @@
         <!-- Moments Service -->
         <div class="service-card">
           <div class="service-icon">
-            <i class="fas fa-clock"></i>
+            <Icon name="heroicons:clock" class="icon" />
           </div>
           <div class="service-image-container">
             <img src="~/assets/services/moments.png" alt="Special Moments Photography" class="service-image">
@@ -92,11 +92,11 @@
           <div class="cta-buttons">
             <a href="#contact" class="cta-button primary">
               <span>Get Quote</span>
-              <i class="fas fa-arrow-right"></i>
+              <Icon name="heroicons:arrow-right" class="icon" />
             </a>
             <a href="#portfolio" class="cta-button secondary">
               <span>View Portfolio</span>
-              <i class="fas fa-images"></i>
+              <Icon name="heroicons:photo" class="icon" />
             </a>
           </div>
         </div>
@@ -113,7 +113,7 @@
 <style scoped>
 .services-section {
   padding: var(--spacing-4xl) 0;
-  background: var(--bg-page);
+  background: linear-gradient(135deg, var(--background-neutral) 0%, rgba(212, 175, 55, 0.02) 100%);
   position: relative;
   overflow: hidden;
 }

@@ -6,6 +6,7 @@ const fontsRouter = require('./font_router');
 const authRouter = require('./auth_router');
 const profileRouter = require('./profile_router');
 const adminRouter = require('./admin_router');
+const galleryRouter = require('./gallery_router');
 
 
 function routerApi(app){
@@ -17,7 +18,8 @@ function routerApi(app){
     fontsRouter,
     authRouter,
     profileRouter,
-    adminRouter
+    adminRouter,
+    galleryRouter
   };
   const paths = {
     usersRouter: './user_router',
@@ -25,7 +27,8 @@ function routerApi(app){
     fontsRouter: './font_router',
     authRouter: './auth_router',
     profileRouter: './profile_router',
-    adminRouter: './admin_router'
+    adminRouter: './admin_router',
+    galleryRouter: './gallery_router'
   };
   Object.entries(routers).forEach(([name, mod]) => {
     try {
@@ -46,6 +49,7 @@ function routerApi(app){
   app.use('/api/auth', authRouter);
   app.use('/api/profile', profileRouter);
   app.use('/api/admin', adminRouter);
+  app.use('/api/gallery', galleryRouter);
 
 
 }

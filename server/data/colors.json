@@ -1,12 +1,12 @@
 [
   {
     "id": "default-landing-palette",
-    "name": "Paleta Landing Predeterminada",
-    "colorPrimary": "#57534E",
+    "name": "Paleta Marrón Elegante",
+    "colorPrimary": "#8B4513",
     "colorSecondary": "#FFFFFF",
-    "colorAccent": "#44403C",
-    "colorText": "#78716C",
-    "backgroundNeutral": "#E7E5E4",
+    "colorAccent": "#DAA520",
+    "colorText": "#2F1B14",
+    "backgroundNeutral": "#F5F5DC",
     "userId": "system",
     "lastUsedAt": null,
     "isDefault": true,

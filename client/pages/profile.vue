@@ -1,6 +1,11 @@
 <template>
   <navbar-element></navbar-element>
 
+        <button @click="openWizard" class="edit-profile-btn">
+          <Icon name="heroicons:pencil-square" size="20" />
+          Editar Perfil
+        </button>
+
   <section class="profile-section">
     <div class="profile-container">
       <div class="profile-header">
@@ -29,7 +34,7 @@
           </div>
         </div>
 
-        <button @click="openWizard" class="edit-profile-btn">
+        <button @click="openEditor" class="edit-profile-btn">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
             <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
@@ -38,11 +43,11 @@
         </button>
       </div>
 
-      <!-- Profile Wizard Modal -->
-      <ProfileWizard
-        :is-open="isWizardOpen"
+      <!-- Profile Editor Modal -->
+      <ProfileEditor
+        :is-open="isEditorOpen"
         :profile="profile"
-        @close="closeWizard"
+        @close="closeEditor"
         @update="updateProfileField"
         @save="saveProfile"
       />
@@ -59,7 +64,7 @@ import { ref, onMounted } from 'vue'
 import NavbarElement from "@/components/navigation/NavbarElement.vue";
 import FooterElement from "@/components/navigation/FooterElement.vue";
 import PaletteLoader from "@/components/ui/PaletteLoader.vue";
-import ProfileWizard from "@/components/ui/ProfileWizard.vue";
+import ProfileEditor from "@/components/ui/ProfileEditor.vue";
 import "@/style/style.css";
 
 definePageMeta({
@@ -74,6 +79,7 @@ const profile = ref({
   gender: '',
   phone: '',
   username: '',
+  email: '',
   birthDate: '',
   bloodGroup: '',
   height: null,
@@ -90,7 +96,9 @@ const profile = ref({
   university: '',
   department: '',
   companyName: '',
-  title: ''
+  title: '',
+  twoFactorEnabled: false,
+  preferences: {}
 })
 
 const originalProfile = ref({})
@@ -129,6 +137,7 @@ const loadUserProfile = async () => {
         gender: userProfile.gender || '',
         phone: userProfile.phone || '',
         username: userProfile.username || '',
+        email: userProfile.email || '',
         birthDate: userProfile.birthDate || '',
         bloodGroup: userProfile.bloodGroup || '',
         height: userProfile.height || null,
@@ -145,7 +154,9 @@ const loadUserProfile = async () => {
         university: userProfile.university || '',
         department: userProfile.company?.department || '',
         companyName: userProfile.company?.name || '',
-        title: userProfile.company?.title || ''
+        title: userProfile.company?.title || '',
+        twoFactorEnabled: userProfile.twoFactorEnabled || false,
+        preferences: userProfile.preferences || {}
       }
 
       // Store original data for reset
@@ -194,16 +205,16 @@ const resetForm = () => {
   profile.value = { ...originalProfile.value }
 }
 
-// Wizard modal state
-const isWizardOpen = ref(false)
+// Editor modal state
+const isEditorOpen = ref(false)
 
-// Wizard functions
-const openWizard = () => {
-  isWizardOpen.value = true
+// Editor functions
+const openEditor = () => {
+  isEditorOpen.value = true
 }
 
-const closeWizard = () => {
-  isWizardOpen.value = false
+const closeEditor = () => {
+  isEditorOpen.value = false
 }
 
 const updateProfileField = (field, value) => {
@@ -497,22 +508,27 @@ const saveProfile = async (profileData) => {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  background: var(--color-primary);
-  color: white;
-  border: none;
-  border-radius: var(--radius);
+  padding: 0.875rem 1.75rem;
+  background: linear-gradient(135deg, #8B4513 0%, #DAA520 100%);
+  color: #FFFFFF;
+  border: 1px solid #8B4513;
+  border-radius: 0.75rem;
   font-size: 1rem;
   font-weight: 600;
+  font-family: 'Inter', sans-serif;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: all 0.2s ease;
   text-decoration: none;
+  box-shadow: 0 2px 8px rgba(139, 69, 19, 0.2);
 }
 
 .edit-profile-btn:hover {
-  background: var(--color-primary-dark);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px var(--shadow-primary);
+  box-shadow: 0 6px 16px rgba(139, 69, 19, 0.3);
+}
+
+.edit-profile-btn:active {
+  transform: translateY(0);
 }
 
 .edit-profile-btn svg {

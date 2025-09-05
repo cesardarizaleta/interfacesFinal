@@ -4,7 +4,7 @@
       <!-- Section Header -->
       <div class="section-header">
         <div class="section-badge">
-          <i class="fas fa-images"></i>
+          <Icon name="heroicons:photo" class="icon" />
           <span>Our Portfolio</span>
         </div>
         <h2 class="section-title">

@@ -5,7 +5,7 @@
       <!-- Hero Content -->
       <div class="hero-content">
         <div class="hero-badge">
-          <i class="fas fa-star"></i>
+          <Icon name="heroicons:star" class="icon" />
           <span>Professional Photography Studio</span>
         </div>
 
@@ -24,11 +24,11 @@
         <!-- CTA Buttons -->
         <div class="hero-actions">
           <NuxtLink to="/portfolio" class="btn btn-primary">
-            <i class="fas fa-images"></i>
+            <Icon name="heroicons:photo" class="icon" />
             <span>View Our Work</span>
           </NuxtLink>
           <NuxtLink to="/services" class="btn btn-outline">
-            <i class="fas fa-concierge-bell"></i>
+            <Icon name="heroicons:briefcase" class="icon" />
             <span>Our Services</span>
           </NuxtLink>
         </div>
@@ -64,7 +64,7 @@
         <!-- Floating Cards -->
         <div class="floating-card card-1">
           <div class="floating-icon">
-            <i class="fas fa-camera"></i>
+            <Icon name="heroicons:camera" class="icon" />
           </div>
           <div class="floating-text">
             <div class="floating-title">Professional</div>
@@ -74,7 +74,7 @@
 
         <div class="floating-card card-2">
           <div class="floating-icon">
-            <i class="fas fa-award"></i>
+            <Icon name="heroicons:trophy" class="icon" />
           </div>
           <div class="floating-text">
             <div class="floating-title">Award</div>
@@ -84,7 +84,7 @@
 
         <div class="floating-card card-3">
           <div class="floating-icon">
-            <i class="fas fa-users"></i>
+            <Icon name="heroicons:users" class="icon" />
           </div>
           <div class="floating-text">
             <div class="floating-title">Expert</div>
@@ -112,7 +112,7 @@
 <style scoped>
 .hero-section {
   min-height: 100vh;
-  background: linear-gradient(135deg, var(--bg-page));
+  background: linear-gradient(135deg, var(--background-neutral) 0%, rgba(139, 69, 19, 0.03) 100%);
   position: relative;
   overflow: hidden;
   display: flex;

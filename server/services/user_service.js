@@ -29,6 +29,14 @@ class UsersService {
     return userWithoutPassword;
   }
 
+  async findByEmailWithPassword(email) {
+    const user = await this.repository.findByEmail(email);
+    if (!user) {
+      throw boom.notFound('User not found');
+    }
+    return user;
+  }
+
   async findByUsername(username) {
     const user = await this.repository.findByUsername(username);
     if (!user) {

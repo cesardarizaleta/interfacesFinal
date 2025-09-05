@@ -1,0 +1,46 @@
+[
+  {
+    "id": "cat-001",
+    "name": "Bodas",
+    "slug": "bodas",
+    "description": "Fotografías y videos de bodas",
+    "color": "#FF6B6B",
+    "icon": "💍",
+    "order": 1,
+    "isActive": true,
+    "createdAt": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": "cat-002",
+    "name": "Retratos",
+    "slug": "retratos",
+    "description": "Sesiones de retrato personal y familiar",
+    "color": "#4ECDC4",
+    "icon": "📸",
+    "order": 2,
+    "isActive": true,
+    "createdAt": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": "cat-003",
+    "name": "Eventos Corporativos",
+    "slug": "eventos-corporativos",
+    "description": "Cobertura de eventos empresariales",
+    "color": "#45B7D1",
+    "icon": "🏢",
+    "order": 3,
+    "isActive": true,
+    "createdAt": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": "cat-004",
+    "name": "Videos",
+    "slug": "videos",
+    "description": "Contenido de video y cinematografía",
+    "color": "#96CEB4",
+    "icon": "🎥",
+    "order": 4,
+    "isActive": true,
+    "createdAt": "2024-01-01T00:00:00Z"
+  }
+]

@@ -28,17 +28,17 @@ const authListenerRef = ref(null);
 
 // Configuración de colores por defecto
 const defaultColors = {
-  colorPrimary: '#292524',
-  backgroundNeutral: '#e5e5e5',
-  colorAccent: '#000000',
-  colorSecondary: '#57534e',
-  colorText: '#78716c',
-  colorTextLight: '#f5f5f4'
+  colorPrimary: '#8B4513',
+  backgroundNeutral: '#F5F5DC',
+  colorAccent: '#DAA520',
+  colorSecondary: '#FFFFFF',
+  colorText: '#2F1B14',
+  colorTextLight: '#8B7355'
 };
 
 // Configuración de fuentes por defecto
 const defaultFonts = {
-  fontFamily: 'Poppins',
+  fontFamily: 'Poppins, Calibri, sans-serif',
   titleSize: 8,
   subtitleSize: 6,
   paragraphSize: 10,

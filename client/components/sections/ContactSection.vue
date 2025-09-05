@@ -4,7 +4,7 @@
       <!-- Section Header -->
       <div class="section-header">
         <div class="section-badge">
-          <i class="fas fa-envelope"></i>
+          <Icon name="heroicons:envelope" class="icon" />
           <span>Contact Us</span>
         </div>
         <h2 class="section-title">
@@ -28,7 +28,7 @@
             <div class="form-row">
               <div class="form-group">
                 <label for="firstName" class="form-label">
-                  <i class="fas fa-user"></i>
+                  <Icon name="heroicons:user" class="icon" />
                   First Name
                 </label>
                 <input
@@ -42,7 +42,7 @@
               </div>
               <div class="form-group">
                 <label for="lastName" class="form-label">
-                  <i class="fas fa-user"></i>
+                  <Icon name="heroicons:user" class="icon" />
                   Last Name
                 </label>
                 <input
@@ -58,7 +58,7 @@
 
             <div class="form-group">
               <label for="email" class="form-label">
-                <i class="fas fa-envelope"></i>
+                <Icon name="heroicons:envelope" class="icon" />
                 Email Address
               </label>
               <input
@@ -73,7 +73,7 @@
 
             <div class="form-group">
               <label for="phone" class="form-label">
-                <i class="fas fa-phone"></i>
+                <Icon name="heroicons:phone" class="icon" />
                 Phone Number
               </label>
               <input
@@ -87,7 +87,7 @@
 
             <div class="form-group">
               <label for="service" class="form-label">
-                <i class="fas fa-camera"></i>
+                <Icon name="heroicons:camera" class="icon" />
                 Service Interested In
               </label>
               <select id="service" v-model="form.service" class="form-select" required>
@@ -103,7 +103,7 @@
 
             <div class="form-group">
               <label for="message" class="form-label">
-                <i class="fas fa-comment"></i>
+                <Icon name="heroicons:chat-bubble-left" class="icon" />
                 Message
               </label>
               <textarea
@@ -118,11 +118,11 @@
 
             <button type="submit" class="submit-button" :disabled="isSubmitting">
               <span v-if="isSubmitting">
-                <i class="fas fa-spinner fa-spin"></i>
+                <Icon name="heroicons:arrow-path" class="icon animate-spin" />
                 Sending...
               </span>
               <span v-else>
-                <i class="fas fa-paper-plane"></i>
+                <Icon name="heroicons:paper-airplane" class="icon" />
                 Send Message
               </span>
             </button>
@@ -137,7 +137,7 @@
             <div class="info-list">
               <div class="info-item">
                 <div class="info-icon">
-                  <i class="fas fa-map-marker-alt"></i>
+                  <Icon name="heroicons:map-pin" class="icon" />
                 </div>
                 <div class="info-content">
                   <h4 class="info-label">Location</h4>
@@ -147,7 +147,7 @@
 
               <div class="info-item">
                 <div class="info-icon">
-                  <i class="fas fa-phone"></i>
+                  <Icon name="heroicons:phone" class="icon" />
                 </div>
                 <div class="info-content">
                   <h4 class="info-label">Phone</h4>
@@ -157,7 +157,7 @@
 
               <div class="info-item">
                 <div class="info-icon">
-                  <i class="fas fa-envelope"></i>
+                  <Icon name="heroicons:envelope" class="icon" />
                 </div>
                 <div class="info-content">
                   <h4 class="info-label">Email</h4>
@@ -167,7 +167,7 @@
 
               <div class="info-item">
                 <div class="info-icon">
-                  <i class="fas fa-clock"></i>
+                  <Icon name="heroicons:clock" class="icon" />
                 </div>
                 <div class="info-content">
                   <h4 class="info-label">Business Hours</h4>

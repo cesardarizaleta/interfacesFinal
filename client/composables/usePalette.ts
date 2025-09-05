@@ -13,19 +13,19 @@ interface Palette {
 }
 
 const activePalette = ref<Palette>({
-  colorPrimary: '#57534E',
+  colorPrimary: '#8B4513',
   colorSecondary: '#FFFFFF',
-  colorAccent: '#44403C',
-  colorText: '#78716C',
-  backgroundNeutral: '#E7E5E4'
+  colorAccent: '#DAA520',
+  colorText: '#2F1B14',
+  backgroundNeutral: '#F5F5DC'
 })
 
 const defaultPalette: Palette = {
-  colorPrimary: '#57534E',
+  colorPrimary: '#8B4513',
   colorSecondary: '#FFFFFF',
-  colorAccent: '#44403C',
-  colorText: '#78716C',
-  backgroundNeutral: '#E7E5E4'
+  colorAccent: '#DAA520',
+  colorText: '#2F1B14',
+  backgroundNeutral: '#F5F5DC'
 }
 
 export const usePalette = () => {

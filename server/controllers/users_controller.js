@@ -93,67 +93,187 @@ class UsersController {
       const workbook = new ExcelJS.Workbook();
       const worksheet = workbook.addWorksheet('Usuarios');
 
-      // Definir columnas
+      // Configurar propiedades del workbook
+      workbook.creator = 'LANDING PHOTOGRAPHY';
+      workbook.lastModifiedBy = 'Sistema Administrativo';
+      workbook.created = new Date();
+      workbook.modified = new Date();
+
+      // Título principal
+      worksheet.mergeCells('A1:D1');
+      const titleCell = worksheet.getCell('A1');
+      titleCell.value = 'LANDING PHOTOGRAPHY';
+      titleCell.font = {
+        name: 'Arial',
+        size: 18,
+        bold: true,
+        color: { argb: 'FF2D3748' }
+      };
+      titleCell.alignment = { horizontal: 'center', vertical: 'middle' };
+      titleCell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FFF7FAFC' }
+      };
+      worksheet.getRow(1).height = 30;
+
+      // Subtítulo
+      worksheet.mergeCells('A2:D2');
+      const subtitleCell = worksheet.getCell('A2');
+      subtitleCell.value = 'Reporte de Usuarios del Sistema';
+      subtitleCell.font = {
+        name: 'Arial',
+        size: 12,
+        italic: true,
+        color: { argb: 'FF4A5568' }
+      };
+      subtitleCell.alignment = { horizontal: 'center', vertical: 'middle' };
+      worksheet.getRow(2).height = 25;
+
+      // Fecha de generación
+      worksheet.mergeCells('A3:D3');
+      const dateCell = worksheet.getCell('A3');
+      dateCell.value = `Generado el: ${new Date().toLocaleDateString('es-ES', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      })}`;
+      dateCell.font = {
+        name: 'Arial',
+        size: 10,
+        color: { argb: 'FF718096' }
+      };
+      dateCell.alignment = { horizontal: 'center', vertical: 'middle' };
+      worksheet.getRow(3).height = 20;
+
+      // Estadísticas
+      worksheet.mergeCells('A4:D4');
+      const statsCell = worksheet.getCell('A4');
+      statsCell.value = `Total de usuarios: ${users.length}`;
+      statsCell.font = {
+        name: 'Arial',
+        size: 11,
+        bold: true,
+        color: { argb: 'FF2B6CB0' }
+      };
+      statsCell.alignment = { horizontal: 'center', vertical: 'middle' };
+      worksheet.getRow(4).height = 22;
+
+      // Espacio en blanco
+      worksheet.getRow(5).height = 15;
+
+      // Definir columnas con mejor formato
       worksheet.columns = [
-        { header: 'ID', key: 'id', width: 10 },
+        { header: 'ID', key: 'id', width: 8 },
         { header: 'Nombre', key: 'firstName', width: 15 },
         { header: 'Apellido', key: 'lastName', width: 15 },
-        { header: 'Email', key: 'email', width: 25 },
-        { header: 'Rol', key: 'role', width: 10 },
+        { header: 'Email', key: 'email', width: 30 },
+        { header: 'Rol', key: 'role', width: 12 },
         { header: 'Edad', key: 'age', width: 8 },
-        { header: 'Género', key: 'gender', width: 10 },
-        { header: 'Teléfono', key: 'phone', width: 15 },
-        { header: 'Usuario', key: 'username', width: 15 },
-        { header: 'Fecha Nacimiento', key: 'birthDate', width: 15 },
-        { header: 'Grupo Sanguíneo', key: 'bloodGroup', width: 12 },
-        { header: 'Altura', key: 'height', width: 10 },
-        { header: 'Peso', key: 'weight', width: 10 },
-        { header: 'Color Ojos', key: 'eyeColor', width: 12 },
-        { header: 'Color Pelo', key: 'hairColor', width: 12 },
-        { header: 'Tipo Pelo', key: 'hairType', width: 12 },
-        { header: 'Dirección', key: 'address', width: 25 },
-        { header: 'Ciudad', key: 'city', width: 15 },
-        { header: 'Estado', key: 'state', width: 15 },
-        { header: 'Código Estado', key: 'stateCode', width: 12 },
-        { header: 'Código Postal', key: 'postalCode', width: 12 },
-        { header: 'País', key: 'country', width: 15 },
-        { header: 'Universidad', key: 'university', width: 20 },
-        { header: 'Departamento', key: 'department', width: 15 },
+        { header: 'Registro', key: 'createdAt', width: 18 }
       ];
 
-      // Agregar datos
-      users.forEach(user => {
-        worksheet.addRow({
+      // Estilo para los headers
+      const headerRow = worksheet.getRow(6);
+      headerRow.height = 25;
+      headerRow.eachCell((cell) => {
+        cell.font = {
+          name: 'Arial',
+          size: 11,
+          bold: true,
+          color: { argb: 'FFFFFFFF' }
+        };
+        cell.alignment = { horizontal: 'center', vertical: 'middle' };
+        cell.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: 'FF2D3748' }
+        };
+        cell.border = {
+          top: { style: 'thin', color: { argb: 'FF4A5568' } },
+          left: { style: 'thin', color: { argb: 'FF4A5568' } },
+          bottom: { style: 'thin', color: { argb: 'FF4A5568' } },
+          right: { style: 'thin', color: { argb: 'FF4A5568' } }
+        };
+      });
+
+      // Agregar datos con formato
+      users.forEach((user, index) => {
+        const row = worksheet.addRow({
           id: user.id,
           firstName: user.firstName,
           lastName: user.lastName,
           email: user.email,
           role: user.role,
-          age: user.age,
-          gender: user.gender,
-          phone: user.phone,
-          username: user.username,
-          birthDate: user.birthDate,
-          bloodGroup: user.bloodGroup,
-          height: user.height,
-          weight: user.weight,
-          eyeColor: user.eyeColor,
-          hairColor: user.hair?.color,
-          hairType: user.hair?.type,
-          address: user.address?.address,
-          city: user.address?.city,
-          state: user.address?.state,
-          stateCode: user.address?.stateCode,
-          postalCode: user.address?.postalCode,
-          country: user.address?.country,
-          university: user.university,
-          department: user.company?.department,
+          age: user.age || 'N/A',
+          createdAt: new Date(user.createdAt).toLocaleDateString('es-ES')
         });
+
+        // Estilo para las filas de datos
+        row.eachCell((cell, colNumber) => {
+          cell.font = {
+            name: 'Arial',
+            size: 10,
+            color: { argb: 'FF2D3748' }
+          };
+          cell.alignment = { horizontal: 'left', vertical: 'middle' };
+          cell.border = {
+            top: { style: 'thin', color: { argb: 'FFE2E8F0' } },
+            left: { style: 'thin', color: { argb: 'FFE2E8F0' } },
+            bottom: { style: 'thin', color: { argb: 'FFE2E8F0' } },
+            right: { style: 'thin', color: { argb: 'FFE2E8F0' } }
+          };
+
+          // Formato especial para el rol
+          if (colNumber === 5) { // Columna del rol
+            if (user.role === 'admin') {
+              cell.fill = {
+                type: 'pattern',
+                pattern: 'solid',
+                fgColor: { argb: 'FFFEF5E7' }
+              };
+              cell.font.color = { argb: 'FFD69E2E' };
+            } else if (user.role === 'user') {
+              cell.fill = {
+                type: 'pattern',
+                pattern: 'solid',
+                fgColor: { argb: 'FFF0FFF4' }
+              };
+              cell.font.color = { argb: 'FF38A169' };
+            }
+          }
+
+          // Formato para filas alternas
+          if (index % 2 === 1) {
+            cell.fill = {
+              type: 'pattern',
+              pattern: 'solid',
+              fgColor: { argb: 'FFF7FAFC' }
+            };
+          }
+        });
+
+        row.height = 20;
       });
+
+      // Pie de página
+      const lastRow = worksheet.lastRow.number + 2;
+      worksheet.mergeCells(`A${lastRow}:D${lastRow}`);
+      const footerCell = worksheet.getCell(`A${lastRow}`);
+      footerCell.value = '© 2025 LANDING PHOTOGRAPHY - Sistema Administrativo';
+      footerCell.font = {
+        name: 'Arial',
+        size: 9,
+        italic: true,
+        color: { argb: 'FF718096' }
+      };
+      footerCell.alignment = { horizontal: 'center', vertical: 'middle' };
 
       // Configurar headers para descarga
       res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-      res.setHeader('Content-Disposition', 'attachment; filename=usuarios.xlsx');
+      res.setHeader('Content-Disposition', 'attachment; filename=usuarios_landing_photography.xlsx');
 
       await workbook.xlsx.write(res);
       res.end();

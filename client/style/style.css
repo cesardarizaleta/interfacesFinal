@@ -1,55 +1,55 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap');
 
 :root {
-  /* Dynamic Color Palette - Updated by usePalette composable */
-  --color-primary: #57534E;
-  --color-primary-rgb: 87, 83, 78;
-  --color-secondary: #FFFFFF;
+  /* Nueva Paleta de Colores Marrón Elegante para Fotografía */
+  --color-primary: #8B4513;        /* Marrón chocolate elegante */
+  --color-primary-rgb: 139, 69, 19;
+  --color-secondary: #FFFFFF;      /* Blanco puro */
   --color-secondary-rgb: 255, 255, 255;
-  --color-accent: #44403C;
-  --color-accent-rgb: 68, 64, 60;
-  --color-text: #78716C;
-  --color-text-rgb: 120, 113, 108;
-  --background-neutral: #E7E5E4;
-  --background-neutral-rgb: 231, 229, 228;
+  --color-accent: #DAA520;         /* Dorado bronce */
+  --color-accent-rgb: 218, 165, 32;
+  --color-text: #2F1B14;           /* Marrón muy oscuro */
+  --color-text-rgb: 47, 27, 20;
+  --background-neutral: #F5F5DC;   /* Beige claro */
+  --background-neutral-rgb: 245, 245, 220;
 
-  /* Derived colors for better UX */
-  --color-primary-dark: #44403C;
-  --color-primary-light: #78716C;
+  /* Variables derivadas para mejor UX */
+  --color-primary-dark: #5D2A0C;    /* Marrón más oscuro */
+  --color-primary-light: #A0551F;   /* Marrón más claro */
   --color-primary-contrast: #ffffff;
 
-  --color-secondary-dark: #E7E5E4;
-  --color-secondary-light: #F5F5F4;
-  --color-secondary-contrast: #57534E;
+  --color-secondary-dark: #F0EDE4;  /* Beige más oscuro */
+  --color-secondary-light: #FFFFFF; /* Blanco puro */
+  --color-secondary-contrast: #8B4513;
 
-  --color-accent-dark: #292524;
-  --color-accent-light: #78716C;
+  --color-accent-dark: #B8860B;     /* Dorado más oscuro */
+  --color-accent-light: #F4E4BC;    /* Dorado muy claro */
 
   --color-success: #10b981;
   --color-warning: #f59e0b;
   --color-error: #ef4444;
 
-  --color-muted: #78716C;
-  --color-muted-light: #A8A29E;
-  --color-muted-dark: #44403C;
+  --color-muted: #8B7355;           /* Marrón medio */
+  --color-muted-light: #B8A085;     /* Marrón claro */
+  --color-muted-dark: #5D4E37;      /* Marrón oscuro */
 
-  /* Background Colors */
-  --bg-page: linear-gradient(135deg, var(--background-neutral) 0%, var(--color-secondary) 100%);
+  /* Background Colors - Optimizados para legibilidad */
+  --bg-page: linear-gradient(135deg, var(--background-neutral) 0%, rgba(45, 95, 61, 0.02) 100%);
   --bg-card: var(--color-secondary);
   --bg-secondary: var(--background-neutral);
   --bg-tertiary: var(--color-secondary);
-  --bg-overlay: rgba(15, 23, 42, 0.8);
+  --bg-overlay: rgba(31, 41, 55, 0.85);
 
-  /* Text Colors */
+  /* Text Colors - Mejor contraste */
   --text-primary: var(--color-primary);
-  --text-secondary: var(--color-accent);
-  --text-tertiary: var(--color-text);
+  --text-secondary: var(--color-muted);
+  --text-tertiary: var(--color-muted-light);
   --text-light: var(--background-neutral);
 
-  /* Border Colors */
-  --border-light: var(--background-neutral);
-  --border-medium: var(--color-text);
-  --border-dark: var(--color-accent);
+  /* Border Colors - Más sutiles */
+  --border-light: rgba(45, 95, 61, 0.1);
+  --border-medium: rgba(45, 95, 61, 0.2);
+  --border-dark: rgba(45, 95, 61, 0.3);
 
   /* Shadow System */
   --shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
@@ -81,9 +81,13 @@
   --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
 
   /* Typography */
-  --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-heading: 'Playfair Display', serif;
-  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --font-primary: 'Inter', 'Calibri', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-heading: 'Playfair Display', 'Calibri', serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Calibri', monospace;
+  --font-title: 'Playfair Display', 'Calibri', serif;
+  --font-subtitle: 'Inter', 'Calibri', sans-serif;
+  --font-paragraph: 'Inter', 'Calibri', sans-serif;
+  --font-default: 'Inter', 'Calibri', sans-serif;
 
   /* Font Sizes */
   --text-xs: 0.75rem; /* 12px */
@@ -127,7 +131,7 @@ html, body, #__nuxt {
 }
 
   body {
-    font-family: 'Poppins', 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    font-family: 'Poppins', 'Inter', 'Calibri', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     margin: 0;
     background: var(--bg-page);
     color: #0f172a;
@@ -788,4 +792,51 @@ footer p, footer a, footer span {
 /* Config pages - prevent transitions */
 .config-page * {
   transition: none !important;
+}
+
+/* === HEROICONS STYLES === */
+.icon {
+  width: 1em;
+  height: 1em;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.contact-icon {
+  width: 1.25em;
+  height: 1.25em;
+  margin-right: 0.5rem;
+  color: var(--color-accent);
+}
+
+.service-icon {
+  width: 3rem;
+  height: 3rem;
+  color: var(--color-accent);
+}
+
+.floating-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  color: var(--color-primary);
+}
+
+/* Rotate animation for chevron */
+.rotate-180 {
+  transform: rotate(180deg);
+  transition: transform 0.2s ease;
+}
+
+/* Spin animation for loading icons */
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
