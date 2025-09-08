@@ -1,7 +1,34 @@
 const express = require('express');
-const router = express.Router();
+const { authenticateJwt } = require('../middlewares/auth_middleware');
+const { AdminController } = require('../controllers/admin_controller');
+const { checkRole } = require('../middlewares/role_middleware');
 
-// Admin routes will be added here
-// For now, just export an empty router to avoid errors
+const router = express.Router();
+const controller = new AdminController();
+
+// Dashboard admin
+router.get('/dashboard',
+  authenticateJwt,
+  checkRole(['admin']),
+  controller.getDashboard.bind(controller)
+);
+
+router.get('/users',
+  authenticateJwt,
+  checkRole(['admin']),
+  controller.getAllUsers.bind(controller)
+);
+
+router.get('/colors',
+  authenticateJwt,
+  checkRole(['admin']),
+  controller.getAllColors.bind(controller)
+);
+
+router.get('/fonts',
+  authenticateJwt,
+  checkRole(['admin']),
+  controller.getAllFonts.bind(controller)
+);
 
 module.exports = router;

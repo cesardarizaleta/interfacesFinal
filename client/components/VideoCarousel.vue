@@ -11,28 +11,81 @@
     </div>
 
     <div class="relative max-w-7xl mx-auto">
-      <div ref="slickContainer" class="video-carousel">
-        <div
+      <swiper
+        ref="swiperRef"
+        :slides-per-view="1"
+        :space-between="0"
+        :loop="true"
+        :autoplay="{
+          delay: 8000,
+          disableOnInteraction: false,
+        }"
+        :pagination="{
+          el: '.swiper-pagination-custom',
+          clickable: true,
+        }"
+        :navigation="{
+          nextEl: '.swiper-button-next-custom',
+          prevEl: '.swiper-button-prev-custom',
+        }"
+        :breakpoints="{
+          320: {
+            slidesPerView: 1,
+            spaceBetween: 0,
+          },
+          640: {
+            slidesPerView: 1,
+            spaceBetween: 0,
+          },
+          1024: {
+            slidesPerView: 1,
+            spaceBetween: 0,
+          },
+        }"
+        @slide-change="onSlideChange"
+        @swiper="onSwiper"
+        class="video-carousel"
+      >
+        <swiper-slide
           v-for="(video, index) in videos"
           :key="index"
           class="video-slide"
-          :data-video-url="video.src"
-          :data-fallback-url="video.fallbackUrl"
-          :data-title="video.title"
           @click="openVideoModal(video)"
         >
-          <video
-            :src="video.src"
-            :poster="video.thumbnail"
-            preload="metadata"
-            :alt="video.alt"
-            class="w-full h-80 lg:h-96 object-cover"
-          />
-          <div class="play-button">
-            <span>Play</span>
+          <div class="video-wrapper" @click.stop="toggleVideoPlay(index)">
+            <video
+              :src="video.src"
+              :poster="video.thumbnail"
+              preload="metadata"
+              :alt="video.alt"
+              muted
+              playsinline
+              loop
+              class="w-full h-80 lg:h-96 object-cover rounded-lg"
+            />
+            <div class="play-button">
+              <svg class="w-12 h-12" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
+              </svg>
+            </div>
           </div>
-        </div>
+        </swiper-slide>
+      </swiper>
+
+      <!-- Custom Navigation -->
+      <div class="swiper-button-prev-custom">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
       </div>
+      <div class="swiper-button-next-custom">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </div>
+
+      <!-- Custom Pagination -->
+      <div class="swiper-pagination-custom"></div>
     </div>
 
     <!-- Modal de Video -->
@@ -77,6 +130,18 @@
 </template>
 
 <script>
+// Import Swiper components
+import SwiperCore from 'swiper'
+import { Swiper, SwiperSlide } from 'swiper/vue'
+
+// Import Swiper styles
+import 'swiper/css'
+import 'swiper/css/navigation'
+import 'swiper/css/pagination'
+
+// Configure Swiper modules
+SwiperCore.use([])
+
 // Import your actual videos
 import dog1 from '~/assets/videos/dog1.mp4'
 import dog2 from '~/assets/videos/dog2.mp4'
@@ -91,11 +156,18 @@ import mountain2 from '~/assets/videos/mountain2.mp4'
 
 export default {
   name: "VideoCarousel",
+  components: {
+    Swiper,
+    SwiperSlide,
+  },
   data() {
     return {
       videos: [],
       showModal: false,
       selectedVideo: null,
+      swiperRef: null,
+      currentVideoIndex: 0,
+      videoElements: [],
       videoDetails: {
         format: 'N/A',
         dimensions: 'N/A',
@@ -105,19 +177,13 @@ export default {
       }
     };
   },
-  async mounted() {
+  mounted() {
     this.loadVideos();
-    await this.initSlick();
-
     // Listen for storage changes to update carousel dynamically
     window.addEventListener('storage', this.handleStorageChange);
   },
   beforeUnmount() {
     window.removeEventListener('storage', this.handleStorageChange);
-    // Destroy Slick carousel if it exists
-    if (this.$refs.slickContainer && window.jQuery) {
-      window.jQuery(this.$refs.slickContainer).slick('unslick');
-    }
   },
   methods: {
     loadVideos() {
@@ -250,96 +316,161 @@ export default {
       if (event.key === 'uploadedVideos') {
         console.log('Uploaded videos changed, updating carousel...');
         this.loadVideos();
-        // Reinitialize slick with new videos
+        // Swiper will automatically update when videos array changes
         this.$nextTick(() => {
-          this.initSlick();
+          if (this.swiperRef) {
+            this.swiperRef.$el.swiper.update();
+          }
         });
       }
     },
+  },
+  mounted() {
+    this.loadVideos();
+    // Listen for storage changes to update carousel dynamically
+    window.addEventListener('storage', this.handleStorageChange);
+  },
+  beforeUnmount() {
+    window.removeEventListener('storage', this.handleStorageChange);
+  },
+  methods: {
+    loadVideos() {
+      // Static videos using imported video files
+      const staticVideos = [
+        {
+          src: dog1,
+          thumbnail: "/images/video-thumb1.jpg",
+          alt: "Dog Video 1",
+          title: "Dog Adventures 1",
+          description: "Beautiful dog moments captured in stunning quality",
+          category: "Pets",
+          duration: "2:30",
+          fallbackUrl: null
+        },
+        {
+          src: dog2,
+          thumbnail: "/images/video-thumb2.jpg",
+          alt: "Dog Video 2",
+          title: "Dog Adventures 2",
+          description: "Playful dog scenes in natural settings",
+          category: "Pets",
+          duration: "5:15",
+          fallbackUrl: null
+        },
+        {
+          src: dog3,
+          thumbnail: "/images/video-thumb3.jpg",
+          alt: "Dog Video 3",
+          title: "Dog Adventures 3",
+          description: "Heartwarming dog stories and moments",
+          category: "Pets",
+          duration: "3:45",
+          fallbackUrl: null
+        },
+        {
+          src: dog4,
+          thumbnail: "/images/video-thumb4.jpg",
+          alt: "Dog Video 4",
+          title: "Dog Adventures 4",
+          description: "Adorable dog behaviors and interactions",
+          category: "Pets",
+          duration: "4:20",
+          fallbackUrl: null
+        },
+        {
+          src: dog5,
+          thumbnail: "/images/video-thumb5.jpg",
+          alt: "Dog Video 5",
+          title: "Dog Adventures 5",
+          description: "Fun dog activities and adventures",
+          category: "Pets",
+          duration: "6:10",
+          fallbackUrl: null
+        },
+        {
+          src: dog6,
+          thumbnail: "/images/video-thumb6.jpg",
+          alt: "Dog Video 6",
+          title: "Dog Adventures 6",
+          description: "Cute dog moments and expressions",
+          category: "Pets",
+          duration: "3:30",
+          fallbackUrl: null
+        },
+        {
+          src: forest,
+          thumbnail: "/images/video-thumb7.jpg",
+          alt: "Forest Video",
+          title: "Forest Journey",
+          description: "Immersive journey through breathtaking forest landscapes",
+          category: "Nature",
+          duration: "4:45",
+          fallbackUrl: null
+        },
+        {
+          src: sunshine,
+          thumbnail: "/images/video-thumb8.jpg",
+          alt: "Sunshine Video",
+          title: "Sunshine Moments",
+          description: "Beautiful scenes captured in golden sunlight",
+          category: "Nature",
+          duration: "5:50",
+          fallbackUrl: null
+        },
+        {
+          src: mountain,
+          thumbnail: "/images/video-thumb9.jpg",
+          alt: "Mountain Video",
+          title: "Mountain Views",
+          description: "Stunning mountain landscapes and vistas",
+          category: "Nature",
+          duration: "3:15",
+          fallbackUrl: null
+        },
+        {
+          src: mountain2,
+          thumbnail: "/images/video-thumb10.jpg",
+          alt: "Mountain Video 2",
+          title: "Mountain Adventures",
+          description: "Epic mountain scenes and explorations",
+          category: "Nature",
+          duration: "7:20",
+          fallbackUrl: null
+        },
+      ];
 
-    async initSlick() {
-      // Wait for jQuery and Slick to be available
-      if (!window.jQuery) {
-        console.warn('jQuery not available, trying to load...');
-        await this.loadJQuery();
-      }
+      // Load uploaded videos from localStorage
+      const uploadedVideos = JSON.parse(localStorage.getItem('uploadedVideos') || '[]');
 
-      if (!window.jQuery.fn.slick) {
-        console.warn('Slick not available, trying to load...');
-        await this.loadSlick();
-      }
+      // Transform uploaded videos to carousel format
+      const transformedUploadedVideos = uploadedVideos.map(video => ({
+        src: video.url,
+        thumbnail: video.thumbnail || '/images/video-thumb-default.jpg',
+        alt: video.name || 'Uploaded Video',
+        title: video.name || 'Custom Video',
+        description: `Video personalizado - ${video.dimensions || 'Sin dimensiones'}`,
+        category: "Custom",
+        duration: video.duration || 'N/A',
+        fallbackUrl: null
+      }));
 
-      if (this.$refs.slickContainer && window.jQuery && window.jQuery.fn.slick) {
-        window.jQuery(this.$refs.slickContainer).slick({
-          slidesToShow: 3,
-          slidesToScroll: 1,
-          infinite: true,
-          dots: true,
-          arrows: true,
-          prevArrow: '<button type="button" class="slick-prev">Anterior</button>',
-          nextArrow: '<button type="button" class="slick-next">Siguiente</button>',
-          responsive: [
-            {
-              breakpoint: 1024,
-              settings: {
-                slidesToShow: 2
-              }
-            },
-            {
-              breakpoint: 600,
-              settings: {
-                slidesToShow: 1
-              }
-            }
-          ]
+      // Combine static and uploaded videos
+      this.videos = [...staticVideos, ...transformedUploadedVideos];
+
+      console.log('Video carousel loaded:', this.videos.length);
+    },
+
+    handleStorageChange(event) {
+      if (event.key === 'uploadedVideos') {
+        console.log('Uploaded videos changed, updating carousel...');
+        this.loadVideos();
+        // Swiper will automatically update when videos array changes
+        this.$nextTick(() => {
+          if (this.swiperRef) {
+            this.swiperRef.$el.swiper.update();
+          }
         });
-      } else {
-        console.error('Slick carousel could not be initialized');
       }
-    },
-
-    async loadJQuery() {
-      return new Promise((resolve, reject) => {
-        if (window.jQuery) {
-          resolve();
-          return;
-        }
-
-        const script = document.createElement('script');
-        script.src = 'https://code.jquery.com/jquery-3.6.0.min.js';
-        script.onload = resolve;
-        script.onerror = reject;
-        document.head.appendChild(script);
-      });
-    },
-
-    async loadSlick() {
-      return new Promise((resolve, reject) => {
-        if (window.jQuery && window.jQuery.fn.slick) {
-          resolve();
-          return;
-        }
-
-        // Load Slick CSS
-        const cssLink = document.createElement('link');
-        cssLink.rel = 'stylesheet';
-        cssLink.type = 'text/css';
-        cssLink.href = 'https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css';
-        document.head.appendChild(cssLink);
-
-        const themeLink = document.createElement('link');
-        themeLink.rel = 'stylesheet';
-        themeLink.type = 'text/css';
-        themeLink.href = 'https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css';
-        document.head.appendChild(themeLink);
-
-        // Load Slick JS
-        const script = document.createElement('script');
-        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js';
-        script.onload = resolve;
-        script.onerror = reject;
-        document.head.appendChild(script);
-      });
     },
 
     async openVideoModal(video) {
@@ -467,6 +598,112 @@ export default {
       const i = Math.floor(Math.log(bytes) / Math.log(k));
       return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
     },
+
+    onSwiper(swiper) {
+      this.swiperRef = swiper;
+      this.$nextTick(() => {
+        this.initializeVideoAutoplay();
+      });
+    },
+
+    onSlideChange(swiper) {
+      this.currentVideoIndex = swiper.activeIndex;
+      this.pauseAllVideos();
+      this.playCurrentVideo();
+    },
+
+    initializeVideoAutoplay() {
+      this.$nextTick(() => {
+        const videoElements = this.$el.querySelectorAll('video');
+        this.videoElements = Array.from(videoElements);
+
+        // Configurar autoplay para el primer video
+        if (this.videoElements.length > 0) {
+          this.setupVideoAutoplay(this.videoElements[0], 0);
+        }
+      });
+    },
+
+    setupVideoAutoplay(videoElement, index) {
+      if (!videoElement) return;
+
+      // Configurar el video para autoplay
+      videoElement.muted = true; // Necesario para autoplay en la mayoría de navegadores
+      videoElement.playsInline = true; // Para móviles
+      videoElement.preload = 'metadata';
+
+      // Intentar reproducir el video
+      const playPromise = videoElement.play();
+
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            console.log(`Video ${index} autoplay started`);
+          })
+          .catch(error => {
+            console.log(`Video ${index} autoplay failed:`, error);
+            // Mostrar play button si autoplay falla
+            const playButton = videoElement.parentElement.querySelector('.play-button');
+            if (playButton) {
+              playButton.style.display = 'flex';
+            }
+          });
+      }
+
+      // Manejar eventos del video
+      videoElement.addEventListener('ended', () => {
+        // Cuando termina el video, pasar al siguiente slide
+        if (this.swiperRef) {
+          this.swiperRef.slideNext();
+        }
+      });
+
+      videoElement.addEventListener('play', () => {
+        // Ocultar play button cuando el video está reproduciendo
+        const playButton = videoElement.parentElement.querySelector('.play-button');
+        if (playButton) {
+          playButton.style.display = 'none';
+        }
+      });
+
+      videoElement.addEventListener('pause', () => {
+        // Mostrar play button cuando el video está pausado
+        const playButton = videoElement.parentElement.querySelector('.play-button');
+        if (playButton) {
+          playButton.style.display = 'flex';
+        }
+      });
+    },
+
+    playCurrentVideo() {
+      if (this.videoElements[this.currentVideoIndex]) {
+        const video = this.videoElements[this.currentVideoIndex];
+        video.muted = true;
+        video.play().catch(error => {
+          console.log('Error playing current video:', error);
+        });
+      }
+    },
+
+    pauseAllVideos() {
+      this.videoElements.forEach(video => {
+        if (video && !video.paused) {
+          video.pause();
+        }
+      });
+    },
+
+    toggleVideoPlay(index) {
+      const video = this.videoElements[index];
+      if (video) {
+        if (video.paused) {
+          video.muted = false; // Quitar mute cuando el usuario hace click
+          video.play();
+        } else {
+          video.pause();
+        }
+      }
+    },
   },
 };
 </script>
@@ -479,39 +716,85 @@ export default {
 }
 
 /* Estilos personalizados para el carrusel */
-.swiper {
+:deep(.swiper) {
   padding: 0 0 60px 0;
   overflow: visible;
   width: 100%;
   max-width: 100%;
 }
 
-.swiper-wrapper {
+:deep(.swiper-wrapper) {
   width: 100%;
 }
 
-.swiper-slide {
+:deep(.swiper-slide) {
   height: auto;
   transition: transform 0.3s ease;
   width: auto;
 }
 
-.swiper-slide:not(.swiper-slide-active) {
+:deep(.swiper-slide:not(.swiper-slide-active)) {
   transform: scale(0.9);
   opacity: 0.7;
 }
 
-.swiper-slide-active {
+:deep(.swiper-slide-active) {
   transform: scale(1);
   opacity: 1;
 }
 
 /* Video specific styles */
-video {
+.video-wrapper {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.video-wrapper:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.video-slide video {
   width: 100%;
   height: 100%;
   object-fit: cover;
   border-radius: 1rem;
+  display: block;
+}
+
+/* Play button overlay */
+.play-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 50%;
+  padding: 1rem;
+  transition: all 0.3s ease;
+  z-index: 10;
+  display: none; /* Initially hidden, shown when needed */
+  align-items: center;
+  justify-content: center;
+}
+
+.play-button:hover {
+  background: rgba(0, 0, 0, 0.9);
+  transform: translate(-50%, -50%) scale(1.1);
+}
+
+.play-button svg {
+  color: white;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  width: 2rem;
+  height: 2rem;
 }
 
 /* Contenedor del carrusel con límites */
@@ -521,15 +804,56 @@ video {
 }
 
 /* Personalización de la paginación */
-:deep(.swiper-pagination-custom .swiper-pagination-bullet) {
+:deep(.swiper-pagination) {
+  bottom: 20px !important;
+}
+
+:deep(.swiper-pagination-bullet) {
   background: #d1d5db;
   opacity: 1;
   margin: 0 4px;
+  width: 12px;
+  height: 12px;
+  transition: all 0.3s ease;
 }
 
-:deep(.swiper-pagination-custom .swiper-pagination-bullet-active) {
-  background: var(--color-primary);
+:deep(.swiper-pagination-bullet-active) {
+  background: var(--color-primary, #3b82f6);
   transform: scale(1.2);
+}
+
+/* Custom Navigation */
+.swiper-button-prev-custom,
+.swiper-button-next-custom {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.swiper-button-prev-custom {
+  left: -25px;
+}
+
+.swiper-button-next-custom {
+  right: -25px;
+}
+
+.swiper-button-prev-custom:hover,
+.swiper-button-next-custom:hover {
+  background: rgba(255, 255, 255, 1);
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
 /* Ocultar navegación en móvil */
@@ -544,17 +868,86 @@ video {
     padding-left: 1rem;
     padding-right: 1rem;
   }
+
+  :deep(.swiper) {
+    padding-bottom: 40px;
+  }
 }
 
-/* Animaciones suaves */
-.swiper-button-prev-custom,
-.swiper-button-next-custom {
-  transition: all 0.3s ease;
+/* Modal styles */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
 }
 
-.swiper-button-prev-custom:hover,
-.swiper-button-next-custom:hover {
-  transform: translateY(-50%) scale(1.1);
+.modal-content {
+  background: white;
+  border-radius: 1rem;
+  padding: 2rem;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.close-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  color: #666;
+  transition: color 0.3s ease;
+}
+
+.close-button:hover {
+  color: #333;
+}
+
+.video-wrapper video {
+  width: 100%;
+  height: auto;
+  max-height: 70vh;
+  border-radius: 0.5rem;
+}
+
+.video-details {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 0.5rem;
+}
+
+.video-details h4 {
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.video-details p {
+  margin: 0.25rem 0;
+  color: #666;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 /* Prevenir overflow en el body */
@@ -569,22 +962,22 @@ video {
 
 /* Clases de color dinámicas */
 .text-primary {
-  color: var(--text-primary);
+  color: var(--text-primary, #1f2937);
 }
 
 .text-secondary {
-  color: var(--text-secondary);
+  color: var(--text-secondary, #6b7280);
 }
 
 .text-accent {
-  color: var(--color-accent);
+  color: var(--color-accent, #3b82f6);
 }
 
 .bg-neutral {
-  background-color: var(--background-neutral);
+  background-color: var(--background-neutral, #f9fafb);
 }
 
 .bg-secondary {
-  background-color: var(--color-secondary);
+  background-color: var(--color-secondary, #e5e7eb);
 }
 </style>
