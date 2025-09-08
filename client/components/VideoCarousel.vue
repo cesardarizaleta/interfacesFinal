@@ -53,6 +53,18 @@
           @click="openVideoModal(video)"
         >
           <div class="video-wrapper" @click.stop="toggleVideoPlay(index)">
+            <!-- Botón de detalles flotante -->
+            <button
+              class="details-button"
+              @click.stop="showVideoDetails(video)"
+              title="Ver detalles técnicos"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span class="details-text">Detalles</span>
+            </button>
+
             <video
               :src="video.src"
               :poster="video.thumbnail"
@@ -122,6 +134,103 @@
       </div>
     </div>
 
+    <!-- Modal de Detalles Técnicos -->
+    <div v-if="showDetailsModal" class="details-modal" @click="closeDetailsModal">
+      <div class="details-modal-content" @click.stop>
+        <span class="close-button" @click="closeDetailsModal">&times;</span>
+        <div class="details-header">
+          <h3>Detalles Técnicos del Video</h3>
+          <p class="video-title">{{ selectedVideoDetails?.title }}</p>
+        </div>
+
+        <div class="technical-details">
+          <div class="detail-item">
+            <div class="detail-icon">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2m-9 0h10m-9 0V1m10 3V1m0 3l1 1v16a2 2 0 01-2 2H6a2 2 0 01-2-2V5l1-1z" />
+              </svg>
+            </div>
+            <div class="detail-content">
+              <span class="detail-label">Formato</span>
+              <span class="detail-value">{{ videoDetails.format }}</span>
+            </div>
+          </div>
+
+          <div class="detail-item">
+            <div class="detail-icon">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <div class="detail-content">
+              <span class="detail-label">Dimensiones</span>
+              <span class="detail-value">{{ videoDetails.dimensions }}</span>
+            </div>
+          </div>
+
+          <div class="detail-item">
+            <div class="detail-icon">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div class="detail-content">
+              <span class="detail-label">Duración</span>
+              <span class="detail-value">{{ videoDetails.duration }}</span>
+            </div>
+          </div>
+
+          <div class="detail-item">
+            <div class="detail-icon">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </div>
+            <div class="detail-content">
+              <span class="detail-label">Tamaño</span>
+              <span class="detail-value">{{ videoDetails.size }}</span>
+            </div>
+          </div>
+
+          <div class="detail-item">
+            <div class="detail-icon">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+              </svg>
+            </div>
+            <div class="detail-content">
+              <span class="detail-label">Categoría</span>
+              <span class="detail-value">{{ selectedVideoDetails?.category || 'N/A' }}</span>
+            </div>
+          </div>
+
+          <div class="detail-item">
+            <div class="detail-icon">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
+            <div class="detail-content">
+              <span class="detail-label">Estado</span>
+              <span class="detail-value status-active">Activo</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="details-actions">
+          <button class="action-button primary" @click="openVideoModal(selectedVideoDetails)">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1.586a1 1 0 01.707.293l.707.707A1 1 0 0012.414 11H15m2 0h1.586a1 1 0 01.707.293l.707.707A1 1 0 0020.414 12H21M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Ver Video Completo
+          </button>
+          <button class="action-button secondary" @click="closeDetailsModal">
+            Cerrar
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- Círculo decorativo -->
     <div
       class="bg-neutral h-32 w-32 rounded-full absolute -top-10 -right-10 -z-10 opacity-50"
@@ -168,6 +277,8 @@ export default {
       swiperRef: null,
       currentVideoIndex: 0,
       videoElements: [],
+      showDetailsModal: false,
+      selectedVideoDetails: null,
       videoDetails: {
         format: 'N/A',
         dimensions: 'N/A',
@@ -603,6 +714,7 @@ export default {
       this.swiperRef = swiper;
       this.$nextTick(() => {
         this.initializeVideoAutoplay();
+        this.initializeNavigation();
       });
     },
 
@@ -610,6 +722,25 @@ export default {
       this.currentVideoIndex = swiper.activeIndex;
       this.pauseAllVideos();
       this.playCurrentVideo();
+    },
+
+    initializeNavigation() {
+      this.$nextTick(() => {
+        const prevButton = this.$el.querySelector('.swiper-button-prev-custom');
+        const nextButton = this.$el.querySelector('.swiper-button-next-custom');
+
+        if (prevButton && this.swiperRef) {
+          prevButton.addEventListener('click', () => {
+            this.swiperRef.slidePrev();
+          });
+        }
+
+        if (nextButton && this.swiperRef) {
+          nextButton.addEventListener('click', () => {
+            this.swiperRef.slideNext();
+          });
+        }
+      });
     },
 
     initializeVideoAutoplay() {
@@ -702,6 +833,36 @@ export default {
         } else {
           video.pause();
         }
+      }
+    },
+
+    showVideoDetails(video) {
+      this.selectedVideoDetails = video;
+      this.showDetailsModal = true;
+
+      // Obtener detalles técnicos del video
+      this.getVideoTechnicalDetails(video);
+    },
+
+    closeDetailsModal() {
+      this.showDetailsModal = false;
+      this.selectedVideoDetails = null;
+    },
+
+    async getVideoTechnicalDetails(video) {
+      try {
+        const details = await this.getVideoDetails(video.src, video.fallbackUrl);
+        this.videoDetails = details;
+      } catch (error) {
+        console.error('Error obteniendo detalles técnicos:', error);
+        // Valores por defecto si falla la carga
+        this.videoDetails = {
+          format: 'N/A',
+          dimensions: 'N/A',
+          duration: video.duration || 'N/A',
+          size: 'N/A',
+          name: video.title
+        };
       }
     },
   },
@@ -800,7 +961,17 @@ export default {
 /* Contenedor del carrusel con límites */
 .relative.max-w-7xl {
   max-width: 100%;
-  overflow: hidden;
+  overflow: visible;
+  position: relative;
+  padding-left: 80px;
+  padding-right: 80px;
+  margin: 0 auto;
+}
+
+/* Asegurar que el swiper container no corte las flechas */
+:deep(.swiper) {
+  overflow: visible !important;
+  position: relative;
 }
 
 /* Personalización de la paginación */
@@ -828,17 +999,19 @@ export default {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  z-index: 10;
-  background: rgba(255, 255, 255, 0.9);
+  z-index: 20;
+  background: rgba(255, 255, 255, 0.95);
   border-radius: 50%;
   width: 50px;
   height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   transition: all 0.3s ease;
   cursor: pointer;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
 }
 
 .swiper-button-prev-custom {
@@ -853,24 +1026,70 @@ export default {
 .swiper-button-next-custom:hover {
   background: rgba(255, 255, 255, 1);
   transform: translateY(-50%) scale(1.1);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  border-color: rgba(0, 0, 0, 0.2);
 }
 
-/* Ocultar navegación en móvil */
+.swiper-button-prev-custom svg,
+.swiper-button-next-custom svg {
+  color: #374151;
+  width: 20px;
+  height: 20px;
+  stroke-width: 2.5;
+}
+
+/* Responsive adjustments */
 @media (max-width: 768px) {
+  .relative.max-w-7xl {
+    padding-left: 60px;
+    padding-right: 60px;
+  }
+
   .swiper-button-prev-custom,
   .swiper-button-next-custom {
-    display: none;
+    width: 45px;
+    height: 45px;
   }
 
-  /* Ajustes adicionales para móvil */
-  .video-carousel-container {
-    padding-left: 1rem;
-    padding-right: 1rem;
+  .swiper-button-prev-custom {
+    left: -22px;
   }
 
-  :deep(.swiper) {
-    padding-bottom: 40px;
+  .swiper-button-next-custom {
+    right: -22px;
+  }
+
+  .swiper-button-prev-custom svg,
+  .swiper-button-next-custom svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .relative.max-w-7xl {
+    padding-left: 55px;
+    padding-right: 55px;
+  }
+
+  .swiper-button-prev-custom,
+  .swiper-button-next-custom {
+    width: 40px;
+    height: 40px;
+  }
+
+  .swiper-button-prev-custom {
+    left: -20px;
+  }
+
+  .swiper-button-next-custom {
+    right: -20px;
+  }
+
+  .swiper-button-prev-custom svg,
+  .swiper-button-next-custom svg {
+    width: 16px;
+    height: 16px;
   }
 }
 
@@ -979,5 +1198,216 @@ export default {
 
 .bg-secondary {
   background-color: var(--color-secondary, #e5e7eb);
+}
+
+/* Botón flotante de detalles */
+.details-button {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 15;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.details-button:hover {
+  background: rgba(255, 255, 255, 1);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+.details-button svg {
+  color: #6b7280;
+}
+
+.details-text {
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+/* Modal de detalles técnicos */
+.details-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  animation: fadeIn 0.3s ease;
+}
+
+.details-modal-content {
+  background: white;
+  border-radius: 16px;
+  padding: 0;
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+}
+
+.details-header {
+  padding: 24px 24px 20px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: center;
+}
+
+.details-header h3 {
+  margin: 0 0 8px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.video-title {
+  margin: 0;
+  font-size: 16px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.technical-details {
+  padding: 24px;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.detail-item:last-child {
+  border-bottom: none;
+}
+
+.detail-icon {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  background: #f3f4f6;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+}
+
+.detail-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.detail-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.detail-value {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.status-active {
+  color: #10b981 !important;
+}
+
+.details-actions {
+  padding: 24px;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.action-button {
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+}
+
+.action-button.primary {
+  background: #3b82f6;
+  color: white;
+}
+
+.action-button.primary:hover {
+  background: #2563eb;
+  transform: translateY(-1px);
+}
+
+.action-button.secondary {
+  background: #f3f4f6;
+  color: #374151;
+  border: 1px solid #d1d5db;
+}
+
+.action-button.secondary:hover {
+  background: #e5e7eb;
+  border-color: #9ca3af;
+}
+
+/* Responsive adjustments for details modal */
+@media (max-width: 640px) {
+  .details-modal-content {
+    width: 95%;
+    margin: 20px;
+  }
+
+  .technical-details {
+    padding: 20px;
+  }
+
+  .details-actions {
+    padding: 20px;
+    flex-direction: column;
+  }
+
+  .action-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .details-button {
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+
+  .details-text {
+    display: none;
+  }
 }
 </style>

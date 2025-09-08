@@ -73,9 +73,9 @@
                   <Icon name="heroicons:user-circle" class="icon" />
                   <span>Profile</span>
                 </NuxtLink>
-                <NuxtLink v-if="userRole === 'admin'" to="/admin" class="dropdown-item">
+                <NuxtLink v-if="userRole === 'admin'" to="/admin/users" class="dropdown-item">
                   <Icon name="heroicons:chart-bar" class="icon" />
-                  <span>Dashboard</span>
+                  <span>Usuarios</span>
                 </NuxtLink>
                 <NuxtLink v-if="userRole === 'admin'" to="/admin/gallery" class="dropdown-item">
                   <Icon name="heroicons:photo" class="icon" />
@@ -152,9 +152,9 @@
             <Icon name="heroicons:user-circle" class="icon" />
             <span>Profile</span>
           </NuxtLink>
-          <NuxtLink v-if="userRole === 'admin'" to="/admin" class="mobile-link" @click="closeMobileMenu">
+          <NuxtLink v-if="userRole === 'admin'" to="/admin/users" class="mobile-link" @click="closeMobileMenu">
             <Icon name="heroicons:chart-bar" class="icon" />
-            <span>Dashboard</span>
+            <span>Usuarios</span>
           </NuxtLink>
           <NuxtLink v-if="userRole === 'admin'" to="/admin/gallery" class="mobile-link" @click="closeMobileMenu">
             <Icon name="heroicons:photo" class="icon" />
