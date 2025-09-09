@@ -1,15 +1,32 @@
-const { config } = require('./../config/config');
+require('dotenv').config();
 
 module.exports = {
-    development: {
-        url: config.db_url,
-        dialect: 'postgres',
-    },
-    production: {
-        url: config.db_url,
+    dev: {
+        url: process.env.DATABASE_URL,
         dialect: 'postgres',
         dialectOptions: {
             ssl: {
+                require: true,
+                rejectUnauthorized: false
+            }
+        }
+    },
+    development: {
+        url: process.env.DATABASE_URL,
+        dialect: 'postgres',
+        dialectOptions: {
+            ssl: {
+                require: true,
+                rejectUnauthorized: false
+            }
+        }
+    },
+    production: {
+        url: process.env.DATABASE_URL,
+        dialect: 'postgres',
+        dialectOptions: {
+            ssl: {
+                require: true,
                 rejectUnauthorized: false
             }
         }

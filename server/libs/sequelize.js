@@ -55,6 +55,22 @@ if (config.isProd) {
 
 console.log('Sequelize final options:', options);
 
+// Add diagnostic logging for DNS resolution (async check)
+const dns = require('dns').promises;
+const url = require('url');
+const dbUrlParsed = url.parse(config.db_url);
+
+console.log('Attempting to resolve hostname:', dbUrlParsed.hostname);
+
+// Perform DNS check asynchronously without top-level await
+dns.lookup(dbUrlParsed.hostname)
+  .then(addresses => {
+    console.log('DNS resolution successful for', dbUrlParsed.hostname, ':', addresses);
+  })
+  .catch(dnsError => {
+    console.error('DNS resolution failed for', dbUrlParsed.hostname, ':', dnsError.message);
+  });
+
 const sequelize = new Sequelize(config.db_url, options);
 
 setupModels(sequelize);

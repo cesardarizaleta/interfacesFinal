@@ -10,6 +10,7 @@ const port = process.env.PORT || 3000;
 // Initialize database
 (async () => {
   try {
+    logger.info('Attempting to connect to database...');
     await sequelize.authenticate();
     logger.info('Database connection established successfully');
 
@@ -17,7 +18,16 @@ const port = process.env.PORT || 3000;
     await sequelize.sync();
     logger.info('Database synchronized successfully');
   } catch (error) {
-    logger.error('Error connecting to database:', error);
+    logger.error('Error connecting to database:', {
+      message: error.message,
+      name: error.name,
+      code: error.code,
+      errno: error.errno,
+      hostname: error.hostname,
+      syscall: error.syscall,
+      stack: error.stack
+    });
+    // Don't exit process, let server continue running
   }
 })();
 
