@@ -4,17 +4,21 @@ const routerApi = require('./routes');
 const { setupSecurityMiddlewares, setupCors, setupStaticFiles } = require('./middlewares/setup');
 const logger = require('./utils/logger');
 const container = require('./container'); // Initialize dependency injection container
+const sequelize = require('./libs/sequelize'); // Initialize Sequelize
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Initialize data
-const { initializeData } = require('./utils/init-data');
+// Initialize database
 (async () => {
   try {
-    await initializeData();
-    logger.info('Data initialization completed successfully');
+    await sequelize.authenticate();
+    logger.info('Database connection established successfully');
+
+    // Sync database (create tables if they don't exist)
+    await sequelize.sync();
+    logger.info('Database synchronized successfully');
   } catch (error) {
-    logger.error('Error initializing data:', error);
+    logger.error('Error connecting to database:', error);
   }
 })();
 

@@ -1,38 +1,44 @@
 const boom = require('@hapi/boom');
 const logger = require('../utils/logger');
+const { models } = require('../db/models/index');
 
 class FontsService {
-  constructor(repository) {
-    this.repository = repository;
+  constructor() {
+    this.Font = models.Font;
   }
 
   async find() {
-    return await this.repository.findAll();
+    const fonts = await this.Font.findAll();
+    return fonts.map(font => font.toJSON());
   }
 
   async findOne(id) {
-    return await this.repository.findById(id);
+    const font = await this.Font.findByPk(id);
+    if (!font) {
+      throw boom.notFound('Font not found');
+    }
+    return font.toJSON();
   }
 
   async findByUser(userId) {
-    const fonts = await this.repository.findAll();
-    return fonts.filter(font => font.userId === userId);
+    const fonts = await this.Font.findAll({ where: { userId } });
+    return fonts.map(font => font.toJSON());
   }
 
   async findByName(name) {
-    const font = await this.repository.findByName(name);
+    const font = await this.Font.findOne({ where: { name } });
     if (!font) {
       throw boom.notFound('Font not found');
     }
-    return font;
+    return font.toJSON();
   }
 
   async findByFamily(family) {
-    const font = await this.repository.findByFamily(family);
+    const font = await this.Font.findOne({ where: { fontFamily: family } });
     if (!font) {
       throw boom.notFound('Font not found');
     }
-    return font;
+    return font.toJSON();
   }
 
   async create(data) {
@@ -45,36 +51,53 @@ class FontsService {
       fontStyle: data.fontStyle || 'normal',
       fontFormat: data.fontFormat || 'ttf',
       userId: data.userId,
-      uploadedAt: new Date().toISOString(),
+      uploadedAt: new Date(),
       lastUsedAt: null
     };
-    return await this.repository.create(fontData);
+    const newFont = await this.Font.create(fontData);
+    return newFont.toJSON();
   }
 
   async update(id, data) {
+    const font = await this.Font.findByPk(id);
+    if (!font) {
+      throw boom.notFound('Font not found');
+    }
+
     const fontData = {
       ...data,
-      lastUsedAt: data.lastUsedAt || new Date().toISOString()
+      lastUsedAt: data.lastUsedAt || new Date()
     };
-    return await this.repository.update(id, fontData);
+
+    await font.update(fontData);
+    return font.toJSON();
   }
 
   async delete(id) {
-    return await this.repository.delete(id);
+    const font = await this.Font.findByPk(id);
+    if (!font) {
+      throw boom.notFound('Font not found');
+    }
+    await font.destroy();
+    return font.toJSON();
   }
 
   async findLastUsedByUserId(userId) {
-    const fonts = await this.repository.findAll();
-    const userFonts = fonts.filter(font => font.userId === userId);
-    return userFonts.sort((a, b) => new Date(b.lastUsedAt || 0) - new Date(a.lastUsedAt || 0));
+    const fonts = await this.Font.findAll({
+      where: { userId },
+      order: [['lastUsedAt', 'DESC']]
+    });
+    return fonts.map(font => font.toJSON());
   }
 
   async findOneByIdAndUserId(fontId, userId) {
-    const font = await this.repository.findById(fontId);
-    if (font.userId !== userId) {
+    const font = await this.Font.findOne({
+      where: { id: fontId, userId }
+    });
+    if (!font) {
       throw boom.forbidden('Access denied');
     }
-    return font;
+    return font.toJSON();
   }
 }
 

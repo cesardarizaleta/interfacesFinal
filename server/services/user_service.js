@@ -1,77 +1,105 @@
 const boom = require('@hapi/boom');
 const bcrypt = require('bcrypt');
+const { models } = require('../db/models/index');
 
 class UsersService {
-  constructor(repository) {
-    this.repository = repository;
+  constructor() {
+    this.User = models.User;
   }
 
   async find() {
-    const users = await this.repository.findAll();
+    const users = await this.User.findAll();
     return users.map(user => {
-      const { password, ...userWithoutPassword } = user;
+      const userData = user.toJSON();
+      const { password, ...userWithoutPassword } = userData;
       return userWithoutPassword;
     });
   }
 
   async findOne(id) {
-    const user = await this.repository.findById(id);
-    const { password, ...userWithoutPassword } = user;
+    const user = await this.User.findByPk(id);
+    if (!user) {
+      throw boom.notFound('User not found');
+    }
+    const userData = user.toJSON();
+    const { password, ...userWithoutPassword } = userData;
     return userWithoutPassword;
   }
 
   async findByEmail(email) {
-    const user = await this.repository.findByEmail(email);
+    const user = await this.User.findOne({ where: { email } });
     if (!user) {
       throw boom.notFound('User not found');
     }
-    const { password, ...userWithoutPassword } = user;
+    const userData = user.toJSON();
+    const { password, ...userWithoutPassword } = userData;
     return userWithoutPassword;
   }
 
   async findByEmailWithPassword(email) {
-    const user = await this.repository.findByEmail(email);
+    const user = await this.User.findOne({ where: { email } });
     if (!user) {
       throw boom.notFound('User not found');
     }
-    return user;
+    return user.toJSON();
   }
 
   async findByUsername(username) {
-    const user = await this.repository.findByUsername(username);
+    const user = await this.User.findOne({ where: { username } });
     if (!user) {
       throw boom.notFound('User not found');
     }
-    const { password, ...userWithoutPassword } = user;
+    const userData = user.toJSON();
+    const { password, ...userWithoutPassword } = userData;
     return userWithoutPassword;
   }
 
   async create(data) {
     // Check if user already exists
-    const existingUser = await this.repository.findByEmail(data.email);
+    const existingUser = await this.User.findOne({ where: { email: data.email } });
     if (existingUser) {
       throw boom.conflict('User with this email already exists');
     }
 
     const userData = this._buildUserData(data);
-    const newUser = await this.repository.create(userData);
-    const { password, ...userWithoutPassword } = newUser;
+    const newUser = await this.User.create(userData);
+    const userDataJson = newUser.toJSON();
+    const { password, ...userWithoutPassword } = userDataJson;
     return userWithoutPassword;
   }
 
   async update(id, data) {
+    const user = await this.User.findByPk(id);
+    if (!user) {
+      throw boom.notFound('User not found');
+    }
+
     const userData = this._buildUserData(data);
-    const updatedUser = await this.repository.update(id, userData);
-    const { password, ...userWithoutPassword } = updatedUser;
+    await user.update(userData);
+    const updatedData = user.toJSON();
+    const { password, ...userWithoutPassword } = updatedData;
     return userWithoutPassword;
   }
 
   async delete(id) {
-    return await this.repository.delete(id);
+    const user = await this.User.findByPk(id);
+    if (!user) {
+      throw boom.notFound('User not found');
+    }
+    await user.destroy();
+    return user.toJSON();
   }
 
   async getUserStats() {
-    return await this.repository.getUserStats();
+    const totalUsers = await this.User.count();
+    const adminUsers = await this.User.count({ where: { role: 'admin' } });
+    const regularUsers = totalUsers - adminUsers;
+
+    return {
+      totalUsers,
+      adminUsers,
+      regularUsers
+    };
   }
 
   async validatePassword(plainPassword, hashedPassword) {
@@ -79,9 +107,10 @@ class UsersService {
   }
 
   async findByRole(role) {
-    const users = await this.repository.findAll();
-    return users.filter(user => user.role === role).map(user => {
-      const { password, ...userWithoutPassword } = user;
+    const users = await this.User.findAll({ where: { role } });
+    return users.map(user => {
+      const userData = user.toJSON();
+      const { password, ...userWithoutPassword } = userData;
       return userWithoutPassword;
     });
   }
@@ -91,9 +120,14 @@ class UsersService {
       throw boom.badRequest('Invalid role. Only admin and user roles are allowed.');
     }
 
-    const user = await this.repository.findById(id);
-    const updatedUser = await this.repository.update(id, { role });
-    const { password, ...userWithoutPassword } = updatedUser;
+    const user = await this.User.findByPk(id);
+    if (!user) {
+      throw boom.notFound('User not found');
+    }
+
+    await user.update({ role });
+    const updatedData = user.toJSON();
+    const { password, ...userWithoutPassword } = updatedData;
     return userWithoutPassword;
   }
 

@@ -1,37 +1,43 @@
 const boom = require('@hapi/boom');
+const { models } = require('../db/models/index');
 
 class ColorsService {
-  constructor(repository) {
-    this.repository = repository;
+  constructor() {
+    this.Color = models.Color;
   }
 
   async find() {
-    return await this.repository.findAll();
+    const colors = await this.Color.findAll();
+    return colors.map(color => color.toJSON());
   }
 
   async findOne(id) {
-    return await this.repository.findById(id);
+    const color = await this.Color.findByPk(id);
+    if (!color) {
+      throw boom.notFound('Color not found');
+    }
+    return color.toJSON();
   }
 
   async findByUser(userId) {
-    const colors = await this.repository.findAll();
-    return colors.filter(color => color.userId === userId);
+    const colors = await this.Color.findAll({ where: { userId } });
+    return colors.map(color => color.toJSON());
   }
 
   async findByName(name) {
-    const color = await this.repository.findByName(name);
+    const color = await this.Color.findOne({ where: { name } });
     if (!color) {
       throw boom.notFound('Color not found');
     }
-    return color;
+    return color.toJSON();
   }
 
   async findByHex(hex) {
-    const color = await this.repository.findByHex(hex);
+    const color = await this.Color.findOne({ where: { hex } });
     if (!color) {
       throw boom.notFound('Color not found');
     }
-    return color;
+    return color.toJSON();
   }
 
   async create(data) {
@@ -41,77 +47,108 @@ class ColorsService {
       isDefault: data.isDefault || false,
       isActive: data.isActive || false
     };
-    return await this.repository.create(colorData);
+    const newColor = await this.Color.create(colorData);
+    return newColor.toJSON();
   }
 
   async update(id, data) {
+    const color = await this.Color.findByPk(id);
+    if (!color) {
+      throw boom.notFound('Color not found');
+    }
+
     const colorData = {
       ...data,
-      lastUsedAt: data.lastUsedAt || new Date().toISOString()
+      lastUsedAt: data.lastUsedAt || new Date()
     };
-    return await this.repository.update(id, colorData);
+
+    await color.update(colorData);
+    return color.toJSON();
   }
 
   async delete(id) {
-    return await this.repository.delete(id);
+    const color = await this.Color.findByPk(id);
+    if (!color) {
+      throw boom.notFound('Color not found');
+    }
+    await color.destroy();
+    return color.toJSON();
   }
 
   async toggleActive(id) {
-    const color = await this.repository.findById(id);
-    const updatedColor = await this.repository.update(id, {
-      isActive: !color.isActive
-    });
-    return updatedColor;
+    const color = await this.Color.findByPk(id);
+    if (!color) {
+      throw boom.notFound('Color not found');
+    }
+
+    await color.update({ isActive: !color.isActive });
+    return color.toJSON();
   }
 
   async setAsDefault(id, userId) {
-    const colors = await this.repository.findAll();
-    const userColors = colors.filter(color => color.userId === userId);
-
     // Remove default from all user colors
-    for (const color of userColors) {
-      if (color.isDefault) {
-        await this.repository.update(color.id, { isDefault: false });
-      }
-    }
+    await this.Color.update(
+      { isDefault: false },
+      { where: { userId, isDefault: true } }
+    );
 
     // Set the specified color as default
-    return await this.repository.update(id, { isDefault: true });
+    const color = await this.Color.findByPk(id);
+    if (!color) {
+      throw boom.notFound('Color not found');
+    }
+
+    await color.update({ isDefault: true });
+    return color.toJSON();
   }
 
   async findLastUsedByUserId(userId) {
-    const colors = await this.repository.findAll();
-    const userColors = colors.filter(color => color.userId === userId);
-    return userColors.sort((a, b) => new Date(b.lastUsedAt || 0) - new Date(a.lastUsedAt || 0));
+    const colors = await this.Color.findAll({
+      where: { userId },
+      order: [['lastUsedAt', 'DESC']]
+    });
+    return colors.map(color => color.toJSON());
   }
 
   async findActiveByUserId(userId) {
-    const colors = await this.repository.findAll();
-    return colors.filter(color => color.userId === userId && color.isActive);
+    const colors = await this.Color.findAll({
+      where: { userId, isActive: true }
+    });
+    return colors.map(color => color.toJSON());
   }
 
   async activatePalette(id, userId) {
-    const color = await this.repository.findById(id);
+    const color = await this.Color.findByPk(id);
+    if (!color) {
+      throw boom.notFound('Color not found');
+    }
     if (color.userId !== userId) {
       throw boom.forbidden('Access denied');
     }
-    return await this.repository.update(id, { isActive: true });
+    await color.update({ isActive: true });
+    return color.toJSON();
   }
 
   async deactivatePalette(id, userId) {
-    const color = await this.repository.findById(id);
+    const color = await this.Color.findByPk(id);
+    if (!color) {
+      throw boom.notFound('Color not found');
+    }
     if (color.userId !== userId) {
       throw boom.forbidden('Access denied');
     }
-    return await this.repository.update(id, { isActive: false });
+    await color.update({ isActive: false });
+    return color.toJSON();
   }
 
   async findOneByIdAndUserId(colorId, userId) {
-    const color = await this.repository.findById(colorId);
-    if (color.userId !== userId) {
+    const color = await this.Color.findOne({
+      where: { id: colorId, userId }
+    });
+    if (!color) {
       throw boom.forbidden('Access denied');
     }
-    return color;
+    return color.toJSON();
   }
 }
 

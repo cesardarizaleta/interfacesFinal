@@ -1,56 +1,61 @@
 const { Model, DataTypes, Sequelize } = require('sequelize');
 
-const FONT_TABLE = 'fonts';
+const GALLERY_TABLE = 'gallery';
 
-const FontSchema = {
+const GallerySchema = {
   id: {
     allowNull: false,
     autoIncrement: true,
     primaryKey: true,
     type: DataTypes.INTEGER,
   },
-  name: {
+  title: {
     allowNull: false,
     type: DataTypes.STRING,
   },
-  fontFamily: {
-    allowNull: false,
-    type: DataTypes.STRING,
-    field: 'font_family',
-  },
-  fontType: {
-    allowNull: false,
-    type: DataTypes.STRING,
-    field: 'font_type',
-    defaultValue: 'general',
-  },
-  fontFilePath: {
+  description: {
     allowNull: true,
-    type: DataTypes.STRING,
-    field: 'font_file_path',
+    type: DataTypes.TEXT,
   },
-  fontWeight: {
+  category: {
     allowNull: false,
     type: DataTypes.STRING,
-    field: 'font_weight',
-    defaultValue: 'normal',
   },
-  fontStyle: {
+  type: {
     allowNull: false,
     type: DataTypes.STRING,
-    field: 'font_style',
-    defaultValue: 'normal',
+    defaultValue: 'image',
   },
-  fontFormat: {
+  filename: {
     allowNull: false,
     type: DataTypes.STRING,
-    field: 'font_format',
-    defaultValue: 'ttf',
   },
-  userId: {
+  originalName: {
+    allowNull: false,
+    type: DataTypes.STRING,
+    field: 'original_name',
+  },
+  mimeType: {
+    allowNull: false,
+    type: DataTypes.STRING,
+    field: 'mime_type',
+  },
+  size: {
     allowNull: false,
     type: DataTypes.INTEGER,
-    field: 'user_id',
+  },
+  path: {
+    allowNull: false,
+    type: DataTypes.STRING,
+  },
+  thumbnail: {
+    allowNull: true,
+    type: DataTypes.STRING,
+  },
+  uploadedBy: {
+    allowNull: false,
+    type: DataTypes.INTEGER,
+    field: 'uploaded_by',
     references: {
       model: 'users',
       key: 'id'
@@ -62,10 +67,19 @@ const FontSchema = {
     field: 'uploaded_at',
     defaultValue: Sequelize.NOW,
   },
-  lastUsedAt: {
+  isActive: {
+    allowNull: false,
+    type: DataTypes.BOOLEAN,
+    field: 'is_active',
+    defaultValue: true,
+  },
+  tags: {
     allowNull: true,
-    type: DataTypes.DATE,
-    field: 'last_used_at',
+    type: DataTypes.JSON,
+  },
+  metadata: {
+    allowNull: true,
+    type: DataTypes.JSON,
   },
   createdAt: {
     allowNull: false,
@@ -81,23 +95,23 @@ const FontSchema = {
   }
 }
 
-class Font extends Model {
+class Gallery extends Model {
   static associate(models) {
     this.belongsTo(models.User, {
-      as: 'user',
-      foreignKey: 'userId'
+      as: 'uploader',
+      foreignKey: 'uploadedBy'
     });
   }
 
   static config(sequelize) {
     return {
       sequelize,
-      tableName: FONT_TABLE,
-      modelName: 'Font',
+      tableName: GALLERY_TABLE,
+      modelName: 'Gallery',
       timestamps: true,
       underscored: true,
     }
   }
 }
 
-module.exports = { FONT_TABLE, FontSchema, Font };
+module.exports = { GALLERY_TABLE, GallerySchema, Gallery };

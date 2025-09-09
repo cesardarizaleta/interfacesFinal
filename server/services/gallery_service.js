@@ -1,43 +1,46 @@
 const boom = require('@hapi/boom');
 const fs = require('fs').promises;
 const path = require('path');
+const { models } = require('../db/models/index');
 
 class GalleryService {
-  constructor(repository) {
-    this.repository = repository;
+  constructor() {
+    this.Gallery = models.Gallery;
     this.uploadDir = path.join(__dirname, '../uploads/gallery');
     this.thumbnailDir = path.join(this.uploadDir, 'thumbnails');
   }
 
   async findAll(filters = {}) {
-    let items = await this.repository.findAll();
+    const whereClause = {};
 
     // Apply filters
     if (filters.category) {
-      items = items.filter(item => item.category === filters.category);
+      whereClause.category = filters.category;
     }
 
     if (filters.type) {
-      items = items.filter(item => item.type === filters.type);
+      whereClause.type = filters.type;
     }
 
     if (filters.isActive !== undefined) {
-      items = items.filter(item => item.isActive === filters.isActive);
+      whereClause.isActive = filters.isActive;
     }
 
-    return items;
+    const items = await this.Gallery.findAll({ where: whereClause });
+    return items.map(item => item.toJSON());
   }
 
   async findById(id) {
-    const item = await this.repository.findById(id);
+    const item = await this.Gallery.findByPk(id);
     if (!item) {
       throw boom.notFound('Gallery item not found');
     }
-    return item;
+    return item.toJSON();
   }
 
   async findByCategory(category) {
-    return await this.repository.findByCategory(category);
+    const items = await this.Gallery.findAll({ where: { category } });
+    return items.map(item => item.toJSON());
   }
 
   async create(data, file) {
@@ -78,7 +81,8 @@ class GalleryService {
         metadata: data.metadata || {}
       };
 
-      return await this.repository.create(galleryData);
+      const newItem = await this.Gallery.create(galleryData);
+      return newItem.toJSON();
     } catch (error) {
       // Clean up file if creation fails
       if (file && file.path) {
@@ -101,28 +105,39 @@ class GalleryService {
       updatedAt: new Date().toISOString()
     };
 
-    return await this.repository.update(id, updateData);
+    const item = await this.Gallery.findByPk(id);
+    if (!item) {
+      throw boom.notFound('Gallery item not found');
+    }
+
+    await item.update(updateData);
+    return item.toJSON();
   }
 
   async delete(id) {
-    const item = await this.findById(id);
+    const galleryItem = await this.findById(id);
 
     // Delete physical files
     try {
-      if (item.path) {
-        const fullPath = path.join(__dirname, '../', item.path);
+      if (galleryItem.path) {
+        const fullPath = path.join(__dirname, '../', galleryItem.path);
         await fs.unlink(fullPath);
       }
 
-      if (item.thumbnail) {
-        const thumbnailFullPath = path.join(__dirname, '../', item.thumbnail);
+      if (galleryItem.thumbnail) {
+        const thumbnailFullPath = path.join(__dirname, '../', galleryItem.thumbnail);
         await fs.unlink(thumbnailFullPath);
       }
     } catch (fileError) {
       console.error('Error deleting files:', fileError);
     }
 
-    return await this.repository.delete(id);
+    const item = await this.Gallery.findByPk(id);
+    if (!item) {
+      throw boom.notFound('Gallery item not found');
+    }
+    await item.destroy();
+    return item.toJSON();
   }
 
   async toggleActive(id) {
