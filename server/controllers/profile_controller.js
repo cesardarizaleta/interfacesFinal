@@ -1,11 +1,13 @@
-const container = require('../container');
+const { ColorsService } = require('../services/color_service');
+const { FontsService } = require('../services/font_service');
+const { UsersService } = require('../services/user_service');
 const logger = require('../utils/logger');
 
 class ProfileController {
   constructor() {
-    this.colorsService = container.getService('colors');
-    this.fontsService = container.getService('fonts');
-    this.usersService = container.getService('users');
+    this.colorsService = new ColorsService();
+    this.fontsService = new FontsService();
+    this.usersService = new UsersService();
   }
 
   async getMyColors(req, res, next) {

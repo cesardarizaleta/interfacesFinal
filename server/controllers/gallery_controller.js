@@ -1,4 +1,5 @@
-const container = require('../container');
+const GalleryService = require('../services/gallery_service');
+const { UsersService } = require('../services/user_service');
 const multer = require('multer');
 const path = require('path');
 
@@ -32,8 +33,8 @@ const upload = multer({
 
 class GalleryController {
   constructor() {
-    this.service = container.getService('gallery');
-    this.userService = container.getService('users');
+    this.service = new GalleryService();
+    this.userService = new UsersService();
   }
 
   async getGalleryItems(req, res, next) {

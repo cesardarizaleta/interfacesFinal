@@ -1,10 +1,12 @@
-const container = require('../container');
+const { UsersService } = require('../services/user_service');
+const { ColorsService } = require('../services/color_service');
+const { FontsService } = require('../services/font_service');
 
 class AdminController {
   constructor() {
-    this.usersService = container.getService('users');
-    this.colorsService = container.getService('colors');
-    this.fontsService = container.getService('fonts');
+    this.usersService = new UsersService();
+    this.colorsService = new ColorsService();
+    this.fontsService = new FontsService();
   }
 
   async getDashboard(req, res, next) {

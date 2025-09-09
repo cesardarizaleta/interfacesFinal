@@ -1,8 +1,8 @@
-const container = require('../container');
+const { FontsService } = require('../services/font_service');
 
 class FontsController {
   constructor() {
-    this.service = container.getService('fonts');
+    this.service = new FontsService();
   }
 
   async getFonts(req, res, next) {

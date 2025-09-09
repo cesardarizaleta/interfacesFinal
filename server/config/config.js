@@ -4,21 +4,33 @@ const config = {
   env: process.env.NODE_ENV || 'dev',
   port: process.env.PORT || 3000,
   isProd: process.env.NODE_ENV === 'production',
-  db_url: process.env.DATABASE_URL || 'postgresql://postgres:AuraInterfaces2000AAA@db.uwlkhuxzhqkqnkwfgyua.supabase.co:5432/postgres',
+  db_url: process.env.DATABASE_URL,
   jwtSecret: process.env.JWT_SECRET,
-  noReplyEmail: process.env.NO_REPLY_EMAIL,
-  emailAppPassword: process.env.EMAIL_APP_PASSWORD,
-  clientUrl: process.env.CLIENT_URL || 'http://localhost:3000',
-  corsWhitelist: process.env.CORS_WHITELIST ? process.env.CORS_WHITELIST.split(',') : ['http://localhost:3000'],
+  client_urls: process.env.CLIENT_URLS.split(','),
 
   // PostgreSQL Configuration
   postgres: {
-    user: process.env.POSTGRES_USER || 'postgres',
-    password: process.env.POSTGRES_PASSWORD || 'AuraInterfaces2000AAA',
-    host: process.env.POSTGRES_HOST || 'db.uwlkhuxzhqkqnkwfgyua.supabase.co',
-    database: process.env.POSTGRES_DB || 'postgres',
+    user: process.env.POSTGRES_USER,
+    password: process.env.POSTGRES_PASSWORD,
+    host: process.env.POSTGRES_HOST || 'localhost',
+    database: process.env.POSTGRES_DB,
     port: process.env.POSTGRES_PORT || 5432,
   },
+/*
+  // MySQL Configuration
+  mysql: {
+    user: process.env.MYSQL_DB_USER,
+    password: process.env.MYSQL_DB_PASSWORD,
+    host: process.env.MYSQL_DB_HOST || 'localhost',
+    database: process.env.MYSQL_DB_DATABASE,
+    port: process.env.MYSQL_DB_PORT || 3306,
+  },
+
+  // PgAdmin Configuration
+  pgadmin: {
+    email: process.env.PGADMIN_EMAIL,
+    password: process.env.PGADMIN_PASSWORD,
+  } */
 }
 
 module.exports = { config };

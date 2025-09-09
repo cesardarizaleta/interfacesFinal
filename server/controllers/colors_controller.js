@@ -1,8 +1,8 @@
-const container = require('../container');
+const { ColorsService } = require('../services/color_service');
 
 class ColorsController {
   constructor() {
-    this.service = container.getService('colors');
+    this.service = new ColorsService();
   }
 
   async getColors(req, res, next) {
