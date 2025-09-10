@@ -7,54 +7,7 @@ const AuthService = require('../services/auth_service');
 const service = new AuthService();
 
 const router = express.Router();
-/**
- * @swagger
- * /api/auth/login:
- *   post:
- *     summary: Iniciar sesión de usuario
- *     description: Autentica a un usuario con email y contraseña, devolviendo un token JWT
- *     tags: [Authentication]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/LoginRequest'
- *           example:
- *             email: "usuario@example.com"
- *             password: "password123"
- *     responses:
- *       200:
- *         description: Inicio de sesión exitoso
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/AuthResponse'
- *             example:
- *               user:
- *                 id: 1
- *                 firstName: "Juan"
- *                 lastName: "Pérez"
- *                 email: "usuario@example.com"
- *                 role: "user"
- *               token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
- *       401:
- *         description: Credenciales inválidas
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Error'
- *             example:
- *               statusCode: 401
- *               message: "Invalid credentials"
- *               error: "Unauthorized"
- *       400:
- *         description: Datos de entrada inválidos
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Error'
- */
+// Swagger documentation is centralized in swagger-docs folder
 
 
 router.post('/login',

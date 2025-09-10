@@ -56,6 +56,9 @@ const role = Joi.string().valid('admin', 'moderator', 'user').default('user');
 const createUserSchema = Joi.object({
   email: email.required(),
   password: password.required(),
+  firstName: firstName.optional(),
+  lastName: lastName.optional(),
+  age: age.optional(),
   role: role.optional()
 });
 

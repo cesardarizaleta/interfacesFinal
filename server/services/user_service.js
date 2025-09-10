@@ -62,6 +62,13 @@ class UsersService {
     }
 
     const userData = this._buildUserData(data);
+
+    // Hash password if provided
+    if (data.password) {
+      const saltRounds = 10;
+      userData.password = await bcrypt.hash(data.password, saltRounds);
+    }
+
     const newUser = await this.User.create(userData);
     const userDataJson = newUser.toJSON();
     const { password, ...userWithoutPassword } = userDataJson;
@@ -133,70 +140,70 @@ class UsersService {
 
   _buildUserData(data) {
     return {
-      firstName: data.firstName || '',
-      lastName: data.lastName || '',
-      maidenName: data.maidenName || '',
+      firstName: data.firstName || null,
+      lastName: data.lastName || null,
+      maidenName: data.maidenName || null,
       age: data.age || null,
-      gender: data.gender || '',
+      gender: data.gender || null,
       email: data.email,
-      phone: data.phone || '',
-      username: data.username || '',
-      birthDate: data.birthDate || '',
-      image: data.image || '',
-      bloodGroup: data.bloodGroup || '',
+      phone: data.phone || null,
+      username: data.username || null,
+      birthDate: data.birthDate || null,
+      image: data.image || null,
+      bloodGroup: data.bloodGroup || null,
       height: data.height || null,
       weight: data.weight || null,
-      eyeColor: data.eyeColor || '',
+      eyeColor: data.eyeColor || null,
       hair: {
-        color: data.hairColor || '',
-        type: data.hairType || ''
+        color: data.hairColor || null,
+        type: data.hairType || null
       },
-      ip: data.ip || '',
+      ip: data.ip || null,
       address: {
-        address: data.address || '',
-        city: data.city || '',
-        state: data.state || '',
-        stateCode: data.stateCode || '',
-        postalCode: data.postalCode || '',
+        address: data.address || null,
+        city: data.city || null,
+        state: data.state || null,
+        stateCode: data.stateCode || null,
+        postalCode: data.postalCode || null,
         coordinates: {
           lat: data.lat || null,
           lng: data.lng || null
         },
-        country: data.country || ''
+        country: data.country || null
       },
-      macAddress: data.macAddress || '',
-      university: data.university || '',
+      macAddress: data.macAddress || null,
+      university: data.university || null,
       bank: {
-        cardExpire: data.cardExpire || '',
-        cardNumber: data.cardNumber || '',
-        cardType: data.cardType || '',
-        currency: data.currency || '',
-        iban: data.iban || ''
+        cardExpire: data.cardExpire || null,
+        cardNumber: data.cardNumber || null,
+        cardType: data.cardType || null,
+        currency: data.currency || null,
+        iban: data.iban || null
       },
       company: {
-        department: data.department || '',
-        name: data.companyName || '',
-        title: data.title || '',
+        department: data.department || null,
+        name: data.companyName || null,
+        title: data.title || null,
         address: {
-          address: data.companyAddress || '',
-          city: data.companyCity || '',
-          state: data.companyState || '',
-          stateCode: data.companyStateCode || '',
-          postalCode: data.companyPostalCode || '',
+          address: data.companyAddress || null,
+          city: data.companyCity || null,
+          state: data.companyState || null,
+          stateCode: data.companyStateCode || null,
+          postalCode: data.companyPostalCode || null,
           coordinates: {
             lat: data.companyLat || null,
             lng: data.companyLng || null
           },
-          country: data.companyCountry || ''
+          country: data.companyCountry || null
         }
       },
-      ein: data.ein || '',
-      ssn: data.ssn || '',
-      userAgent: data.userAgent || '',
+      ein: data.ein || null,
+      ssn: data.ssn || null,
+      userAgent: data.userAgent || null,
       crypto: {
-        coin: data.coin || '',
-        wallet: data.wallet || '',
-        network: data.network || ''
+        coin: data.coin || null,
+        wallet: data.wallet || null,
+        network: data.network || null
       },
       role: data.role || 'user'
     };

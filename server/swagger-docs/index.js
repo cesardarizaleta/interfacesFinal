@@ -21,7 +21,7 @@ const adminPaths = require('./paths/admin');
 // Importar componentes reutilizables
 const components = require('./components/index');
 
-const options = {
+const getOptions = (port) => ({
   definition: {
     openapi: '3.0.0',
     info: {
@@ -57,7 +57,7 @@ const options = {
     },
     servers: [
       {
-        url: 'http://localhost:3000',
+        url: `http://localhost:${port}`,
         description: 'Entorno de desarrollo',
       },
       {
@@ -121,11 +121,12 @@ const options = {
     ]
   },
   apis: [], // No necesitamos archivos externos ya que todo está modularizado
-};
-
-const specs = swaggerJSDoc(options);
+});
 
 const swaggerDocs = (app, port) => {
+  const options = getOptions(port);
+  const specs = swaggerJSDoc(options);
+
   // Configuración personalizada de Swagger UI
   const swaggerOptions = {
     explorer: true,
@@ -171,4 +172,4 @@ const swaggerDocs = (app, port) => {
   console.log(`🔗 JSON OpenAPI disponible en: http://localhost:${port}/api-docs.json`);
 };
 
-module.exports = { swaggerDocs, specs };
+module.exports = { swaggerDocs };
