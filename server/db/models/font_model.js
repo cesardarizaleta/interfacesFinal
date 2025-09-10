@@ -67,6 +67,11 @@ const FontSchema = {
     type: DataTypes.DATE,
     field: 'last_used_at',
   },
+  driveFileId: {
+    allowNull: true,
+    type: DataTypes.STRING,
+    field: 'drive_file_id',
+  },
   createdAt: {
     allowNull: false,
     type: DataTypes.DATE,
