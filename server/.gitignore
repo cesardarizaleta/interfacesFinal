@@ -229,3 +229,5 @@ mysql_data
 
 uploads/fonts
 
+# Google Drive service account credentials (contains sensitive information)
+config/google-drive-credentials.json
