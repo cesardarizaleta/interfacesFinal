@@ -31,6 +31,42 @@ const upload = multer({
   }
 });
 
+// Specific multer for images
+const imageFileFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith('image/') &&
+      ['image/jpeg', 'image/png', 'image/gif', 'image/webp'].includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(new Error('Only JPEG, PNG, GIF, and WebP image files are allowed'), false);
+  }
+};
+
+const uploadImage = multer({
+  storage: storage,
+  fileFilter: imageFileFilter,
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB limit for images
+  }
+});
+
+// Specific multer for videos
+const videoFileFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith('video/') &&
+      ['video/mp4', 'video/avi', 'video/mov', 'video/wmv'].includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(new Error('Only MP4, AVI, MOV, and WMV video files are allowed'), false);
+  }
+};
+
+const uploadVideo = multer({
+  storage: storage,
+  fileFilter: videoFileFilter,
+  limits: {
+    fileSize: 100 * 1024 * 1024, // 100MB limit for videos
+  }
+});
+
 class GalleryController {
   constructor() {
     this.service = new GalleryService();
@@ -101,6 +137,44 @@ class GalleryController {
     }
   }
 
+  async uploadImage(req, res, next) {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: 'No image file uploaded' });
+      }
+
+      const itemData = {
+        ...req.body,
+        uploadedBy: req.user.id,
+        type: 'image'
+      };
+
+      const newItem = await this.service.createImage(itemData, req.file);
+      res.status(201).json(newItem);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async uploadVideo(req, res, next) {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: 'No video file uploaded' });
+      }
+
+      const itemData = {
+        ...req.body,
+        uploadedBy: req.user.id,
+        type: 'video'
+      };
+
+      const newItem = await this.service.createVideo(itemData, req.file);
+      res.status(201).json(newItem);
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async updateGalleryItem(req, res, next) {
     try {
       const { id } = req.params;
@@ -144,6 +218,16 @@ class GalleryController {
   // Middleware for file upload
   get uploadMiddleware() {
     return upload.single('file');
+  }
+
+  // Middleware for image upload
+  get uploadImageMiddleware() {
+    return uploadImage.single('file');
+  }
+
+  // Middleware for video upload
+  get uploadVideoMiddleware() {
+    return uploadVideo.single('file');
   }
 }
 

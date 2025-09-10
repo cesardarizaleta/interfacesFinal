@@ -17,10 +17,22 @@ router.get('/', controller.getGalleryItems.bind(controller));
 router.get('/:id', controller.getGalleryItem.bind(controller));
 router.get('/category/:category', controller.getGalleryByCategory.bind(controller));
 
-// File upload route
+// File upload routes
 router.post('/upload',
   controller.uploadMiddleware,
   controller.uploadGalleryItem.bind(controller)
+);
+
+// Dedicated image upload route
+router.post('/images/upload',
+  controller.uploadImageMiddleware,
+  controller.uploadImage.bind(controller)
+);
+
+// Dedicated video upload route
+router.post('/videos/upload',
+  controller.uploadVideoMiddleware,
+  controller.uploadVideo.bind(controller)
 );
 
 router.patch('/:id', controller.updateGalleryItem.bind(controller));

@@ -43,18 +43,13 @@ module.exports = {
         description: 'Tamaño del archivo en bytes',
         example: 2048576
       },
-      dimensions: {
+      metadata: {
         type: 'object',
-        properties: {
-          width: {
-            type: 'integer',
-            example: 1920
-          },
-          height: {
-            type: 'integer',
-            example: 1080
-          }
-        }
+        description: 'Metadatos específicos del archivo multimedia',
+        oneOf: [
+          { $ref: '#/components/schemas/ImageMetadata' },
+          { $ref: '#/components/schemas/VideoMetadata' }
+        ]
       },
       isActive: {
         type: 'boolean',
@@ -140,6 +135,162 @@ module.exports = {
         type: 'string',
         description: 'Etiquetas separadas por comas',
         example: 'familia, parque, retrato'
+      }
+    }
+  },
+  UploadImageRequest: {
+    type: 'object',
+    required: ['title', 'category', 'file'],
+    properties: {
+      title: {
+        type: 'string',
+        minLength: 2,
+        maxLength: 200,
+        description: 'Título de la imagen',
+        example: 'Retrato Familiar'
+      },
+      description: {
+        type: 'string',
+        maxLength: 1000,
+        description: 'Descripción de la imagen',
+        example: 'Sesión fotográfica familiar en el parque'
+      },
+      category: {
+        type: 'string',
+        description: 'Categoría de la imagen',
+        example: 'family'
+      },
+      file: {
+        type: 'string',
+        format: 'binary',
+        description: 'Archivo de imagen (JPEG, PNG, GIF, WebP)',
+        example: 'familia-parque.jpg'
+      },
+      tags: {
+        type: 'string',
+        description: 'Etiquetas separadas por comas',
+        example: 'familia, parque, retrato'
+      }
+    }
+  },
+  UploadVideoRequest: {
+    type: 'object',
+    required: ['title', 'category', 'file'],
+    properties: {
+      title: {
+        type: 'string',
+        minLength: 2,
+        maxLength: 200,
+        description: 'Título del video',
+        example: 'Boda en la Playa'
+      },
+      description: {
+        type: 'string',
+        maxLength: 1000,
+        description: 'Descripción del video',
+        example: 'Ceremonia de boda celebrada en la playa al atardecer'
+      },
+      category: {
+        type: 'string',
+        description: 'Categoría del video',
+        example: 'wedding'
+      },
+      file: {
+        type: 'string',
+        format: 'binary',
+        description: 'Archivo de video (MP4, AVI, MOV, WMV)',
+        example: 'boda-playa.mp4'
+      },
+      tags: {
+        type: 'string',
+        description: 'Etiquetas separadas por comas',
+        example: 'boda, playa, atardecer'
+      }
+    }
+  },
+  ImageMetadata: {
+    type: 'object',
+    properties: {
+      width: {
+        type: 'integer',
+        description: 'Ancho de la imagen en píxeles',
+        example: 1920
+      },
+      height: {
+        type: 'integer',
+        description: 'Alto de la imagen en píxeles',
+        example: 1080
+      },
+      format: {
+        type: 'string',
+        description: 'Formato de la imagen',
+        example: 'jpeg'
+      },
+      size: {
+        type: 'integer',
+        description: 'Tamaño del archivo en bytes',
+        example: 2048576
+      },
+      imgbb: {
+        type: 'object',
+        description: 'Información de ImgBB',
+        properties: {
+          id: {
+            type: 'string',
+            description: 'ID único en ImgBB',
+            example: '2ndCYJK'
+          },
+          url: {
+            type: 'string',
+            description: 'URL directa de la imagen',
+            example: 'https://i.ibb.co/w04Prt6/c1f64245afb2.gif'
+          },
+          displayUrl: {
+            type: 'string',
+            description: 'URL de visualización',
+            example: 'https://i.ibb.co/98W13PY/c1f64245afb2.gif'
+          },
+          thumbUrl: {
+            type: 'string',
+            description: 'URL del thumbnail',
+            example: 'https://i.ibb.co/2ndCYJK/c1f64245afb2.gif'
+          },
+          mediumUrl: {
+            type: 'string',
+            description: 'URL de la versión mediana',
+            example: 'https://i.ibb.co/98W13PY/c1f64245afb2.gif'
+          },
+          deleteUrl: {
+            type: 'string',
+            description: 'URL para eliminar la imagen',
+            example: 'https://ibb.co/2ndCYJK/670a7e48ddcb85ac340c717a41047e5c'
+          }
+        }
+      }
+    }
+  },
+  VideoMetadata: {
+    type: 'object',
+    properties: {
+      duration: {
+        type: 'number',
+        description: 'Duración del video en segundos',
+        example: 120.5
+      },
+      width: {
+        type: 'integer',
+        description: 'Ancho del video en píxeles',
+        example: 1920
+      },
+      height: {
+        type: 'integer',
+        description: 'Alto del video en píxeles',
+        example: 1080
+      },
+      bitrate: {
+        type: 'integer',
+        description: 'Bitrate del video',
+        example: 5000000
       }
     }
   }

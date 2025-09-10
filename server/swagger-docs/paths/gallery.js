@@ -265,6 +265,102 @@ module.exports = {
       }
     }
   },
+  '/api/gallery/images/upload': {
+    post: {
+      summary: 'Subir imagen a la galería (ImgBB)',
+      description: 'Sube una nueva imagen a la galería del sistema. La imagen se almacena en ImgBB y se incluyen metadatos específicos de imagen con URLs de ImgBB',
+      tags: ['Gallery', 'Admin'],
+      security: [
+        { bearerAuth: [] }
+      ],
+      requestBody: {
+        required: true,
+        content: {
+          'multipart/form-data': {
+            schema: {
+              $ref: '#/components/schemas/UploadImageRequest'
+            }
+          }
+        }
+      },
+      responses: {
+        201: {
+          description: 'Imagen subida exitosamente a ImgBB',
+          content: {
+            'application/json': {
+              schema: {
+                $ref: '#/components/schemas/GalleryItem'
+              }
+            }
+          }
+        },
+        400: {
+          description: 'Archivo de imagen inválido o datos incorrectos',
+          content: {
+            'application/json': {
+              schema: {
+                $ref: '#/components/responses/ValidationError'
+              }
+            }
+          }
+        },
+        401: {
+          $ref: '#/components/responses/UnauthorizedError'
+        },
+        403: {
+          $ref: '#/components/responses/ForbiddenError'
+        }
+      }
+    }
+  },
+  '/api/gallery/videos/upload': {
+    post: {
+      summary: 'Subir video a la galería',
+      description: 'Sube un nuevo video a la galería del sistema con metadatos específicos de video',
+      tags: ['Gallery', 'Admin'],
+      security: [
+        { bearerAuth: [] }
+      ],
+      requestBody: {
+        required: true,
+        content: {
+          'multipart/form-data': {
+            schema: {
+              $ref: '#/components/schemas/UploadVideoRequest'
+            }
+          }
+        }
+      },
+      responses: {
+        201: {
+          description: 'Video subido exitosamente',
+          content: {
+            'application/json': {
+              schema: {
+                $ref: '#/components/schemas/GalleryItem'
+              }
+            }
+          }
+        },
+        400: {
+          description: 'Archivo de video inválido o datos incorrectos',
+          content: {
+            'application/json': {
+              schema: {
+                $ref: '#/components/responses/ValidationError'
+              }
+            }
+          }
+        },
+        401: {
+          $ref: '#/components/responses/UnauthorizedError'
+        },
+        403: {
+          $ref: '#/components/responses/ForbiddenError'
+        }
+      }
+    }
+  },
   '/api/gallery/{id}/toggle': {
     patch: {
       summary: 'Alternar visibilidad del elemento',
