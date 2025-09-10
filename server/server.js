@@ -7,16 +7,28 @@ const sequelize = require('./libs/sequelize'); // Initialize Sequelize
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Initialize database
+// Initialize database connection (without sync for production safety)
 (async () => {
   try {
     logger.info('Attempting to connect to database...');
     await sequelize.authenticate();
     logger.info('Database connection established successfully');
 
-    // Sync database (create tables if they don't exist)
-    await sequelize.sync();
-    logger.info('Database synchronized successfully');
+    // WARNING: sync() is DISABLED for production safety
+    // Use migrations instead: npm run migrations:run
+    if (process.env.NODE_ENV === 'development') {
+      // Only allow sync in development with explicit confirmation
+      const forceSync = process.env.FORCE_DB_SYNC === 'true';
+      if (forceSync) {
+        logger.warn('FORCED DATABASE SYNC ENABLED - This will drop existing tables!');
+        await sequelize.sync({ force: true });
+        logger.info('Database synchronized with FORCE (development only)');
+      } else {
+        logger.info('Database sync skipped - using migrations for schema management');
+      }
+    } else {
+      logger.info('Production mode: Database sync disabled. Use migrations for schema changes.');
+    }
   } catch (error) {
     logger.error('Error connecting to database:', {
       message: error.message,
@@ -56,7 +68,9 @@ app.use(ormErrorHandler);
 app.use(boomErrorHandler);
 app.use(errorHandler);
 
-//swaggerDocs(app, port);
+// Initialize Swagger Documentation
+const { swaggerDocs } = require('./swagger-docs');
+swaggerDocs(app, port);
 
 app.listen(port, () => {
   logger.info(`Server running on port ${port}`);
