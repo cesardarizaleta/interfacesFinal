@@ -22,8 +22,8 @@ module.exports = {
       }
     },
     post: {
-      summary: 'Subir nueva fuente',
-      description: 'Sube y registra una nueva fuente tipográfica al sistema',
+      summary: 'Subir nueva fuente a Google Drive',
+      description: 'Sube y registra una nueva fuente tipográfica al sistema, guardándola en Google Drive',
       tags: ['Fonts'],
       security: [
         { bearerAuth: [] }

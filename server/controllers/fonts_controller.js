@@ -36,9 +36,16 @@ class FontsController {
 
   async createFont(req, res, next) {
     try {
+      const userId = req.user.sub;
       const fontData = req.body;
-      const newFont = await this.service.create(fontData);
-      res.status(201).json(newFont);
+      const file = req.file;
+
+      if (!file) {
+        return res.status(400).json({ message: 'No file uploaded' });
+      }
+
+      const uploadedFont = await this.service.uploadFontToDrive(userId, file, fontData);
+      res.status(201).json(uploadedFont);
     } catch (error) {
       next(error);
     }
@@ -77,7 +84,7 @@ class FontsController {
 
   async uploadFont(req, res, next) {
     try {
-      const { userId } = req.user; // From JWT middleware
+      const userId = req.user.sub; // From JWT middleware
       const fontData = req.body;
       const file = req.file;
 

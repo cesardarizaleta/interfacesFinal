@@ -16,6 +16,15 @@ const config = {
     database: process.env.POSTGRES_DB,
     port: process.env.POSTGRES_PORT || 5432,
   },
+
+  // Google Drive Configuration
+  googleDrive: {
+    parentFolderId: process.env.GOOGLE_DRIVE_PARENT_FOLDER_ID || '18aAW_-s480mdT4dsH_cWEovO3BKqU0Jm',
+    clientId: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    redirectUri: process.env.GOOGLE_REDIRECT_URI,
+    refreshToken: process.env.GOOGLE_REFRESH_TOKEN
+  },
 /*
   // MySQL Configuration
   mysql: {

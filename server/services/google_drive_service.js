@@ -2,16 +2,40 @@ const { google } = require('googleapis');
 const path = require('path');
 const fs = require('fs');
 const logger = require('../utils/logger');
+const { config } = require('../config/config');
 
 class GoogleDriveService {
   constructor() {
-    this.credentials = require('../config/google-drive-credentials.json');
-    this.auth = new google.auth.GoogleAuth({
-      credentials: this.credentials,
-      scopes: ['https://www.googleapis.com/auth/drive'],
+    // Use OAuth2 instead of service account
+    this.oAuth2Client = new google.auth.OAuth2(
+      config.googleDrive.clientId,
+      config.googleDrive.clientSecret,
+      config.googleDrive.redirectUri
+    );
+
+    // Set credentials if refresh token exists
+    if (config.googleDrive.refreshToken) {
+      this.oAuth2Client.setCredentials({
+        refresh_token: config.googleDrive.refreshToken,
+      });
+    }
+
+    this.drive = google.drive({ version: 'v3', auth: this.oAuth2Client });
+    this.parentFolderId = config.googleDrive.parentFolderId;
+  }
+
+  // Method to generate authorization URL for initial setup
+  generateAuthUrl() {
+    return this.oAuth2Client.generateAuthUrl({
+      access_type: 'offline',
+      scope: ['https://www.googleapis.com/auth/drive'],
     });
-    this.drive = google.drive({ version: 'v3', auth: this.auth });
-    this.parentFolderId = process.env.GOOGLE_DRIVE_PARENT_FOLDER_ID || '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs'; // Default to a placeholder, user needs to set this
+  }
+
+  // Method to get tokens from authorization code
+  async getTokensFromCode(code) {
+    const { tokens } = await this.oAuth2Client.getToken(code);
+    return tokens;
   }
 
   async findOrCreateFolder(folderName, parentId = this.parentFolderId) {
@@ -59,9 +83,15 @@ class GoogleDriveService {
         parents: [userFolderId],
       };
 
+      // Convert buffer to readable stream
+      const { Readable } = require('stream');
+      const stream = new Readable();
+      stream.push(fileBuffer);
+      stream.push(null); // End the stream
+
       const media = {
         mimeType: mimeType,
-        body: fileBuffer,
+        body: stream,
       };
 
       const file = await this.drive.files.create({

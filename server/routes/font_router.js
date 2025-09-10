@@ -36,7 +36,9 @@ const localUpload = multer({
       'application/x-font-ttf',
       'application/x-font-otf',
       'application/font-woff',
-      'application/font-woff2'
+      'application/font-woff2',
+      'application/octet-stream',
+      'application/font-otf'
     ];
     const allowedExtensions = ['.ttf', '.otf', '.woff', '.woff2'];
 
@@ -46,6 +48,7 @@ const localUpload = multer({
     if (isValidMime || isValidExtension) {
       cb(null, true);
     } else {
+      console.log('Rejected file:', file.originalname, 'MIME:', file.mimetype);
       cb(new Error('Tipo de archivo no válido. Solo se permiten archivos .ttf, .otf, .woff, .woff2'), false);
     }
   }
@@ -63,7 +66,9 @@ const driveUpload = multer({
       'application/x-font-ttf',
       'application/x-font-otf',
       'application/font-woff',
-      'application/font-woff2'
+      'application/font-woff2',
+      'application/octet-stream',
+      'application/font-otf'
     ];
     const allowedExtensions = ['.ttf', '.otf', '.woff', '.woff2'];
 
@@ -73,6 +78,7 @@ const driveUpload = multer({
     if (isValidMime || isValidExtension) {
       cb(null, true);
     } else {
+      console.log('Rejected file:', file.originalname, 'MIME:', file.mimetype);
       cb(new Error('Tipo de archivo no válido. Solo se permiten archivos .ttf, .otf, .woff, .woff2'), false);
     }
   },
@@ -90,8 +96,7 @@ router.get('/user/:userId', controller.getFontsByUser.bind(controller));
 router.get('/user/:userId/last-used', controller.getLastUsedFonts.bind(controller));
 
 router.post('/',
-  localUpload.single('fontFile'),
-  validatorHandler(createFontSchema, 'body'),
+  driveUpload.single('fontFile'),
   passport.authenticate('jwt', { session: false }),
   controller.createFont.bind(controller)
 );

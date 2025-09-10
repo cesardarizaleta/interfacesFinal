@@ -94,6 +94,26 @@ class Font extends Model {
     });
   }
 
+  // Getter for weight
+  get weight() {
+    return this.getDataValue('fontWeight');
+  }
+
+  // Setter for weight
+  set weight(value) {
+    this.setDataValue('fontWeight', value);
+  }
+
+  // Getter for style
+  get style() {
+    return this.getDataValue('fontStyle');
+  }
+
+  // Setter for style
+  set style(value) {
+    this.setDataValue('fontStyle', value);
+  }
+
   static config(sequelize) {
     return {
       sequelize,

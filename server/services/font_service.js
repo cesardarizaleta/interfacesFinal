@@ -48,11 +48,11 @@ class FontsService {
   async create(data) {
     const fontData = {
       name: data.name,
-      fontFamily: data.fontFamily,
+      fontFamily: data.fontFamily || data.name,
       fontType: data.fontType || 'general',
       fontFilePath: data.fontFilePath || null,
-      fontWeight: data.fontWeight || 'normal',
-      fontStyle: data.fontStyle || 'normal',
+      fontWeight: data.weight || 'normal',
+      fontStyle: data.style || 'normal',
       fontFormat: data.fontFormat || 'ttf',
       userId: data.userId,
       uploadedAt: new Date(),
@@ -70,6 +70,8 @@ class FontsService {
 
     const fontData = {
       ...data,
+      fontWeight: data.weight || data.fontWeight,
+      fontStyle: data.style || data.fontStyle,
       lastUsedAt: data.lastUsedAt || new Date()
     };
 
@@ -115,10 +117,13 @@ class FontsService {
         'application/x-font-ttf',
         'application/x-font-otf',
         'application/font-woff',
-        'application/font-woff2'
+        'application/font-woff2',
+        'application/octet-stream',
+        'application/font-otf'
       ];
 
       if (!allowedMimes.includes(file.mimetype)) {
+        console.log('Service rejected file:', file.originalname, 'MIME:', file.mimetype);
         throw boom.badRequest('Tipo de archivo no válido. Solo se permiten archivos .ttf, .otf, .woff, .woff2');
       }
 
@@ -136,8 +141,8 @@ class FontsService {
         fontFamily: fontData.fontFamily || fontData.name || path.parse(file.originalname).name,
         fontType: fontData.fontType || 'general',
         fontFilePath: driveResult.downloadUrl, // Store the Drive URL
-        fontWeight: fontData.fontWeight || 'normal',
-        fontStyle: fontData.fontStyle || 'normal',
+        fontWeight: fontData.weight || 'normal',
+        fontStyle: fontData.style || 'normal',
         fontFormat: path.extname(file.originalname).substring(1) || 'ttf',
         userId: userId,
         uploadedAt: new Date(),

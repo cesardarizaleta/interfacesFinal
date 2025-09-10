@@ -30,8 +30,9 @@ module.exports = {
       },
       weight: {
         type: 'string',
+        enum: ['100', '200', '300', '400', '500', '600', '700', '800', '900', 'normal', 'bold', 'lighter', 'bolder', 'regular'],
         description: 'Peso de la fuente',
-        example: 'bold'
+        example: 'regular'
       },
       style: {
         type: 'string',
@@ -113,6 +114,7 @@ module.exports = {
       },
       weight: {
         type: 'string',
+        enum: ['100', '200', '300', '400', '500', '600', '700', '800', '900', 'normal', 'bold', 'lighter', 'bolder', 'regular'],
         description: 'Nuevo peso de la fuente',
         example: 'regular'
       },
