@@ -1,6 +1,6 @@
 const boom = require('@hapi/boom');
 const logger = require('../utils/logger');
-const { models } = require('../db/models/index');
+const { models } = require('../libs/sequelize');
 
 class FontsService {
   constructor() {

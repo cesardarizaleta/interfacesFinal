@@ -1,7 +1,7 @@
 const boom = require('@hapi/boom');
 const fs = require('fs').promises;
 const path = require('path');
-const { models } = require('../db/models/index');
+const { models } = require('../libs/sequelize');
 
 class GalleryService {
   constructor() {

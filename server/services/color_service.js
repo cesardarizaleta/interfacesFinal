@@ -1,5 +1,5 @@
 const boom = require('@hapi/boom');
-const { models } = require('../db/models/index');
+const { models } = require('../libs/sequelize');
 
 class ColorsService {
   constructor() {
