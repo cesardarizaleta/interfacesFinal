@@ -23,7 +23,9 @@ function setupCors(app) {
   const allowedOrigins = [
     process.env.CLIENT_URL || 'http://localhost:3000',
     'http://localhost:5000', // Nuxt dev server
-    'http://localhost:3000'  // Fallback
+    'http://localhost:3000',  // Fallback
+    `http://localhost:${process.env.PORT || 3001}`, // Server port (Swagger UI)
+    'http://localhost:3001'  // Explicit fallback for port 3001
   ];
 
   app.use(cors({
