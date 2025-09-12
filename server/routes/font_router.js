@@ -108,6 +108,7 @@ router.get('/user/assigned',
   controller.getAssignedFonts.bind(controller)
 );
 
+
 router.get('/user/:userId/last-used',
   passport.authenticate('jwt', { session: false }),
   controller.getLastUsedFonts.bind(controller)

@@ -38,17 +38,13 @@ class FontsController {
     try {
       const userId = req.user.id;
       const fonts = await this.service.findByUser(userId);
-      const assigned = {};
-      fonts.forEach(font => {
-        if (font.fontType === 'title') assigned.title = font;
-        else if (font.fontType === 'subtitle') assigned.subtitle = font;
-        else if (font.fontType === 'paragraph') assigned.paragraph = font;
-      });
-      res.json(assigned);
+      const activeFont = fonts.find(font => font.fontType === 'active') || null;
+      res.json({ active: activeFont });
     } catch (error) {
       next(error);
     }
   }
+
 
   async createFont(req, res, next) {
     try {

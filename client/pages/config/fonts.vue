@@ -190,33 +190,36 @@
 
     <!-- Font Preview -->
     <div class="bg-white rounded-xl shadow-lg p-6 mb-8 border border-stone-200">
-      <h2 class="text-2xl font-bold mb-6 text-center font-subtitle">
-        Vista Previa
-      </h2>
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold">
+          Vista Previa de Fuente Activa
+        </h2>
+        <button
+          v-if="assignedFonts.active"
+          @click="deactivateAllFonts"
+          class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 text-sm rounded transition-colors"
+        >
+          Desactivar Todas
+        </button>
+      </div>
       <div class="text-center space-y-6">
         <div>
-          <h3 class="text-3xl font-bold" :style="{ fontFamily: assignedFonts.title?.fontFamily || 'inherit' }">
+          <h3 class="text-3xl font-bold" :style="{ fontFamily: assignedFonts.active?.fontFamily || 'var(--font-heading)' }">
             Título de Ejemplo
           </h3>
-          <p class="text-sm text-stone-500 mt-1">
-            Fuente: {{ assignedFonts.title?.name || 'Predeterminada' }}
-          </p>
         </div>
         <div>
-          <h4 class="text-xl font-semibold" :style="{ fontFamily: assignedFonts.subtitle?.fontFamily || 'inherit' }">
+          <h4 class="text-xl font-semibold" :style="{ fontFamily: assignedFonts.active?.fontFamily || 'var(--font-primary)' }">
             Subtítulo de Ejemplo
           </h4>
-          <p class="text-sm text-stone-500 mt-1">
-            Fuente: {{ assignedFonts.subtitle?.name || 'Predeterminada' }}
-          </p>
         </div>
         <div class="max-w-md mx-auto">
-          <p class="text-base leading-relaxed" :style="{ fontFamily: assignedFonts.paragraph?.fontFamily || 'inherit' }">
-            Este es un párrafo de ejemplo para mostrar cómo se ve el texto con la fuente asignada.
+          <p class="text-base leading-relaxed" :style="{ fontFamily: assignedFonts.active?.fontFamily || 'var(--font-primary)' }">
+            Este es un párrafo de ejemplo para mostrar cómo se ve el texto con la fuente activa.
             Lorem ipsum dolor sit amet, consectetur adipiscing elit.
           </p>
           <p class="text-sm text-stone-500 mt-2">
-            Fuente: {{ assignedFonts.paragraph?.name || 'Predeterminada' }}
+            Fuente Activa: {{ assignedFonts.active?.name || 'Predeterminada (Inter)' }}
           </p>
         </div>
       </div>
@@ -238,13 +241,11 @@
             <span
               class="px-2 py-1 text-xs rounded"
               :class="{
-                'bg-blue-100 text-blue-800': font?.fontType === 'title',
-                'bg-green-100 text-green-800': font?.fontType === 'subtitle',
-                'bg-purple-100 text-purple-800': font?.fontType === 'paragraph',
-                'bg-gray-100 text-gray-800': font?.fontType === 'general'
+                'bg-green-100 text-green-800': font?.fontType === 'active',
+                'bg-gray-100 text-gray-800': font?.fontType !== 'active'
               }"
             >
-              {{ font?.fontType === 'general' ? 'Sin asignar' : font?.fontType || 'Sin asignar' }}
+              {{ font?.fontType === 'active' ? 'Activa' : 'Sin asignar' }}
             </span>
           </div>
           <p class="text-sm text-stone-600 mb-2">
@@ -261,10 +262,18 @@
           </div>
           <div class="flex justify-between items-center gap-2">
             <button
-              @click="openAssignModal(font)"
-              class="bg-stone-600 text-white px-3 py-1 text-sm rounded hover:bg-stone-700 transition-colors"
+              v-if="font?.fontType === 'active'"
+              @click="deactivateFont(font)"
+              class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 text-sm rounded transition-colors"
             >
-              Asignar
+              Desactivar
+            </button>
+            <button
+              v-else
+              @click="activateFont(font)"
+              class="bg-stone-600 hover:bg-stone-700 text-white px-3 py-1 text-sm rounded transition-colors"
+            >
+              Activar
             </button>
             <button
               @click="deleteFont(font?.id)"
@@ -280,55 +289,6 @@
       </div>
     </div>
 
-    <!-- Assignment Modal -->
-    <div v-if="showAssignModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-        <h3 class="text-lg font-semibold mb-4">
-          Asignar Fuente: {{ selectedFont?.name || 'Fuente sin nombre' }}
-        </h3>
-        <p class="text-sm text-stone-600 mb-4">
-          Selecciona el tipo de fuente que quieres asignar:
-        </p>
-        <div class="space-y-3">
-          <button
-            @click="assignFontToType('title')"
-            class="w-full text-left p-3 border border-stone-200 rounded hover:bg-stone-50 transition-colors"
-          >
-            <div class="font-semibold">Título</div>
-            <div class="text-sm text-stone-500">Para encabezados principales</div>
-          </button>
-          <button
-            @click="assignFontToType('subtitle')"
-            class="w-full text-left p-3 border border-stone-200 rounded hover:bg-stone-50 transition-colors"
-          >
-            <div class="font-semibold">Subtítulo</div>
-            <div class="text-sm text-stone-500">Para encabezados secundarios</div>
-          </button>
-          <button
-            @click="assignFontToType('paragraph')"
-            class="w-full text-left p-3 border border-stone-200 rounded hover:bg-stone-50 transition-colors"
-          >
-            <div class="font-semibold">Párrafo</div>
-            <div class="text-sm text-stone-500">Para texto del cuerpo</div>
-          </button>
-          <button
-            @click="assignFontToType('general')"
-            class="w-full text-left p-3 border border-stone-200 rounded hover:bg-stone-50 transition-colors"
-          >
-            <div class="font-semibold">Sin asignar</div>
-            <div class="text-sm text-stone-500">Quitar asignación actual</div>
-          </button>
-        </div>
-        <div class="flex justify-end mt-6">
-          <button
-            @click="closeAssignModal"
-            class="px-4 py-2 text-stone-600 hover:text-stone-800 transition-colors"
-          >
-            Cancelar
-          </button>
-        </div>
-      </div>
-    </div>
   </section>
 </template>
 
@@ -366,9 +326,7 @@ const isDragOver = ref(false)
 const fontPreview = ref(null)
 const fileInput = ref(null)
 
-// Modal state
-const showAssignModal = ref(false)
-const selectedFont = ref(null)
+// No modal needed anymore - simple activation
 
 // Methods
 const handleFileSelect = (event) => {
@@ -531,26 +489,46 @@ const handleFontUpload = async () => {
   }
 }
 
-// Modal methods
-const openAssignModal = (font) => {
-  selectedFont.value = font
-  showAssignModal.value = true
-}
-
-const closeAssignModal = () => {
-  showAssignModal.value = false
-  selectedFont.value = null
-}
-
-const assignFontToType = async (fontType) => {
-  if (!selectedFont.value) return
+// Activate font (deactivates any other active font)
+const activateFont = async (font) => {
+  if (!font) return
 
   try {
-    await assignFontType(selectedFont.value.id, fontType)
-    closeAssignModal()
-    alert(`Fuente asignada como ${fontType}`)
+    // First, deactivate any currently active font
+    const activeFont = fonts.value.find(f => f.fontType === 'active')
+    if (activeFont && activeFont.id !== font.id) {
+      await assignFontType(activeFont.id, 'general')
+    }
+
+    // Then activate the selected font
+    await assignFontType(font.id, 'active')
+    alert('Fuente activada correctamente')
   } catch (err) {
-    alert('Error al asignar la fuente: ' + err.message)
+    alert('Error al activar la fuente: ' + err.message)
+  }
+}
+
+// Deactivate font
+const deactivateFont = async (font) => {
+  if (!font) return
+
+  try {
+    await assignFontType(font.id, 'general')
+    alert('Fuente desactivada correctamente')
+  } catch (err) {
+    alert('Error al desactivar la fuente: ' + err.message)
+  }
+}
+
+// Deactivate all fonts
+const deactivateAllFonts = async () => {
+  if (!assignedFonts.value.active) return
+
+  try {
+    await assignFontType(assignedFonts.value.active.id, 'general')
+    alert('Todas las fuentes desactivadas. Se usarán las fuentes predeterminadas.')
+  } catch (err) {
+    alert('Error al desactivar las fuentes: ' + err.message)
   }
 }
 

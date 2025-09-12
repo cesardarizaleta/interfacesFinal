@@ -158,9 +158,14 @@ a:hover {
   color: var(--color-accent) !important;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1, h2, h3 {
   color: var(--color-primary) !important;
   font-family: var(--font-heading);
+}
+
+h4, h5, h6 {
+  color: var(--color-primary) !important;
+  font-family: var(--font-primary);
 }
 
 .card {
@@ -186,6 +191,10 @@ h1, h2, h3, h4, h5, h6 {
 /* Specific overrides for common elements */
 p, span, div, li, td, th, label, h1, h2, h3, h4, h5, h6 {
   color: var(--color-text) !important;
+}
+
+p, span, li, td, th, label {
+  font-family: var(--font-primary);
 }
 
 /* Ensure body background uses the palette */
@@ -300,18 +309,8 @@ i, .fa, .fas, .far, .fab {
   color: var(--color-accent);
 }
 
-/* Font type classes */
-.font-title {
-  font-family: var(--font-title, var(--font-heading));
-}
-
-.font-subtitle {
-  font-family: var(--font-subtitle, var(--font-primary));
-}
-
-.font-paragraph {
-  font-family: var(--font-paragraph, var(--font-primary));
-}
+/* Font type classes - now applied via JavaScript for specific elements only */
+/* These classes are kept for structure but fonts are applied directly via inline styles */
 
 /* Config pages - prevent transitions */
 .config-page * {

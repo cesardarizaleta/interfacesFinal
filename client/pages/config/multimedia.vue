@@ -1,5 +1,5 @@
 <template>
-  <div class="relative min-h-screen flex flex-col p-4 sm:p-6 md:p-8 lg:p-12 xl:p-16 bg-gradient-to-br from-stone-50 to-stone-200 text-stone-800 font-sans">
+  <div class="relative min-h-screen flex flex-col p-6 sm:p-8 md:p-12 lg:p-16 xl:p-20 bg-gradient-to-br from-stone-50 to-stone-200 text-stone-800 font-sans overflow-y-auto">
     <div class="absolute inset-0 overflow-hidden opacity-10">
       <img
         src="@/assets/image.jpg"
@@ -8,21 +8,21 @@
       />
     </div>
 
-    <div class="relative z-10 w-full max-w-full mx-auto">
-      <div class="text-center mb-8 sm:mb-10">
+    <div class="relative z-10 w-full max-w-7xl mx-auto">
+      <div class="text-center mb-12 sm:mb-16">
         <NuxtLink
           to="/config"
-          class="absolute left-0 top-1/2 -translate-y-1/2 flex items-center text-stone-600 hover:text-stone-800 transition-colors duration-200 p-2 rounded-full hover:bg-stone-200"
+          class="absolute left-0 top-1/2 -translate-y-1/2 flex items-center text-stone-600 hover:text-stone-800 transition-colors duration-200 p-3 rounded-full hover:bg-stone-200 shadow-lg"
           aria-label="Volver"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
+          <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
             <path fill="currentColor" d="M10 22L0 12L10 2l1.775 1.775L3.55 12l8.225 8.225z" />
           </svg>
         </NuxtLink>
-        <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold uppercase tracking-tight text-stone-900 mb-2">
+        <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold uppercase tracking-tight text-stone-900 mb-4">
           Gestión de Multimedia
         </h1>
-        <p class="text-lg sm:text-xl font-light uppercase tracking-wide text-stone-600">
+        <p class="text-xl sm:text-2xl font-light uppercase tracking-wide text-stone-600 max-w-2xl mx-auto">
           Administra tus archivos multimedia
         </p>
       </div>
@@ -34,42 +34,42 @@
         {{ success }}
       </div>
 
-      <div class="mb-6 border-b border-stone-200">
-        <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+      <div class="mb-8 border-b border-stone-200 bg-white/50 backdrop-blur-sm rounded-t-xl p-4">
+        <nav class="-mb-px flex space-x-12 justify-center" aria-label="Tabs">
           <button
             @click="activeTab = 'videos'"
             :class="[
-              'whitespace-nowrap py-4 px-1 border-b-2 font-semibold text-sm transition-colors duration-200',
+              'whitespace-nowrap py-3 px-6 border-b-3 font-bold text-lg rounded-t-lg transition-all duration-300 transform',
               activeTab === 'videos'
-                ? 'border-stone-700 text-stone-900'
-                : 'border-transparent text-stone-500 hover:text-stone-700 hover:border-stone-300'
+                ? 'border-stone-700 text-stone-900 bg-white shadow-lg scale-105'
+                : 'border-transparent text-stone-500 hover:text-stone-700 hover:border-stone-300 hover:bg-white/70 hover:scale-102'
             ]"
           >
-            Videos
+            🎬 Videos
           </button>
           <button
             @click="activeTab = 'images'"
             :class="[
-              'whitespace-nowrap py-4 px-1 border-b-2 font-semibold text-sm transition-colors duration-200',
+              'whitespace-nowrap py-3 px-6 border-b-3 font-bold text-lg rounded-t-lg transition-all duration-300 transform',
               activeTab === 'images'
-                ? 'border-stone-700 text-stone-900'
-                : 'border-transparent text-stone-500 hover:text-stone-700 hover:border-stone-300'
+                ? 'border-stone-700 text-stone-900 bg-white shadow-lg scale-105'
+                : 'border-transparent text-stone-500 hover:text-stone-700 hover:border-stone-300 hover:bg-white/70 hover:scale-102'
             ]"
           >
-            Imágenes
+            🖼️ Imágenes
           </button>
         </nav>
       </div>
 
       <div v-if="activeTab === 'videos'">
-        <div class="flex justify-center mb-8">
+        <div class="flex justify-center mb-12">
           <button
             @click="showVideoUploader = true"
-            class="relative bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold py-4 px-8 rounded-xl shadow-2xl hover:shadow-blue-500/25 hover:scale-105 transition-all duration-300 overflow-hidden group"
+            class="relative bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold py-5 px-10 rounded-2xl shadow-2xl hover:shadow-blue-500/25 hover:scale-105 transition-all duration-300 overflow-hidden group text-lg"
           >
             <span class="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
-            <span class="relative flex items-center gap-3">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <span class="relative flex items-center gap-4">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
               </svg>
               Subir Nuevo Vídeo
@@ -77,34 +77,34 @@
           </button>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8 mb-12">
           <div
             v-for="video in videos"
             :key="video.id"
-            class="bg-white shadow-xl rounded-xl overflow-hidden border border-stone-200 transition-all duration-300 hover:scale-105 hover:shadow-2xl group cursor-pointer"
+            class="bg-white shadow-xl rounded-2xl overflow-hidden border border-stone-200 transition-all duration-300 hover:scale-105 hover:shadow-2xl group cursor-pointer"
             @click="openVideoModal(video)"
           >
             <div class="relative">
-              <img :src="video.thumbnail" :alt="video.name" class="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110" />
+              <img :src="video.thumbnail" :alt="video.name" class="w-full h-56 object-cover transition-transform duration-300 group-hover:scale-110" />
               <div class="absolute inset-0 bg-stone-900 bg-opacity-60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                <div class="bg-white/90 backdrop-blur-sm rounded-full p-4 shadow-lg">
-                  <svg class="w-8 h-8 text-stone-800" fill="currentColor" viewBox="0 0 24 24">
+                <div class="bg-white/90 backdrop-blur-sm rounded-full p-5 shadow-xl">
+                  <svg class="w-10 h-10 text-stone-800" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M8 5v14l11-7z"/>
                   </svg>
                 </div>
               </div>
-              <div class="absolute top-2 right-2 bg-stone-900/80 text-white text-xs px-2 py-1 rounded-full backdrop-blur-sm">
-                <svg class="w-3 h-3 inline mr-1" fill="currentColor" viewBox="0 0 24 24">
+              <div class="absolute top-3 right-3 bg-stone-900/80 text-white text-xs px-3 py-2 rounded-full backdrop-blur-sm font-semibold">
+                <svg class="w-4 h-4 inline mr-2" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M8 5v14l11-7z"/>
                 </svg>
                 Video
               </div>
             </div>
-            <div class="p-4">
-              <h3 class="font-semibold text-stone-800 truncate">{{ video.name }}</h3>
-              <div class="text-sm text-stone-600 mt-2 space-y-1">
-                <p><span class="font-medium text-stone-700">{{ video.dimensions || "N/A" }}</span></p>
-                <p><span class="font-medium text-stone-700">{{ video.size || "N/A" }}</span> • <span class="font-medium text-stone-700">{{ video.format || "N/A" }}</span></p>
+            <div class="p-6">
+              <h3 class="font-bold text-stone-800 truncate text-lg mb-3">{{ video.name }}</h3>
+              <div class="text-sm text-stone-600 space-y-2">
+                <p><span class="font-semibold text-stone-700">{{ video.dimensions || "N/A" }}</span></p>
+                <p><span class="font-semibold text-stone-700">{{ video.size || "N/A" }}</span> • <span class="font-semibold text-stone-700">{{ video.format || "N/A" }}</span></p>
               </div>
             </div>
           </div>
@@ -112,14 +112,14 @@
       </div>
 
       <div v-if="activeTab === 'images'">
-        <div class="flex justify-center mb-8">
+        <div class="flex justify-center mb-12">
           <button
             @click="openCropperModal"
-            class="relative bg-gradient-to-r from-green-600 to-teal-600 text-white font-bold py-4 px-8 rounded-xl shadow-2xl hover:shadow-green-500/25 hover:scale-105 transition-all duration-300 overflow-hidden group"
+            class="relative bg-gradient-to-r from-green-600 to-teal-600 text-white font-bold py-5 px-10 rounded-2xl shadow-2xl hover:shadow-green-500/25 hover:scale-105 transition-all duration-300 overflow-hidden group text-lg"
           >
             <span class="absolute inset-0 bg-gradient-to-r from-green-400 to-teal-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
-            <span class="relative flex items-center gap-3">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <span class="relative flex items-center gap-4">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
               </svg>
               Subir y Recortar Nueva Imagen
@@ -127,24 +127,28 @@
           </button>
         </div>
 
-        <h2 class="text-2xl font-bold text-stone-800 mb-4 mt-12">Galería de Imágenes</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div class="bg-white/70 backdrop-blur-sm rounded-2xl p-8 mb-8">
+          <h2 class="text-3xl font-bold text-stone-800 mb-2 text-center">🖼️ Galería de Imágenes</h2>
+          <p class="text-stone-600 text-center text-lg">Todas tus imágenes organizadas y listas para usar</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8 mb-12">
           <div
             v-for="image in images"
             :key="image.id"
-            class="bg-white shadow-xl rounded-xl overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl border border-stone-200 group cursor-pointer"
+            class="bg-white shadow-xl rounded-2xl overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl border border-stone-200 group cursor-pointer"
             @click="openImageModal(image)"
           >
             <div class="relative">
               <img
-                class="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110"
+                class="w-full h-56 object-cover transition-transform duration-300 group-hover:scale-110"
                 :src="image.url"
                 :alt="image.name"
               />
-              <div class="absolute inset-0 bg-gradient-to-t from-stone-900/80 via-stone-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-4">
-                <div class="bg-white/90 backdrop-blur-sm rounded-full px-4 py-2 shadow-lg">
-                  <span class="text-stone-800 font-semibold flex items-center gap-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div class="absolute inset-0 bg-gradient-to-t from-stone-900/80 via-stone-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-6">
+                <div class="bg-white/90 backdrop-blur-sm rounded-full px-6 py-3 shadow-xl">
+                  <span class="text-stone-800 font-bold flex items-center gap-3 text-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                     </svg>
@@ -153,11 +157,11 @@
                 </div>
               </div>
             </div>
-            <div class="p-4">
-              <h3 class="font-semibold text-stone-800 truncate">{{ image.name }}</h3>
-              <div class="text-sm text-stone-600 mt-2 space-y-1">
-                <p><span class="font-medium text-stone-700">{{ image.dimensions }}</span></p>
-                <p><span class="font-medium text-stone-700">{{ image.size }}</span> • <span class="font-medium text-stone-700">{{ image.format }}</span></p>
+            <div class="p-6">
+              <h3 class="font-bold text-stone-800 truncate text-lg mb-3">{{ image.name }}</h3>
+              <div class="text-sm text-stone-600 space-y-2">
+                <p><span class="font-semibold text-stone-700">{{ image.dimensions }}</span></p>
+                <p><span class="font-semibold text-stone-700">{{ image.size }}</span> • <span class="font-semibold text-stone-700">{{ image.format }}</span></p>
               </div>
             </div>
           </div>
@@ -166,29 +170,30 @@
 
       <div
         v-if="showVideoModal && selectedVideo"
-        class="fixed inset-0 bg-stone-900 bg-opacity-90 flex items-center justify-center z-50 p-4 cursor-pointer"
+        class="fixed inset-0 bg-stone-900 bg-opacity-95 flex items-center justify-center z-50 p-6 cursor-pointer overflow-y-auto"
         @click="closeAllModals"
       >
         <div
-          class="bg-white rounded-2xl overflow-hidden shadow-2xl max-w-5xl w-full transform transition-all duration-300 scale-100 hover:scale-105"
+          class="bg-white rounded-3xl overflow-hidden shadow-2xl max-w-6xl w-full transform transition-all duration-300 scale-100 hover:scale-105 max-h-[95vh] flex flex-col"
           @click.stop
         >
-          <div class="flex justify-between items-center p-6 border-b border-stone-200 bg-gradient-to-r from-stone-50 to-stone-100">
-            <h3 class="text-2xl font-bold text-stone-800">{{ selectedVideo.name }}</h3>
+          <div class="flex justify-between items-center p-8 border-b border-stone-200 bg-gradient-to-r from-stone-50 to-stone-100">
+            <div>
+              <h3 class="text-3xl font-bold text-stone-800 mb-2">{{ selectedVideo.name }}</h3>
+              <p class="text-stone-600 text-lg">Reproduciendo vídeo</p>
+            </div>
             <button
               @click="closeAllModals"
-              class="text-stone-400 hover:text-stone-600 hover:bg-stone-200 rounded-full p-2 transition-all duration-200"
+              class="text-stone-400 hover:text-stone-600 hover:bg-stone-200 rounded-full p-3 transition-all duration-200 text-2xl font-bold shadow-lg"
             >
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-              </svg>
+              ✕
             </button>
           </div>
-          <div class="p-6">
+          <div class="p-8 flex-1 overflow-y-auto">
             <video
               ref="videoPlayer"
               :src="selectedVideo.url"
-              class="w-full rounded-xl shadow-lg"
+              class="w-full rounded-2xl shadow-2xl mb-6"
               controls
               autoplay
             >
@@ -201,12 +206,24 @@
                 :label="subtitle.label"
                 :default="subtitle.srclang === 'es'"
               />
-              <p class="text-stone-500">Tu navegador no soporta el tag de vídeo.</p>
+              <p class="text-stone-500 text-center py-8">Tu navegador no soporta el tag de vídeo.</p>
             </video>
-            <div class="mt-4 text-sm text-stone-600">
-              <p><strong>Dimensiones:</strong> {{ selectedVideo.dimensions }}</p>
-              <p><strong>Tamaño:</strong> {{ selectedVideo.size }}</p>
-              <p><strong>Formato:</strong> {{ selectedVideo.format }}</p>
+            <div class="bg-stone-50 rounded-2xl p-6">
+              <h4 class="text-xl font-bold text-stone-800 mb-4">📊 Información del Vídeo</h4>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-stone-700">
+                <div class="text-center">
+                  <div class="text-2xl font-bold text-stone-800 mb-2">{{ selectedVideo.dimensions }}</div>
+                  <div class="text-sm text-stone-600">Dimensiones</div>
+                </div>
+                <div class="text-center">
+                  <div class="text-2xl font-bold text-stone-800 mb-2">{{ selectedVideo.size }}</div>
+                  <div class="text-sm text-stone-600">Tamaño</div>
+                </div>
+                <div class="text-center">
+                  <div class="text-2xl font-bold text-stone-800 mb-2">{{ selectedVideo.format }}</div>
+                  <div class="text-sm text-stone-600">Formato</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -214,33 +231,48 @@
 
       <div
         v-if="showImageModal && selectedImage"
-        class="fixed inset-0 bg-stone-900 bg-opacity-90 flex items-center justify-center z-50 p-4 cursor-pointer"
+        class="fixed inset-0 bg-stone-900 bg-opacity-95 flex items-center justify-center z-50 p-6 cursor-pointer overflow-y-auto"
         @click="closeAllModals"
       >
         <div
-          class="bg-white rounded-2xl overflow-hidden shadow-2xl w-full max-w-2xl max-h-[80vh] transform transition-all duration-300 scale-100"
+          class="bg-white rounded-3xl overflow-hidden shadow-2xl w-full max-w-5xl max-h-[95vh] transform transition-all duration-300 scale-100 hover:scale-105 flex flex-col"
           @click.stop
         >
-          <div class="flex justify-between items-center p-4 border-b border-stone-200 bg-gradient-to-r from-stone-50 to-stone-100">
-            <h3 class="text-lg font-bold text-stone-800">{{ selectedImage.name }}</h3>
+          <div class="flex justify-between items-center p-8 border-b border-stone-200 bg-gradient-to-r from-stone-50 to-stone-100">
+            <div>
+              <h3 class="text-3xl font-bold text-stone-800 mb-2">{{ selectedImage.name }}</h3>
+              <p class="text-stone-600 text-lg">Vista completa de la imagen</p>
+            </div>
             <button
               @click="closeAllModals"
-              class="text-stone-400 hover:text-stone-600 hover:bg-stone-200 rounded-full p-2 transition-all duration-200 text-xl font-bold"
+              class="text-stone-400 hover:text-stone-600 hover:bg-stone-200 rounded-full p-3 transition-all duration-200 text-2xl font-bold shadow-lg"
               title="Cerrar"
             >
               ✕
             </button>
           </div>
-          <div class="p-4">
+          <div class="p-8 flex-1 overflow-y-auto">
             <img
               :src="selectedImage.url"
               :alt="selectedImage.name"
-              class="w-full rounded-xl shadow-lg max-h-96 object-contain"
+              class="w-full rounded-2xl shadow-2xl mb-6 max-h-[60vh] object-contain"
             />
-            <div class="mt-4 text-sm text-stone-600 space-y-1">
-              <p><strong>Dimensiones:</strong> {{ selectedImage.dimensions }}</p>
-              <p><strong>Tamaño:</strong> {{ selectedImage.size }}</p>
-              <p><strong>Formato:</strong> {{ selectedImage.format }}</p>
+            <div class="bg-stone-50 rounded-2xl p-6">
+              <h4 class="text-xl font-bold text-stone-800 mb-4">📊 Información de la Imagen</h4>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-stone-700">
+                <div class="text-center">
+                  <div class="text-2xl font-bold text-stone-800 mb-2">{{ selectedImage.dimensions }}</div>
+                  <div class="text-sm text-stone-600">Dimensiones</div>
+                </div>
+                <div class="text-center">
+                  <div class="text-2xl font-bold text-stone-800 mb-2">{{ selectedImage.size }}</div>
+                  <div class="text-sm text-stone-600">Tamaño</div>
+                </div>
+                <div class="text-center">
+                  <div class="text-2xl font-bold text-stone-800 mb-2">{{ selectedImage.format }}</div>
+                  <div class="text-sm text-stone-600">Formato</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -248,81 +280,119 @@
 
       <div
         v-if="showImageCropper"
-        class="fixed inset-0 bg-stone-900 bg-opacity-90 flex items-center justify-center z-50 p-4"
+        class="fixed inset-0 bg-stone-900 bg-opacity-95 flex items-center justify-center z-50 p-6 overflow-y-auto"
       >
-        <div class="bg-white rounded-2xl overflow-hidden shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col">
-          <div class="flex justify-between items-center p-6 border-b border-stone-200 bg-gradient-to-r from-stone-50 to-stone-100">
-            <h3 class="text-2xl font-bold text-stone-800">Recortar Imagen</h3>
+        <div class="bg-white rounded-3xl overflow-hidden shadow-2xl w-full max-w-6xl max-h-[95vh] flex flex-col">
+          <div class="flex justify-between items-center p-8 border-b border-stone-200 bg-gradient-to-r from-stone-50 to-stone-100">
+            <div>
+              <h3 class="text-3xl font-bold text-stone-800 mb-2">✂️ Recortar Imagen</h3>
+              <p class="text-stone-600 text-lg">Ajusta el área de recorte y guarda tu imagen</p>
+            </div>
             <button
               @click="closeCropperModal"
-              class="text-stone-400 hover:text-stone-600 hover:bg-stone-200 rounded-full p-2 transition-all duration-200 text-xl font-bold"
+              class="text-stone-400 hover:text-stone-600 hover:bg-stone-200 rounded-full p-3 transition-all duration-200 text-2xl font-bold shadow-lg"
               title="Cerrar"
             >
               ✕
             </button>
           </div>
 
-          <div class="p-6 flex-1 flex flex-col">
-            <input
-              ref="fileInput"
-              type="file"
-              accept="image/*"
-              @change="handleFileSelect"
-              class="mb-4 p-3 border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-500"
-            />
+          <div class="p-8 flex-1 flex flex-col overflow-y-auto">
+            <div class="mb-8">
+              <label class="block text-lg font-semibold text-stone-800 mb-3">Seleccionar Imagen</label>
+              <input
+                ref="fileInput"
+                type="file"
+                accept="image/*"
+                @change="handleFileSelect"
+                class="w-full p-4 border-2 border-stone-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-stone-500 focus:border-stone-500 transition-all duration-200 text-lg"
+              />
+            </div>
 
-            <div class="flex-1 flex items-center justify-center min-h-[300px] bg-stone-50 rounded-lg border-2 border-dashed border-stone-300 relative">
+            <div
+              class="drop-zone flex-1 flex items-center justify-center min-h-[400px] bg-stone-50 rounded-2xl border-2 border-dashed border-stone-300 relative mb-8 overflow-hidden cursor-pointer transition-all duration-200"
+              @click="triggerFileInput"
+              @dragover="handleDragOver"
+              @dragleave="handleDragLeave"
+              @drop="handleDrop"
+            >
               <img
                 ref="imagePreview"
                 :src="previewImage"
                 :style="{ display: previewImage ? 'block' : 'none', maxWidth: '100%', maxHeight: '100%' }"
-                class="rounded-lg"
+                class="rounded-xl shadow-lg"
               />
               <div v-if="!previewImage" class="text-center text-stone-500">
-                <svg class="w-12 h-12 mx-auto mb-4 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-20 h-20 mx-auto mb-6 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                 </svg>
-                <p>Selecciona una imagen para recortar</p>
+                <p class="text-xl font-semibold">Selecciona una imagen para recortar</p>
+                <p class="text-stone-400 mt-2">Arrastra y suelta o haz clic para seleccionar</p>
+                <div class="mt-4 px-4 py-2 bg-stone-200 text-stone-600 rounded-lg text-sm font-medium">
+                  📁 Haz clic aquí para abrir el explorador de archivos
+                </div>
+              </div>
+              <div v-else class="absolute bottom-4 left-4 right-4 text-center">
+                <div class="px-4 py-2 bg-black/70 text-white rounded-lg text-sm font-medium backdrop-blur-sm">
+                  ✂️ Arrastra las esquinas para recortar • Usa la rueda para zoom
+                </div>
               </div>
 
-              <div v-if="previewImage" class="absolute top-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded font-mono max-w-xs">
-                <div>Cropper: {{ cropper ? '✅ Active' : '❌ Inactive' }}</div>
-                <div v-if="cropper">Modern: {{ typeof cropper.getCropperCanvas }}</div>
-                <div v-if="cropper">Legacy: {{ typeof cropper.getCroppedCanvas }}</div>
-                <div v-if="cropper">Data: {{ typeof cropper.getData }}</div>
-                <div>Preview: {{ previewImage ? '✅ Set' : '❌ Empty' }}</div>
+              <div v-if="previewImage" class="absolute top-4 right-4 bg-black/80 text-white text-sm px-4 py-2 rounded-xl font-mono backdrop-blur-sm shadow-lg">
+                <div class="font-bold mb-2">Estado del Cropper:</div>
+                <div>🟢 Activo: {{ cropper ? 'Sí' : 'No' }}</div>
+                <div v-if="cropper">📊 Datos: {{ typeof cropper.getData }}</div>
+                <div>🖼️ Vista previa: {{ previewImage ? 'Lista' : 'Pendiente' }}</div>
               </div>
             </div>
 
-            <div class="mt-6 flex justify-between items-center">
-              <div class="text-sm text-stone-600">
-                <input
-                  v-model="imageName"
-                  type="text"
-                  placeholder="Nombre de la imagen"
-                  class="px-3 py-2 border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-500"
-                />
+            <div class="bg-stone-50 rounded-2xl p-6 mb-6">
+              <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+                <div class="flex-1">
+                  <label class="block text-lg font-semibold text-stone-800 mb-3">Nombre de la Imagen</label>
+                  <input
+                    v-model="imageName"
+                    type="text"
+                    placeholder="Ej: Mi hermosa foto recortada"
+                    class="w-full px-4 py-3 border-2 border-stone-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-stone-500 focus:border-stone-500 transition-all duration-200 text-lg"
+                  />
+                </div>
+                <div class="flex gap-4">
+                  <button
+                    @click="closeCropperModal"
+                    class="px-8 py-3 bg-stone-200 text-stone-800 rounded-xl hover:bg-stone-300 transition-colors font-semibold text-lg shadow-lg"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    @click="cropAndSaveImage"
+                    :disabled="!previewImage || !imageName.trim()"
+                    :class="[
+                      'px-8 py-3 rounded-xl transition-all duration-200 font-bold text-lg shadow-lg transform',
+                      (!previewImage || !imageName.trim())
+                        ? 'bg-gray-400 text-gray-200 cursor-not-allowed'
+                        : 'bg-gradient-to-r from-stone-700 to-stone-800 text-white hover:from-stone-800 hover:to-stone-900 hover:scale-105'
+                    ]"
+                  >
+                    ✨ Recortar y Guardar
+                  </button>
+                </div>
               </div>
-              <div class="flex gap-3">
-                <button
-                  @click="closeCropperModal"
-                  class="px-6 py-2 bg-stone-200 text-stone-800 rounded-lg hover:bg-stone-300 transition-colors"
-                >
-                  Cancelar
-                </button>
-                <button
-                  @click="cropAndSaveImage"
-                  :disabled="!previewImage || !imageName.trim()"
-                  :class="[
-                    'px-6 py-2 rounded-lg transition-colors',
-                    (!previewImage || !imageName.trim())
-                      ? 'bg-gray-400 text-gray-200 cursor-not-allowed'
-                      : 'bg-stone-700 text-white hover:bg-stone-800'
-                  ]"
-                >
-                  Recortar y Guardar
-                </button>
+            </div>
+
+            <div v-if="previewImage" class="bg-blue-50 border border-blue-200 rounded-2xl p-6">
+              <div class="flex items-center gap-3 mb-3">
+                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <h4 class="text-lg font-semibold text-blue-800">Instrucciones</h4>
               </div>
+              <ul class="text-blue-700 space-y-2 text-sm">
+                <li>• Arrastra las esquinas para ajustar el área de recorte</li>
+                <li>• Usa la rueda del mouse para hacer zoom</li>
+                <li>• Mantén presionado para mover la imagen</li>
+                <li>• El área seleccionada será la imagen final</li>
+              </ul>
             </div>
           </div>
         </div>
@@ -502,50 +572,130 @@ const initialImages = [
 // Methods
 const fetchImageProperties = async (url) => {
   try {
-    const response = await fetch(url)
+    console.log('Fetching properties for:', url)
+
+    // For local blob URLs or data URLs, we need a different approach
+    if (url.startsWith('blob:') || url.startsWith('data:')) {
+      return new Promise((resolve) => {
+        const img = new Image()
+        img.onload = () => {
+          console.log('Image loaded, dimensions:', img.width, 'x', img.height)
+          resolve({
+            size: 'N/A (Blob)',
+            dimensions: `${img.width} x ${img.height} px`,
+            format: url.startsWith('data:image/') ? url.split(';')[0].split('/')[1].toUpperCase() : 'N/A',
+          })
+        }
+        img.onerror = (error) => {
+          console.error('Image load error:', error)
+          resolve({ size: "N/A", dimensions: "N/A", format: "N/A" })
+        }
+        img.src = url
+      })
+    }
+
+    // For regular URLs, try to fetch
+    const response = await fetch(url, { mode: 'cors' })
     const blob = await response.blob()
     const sizeInKB = (blob.size / 1024).toFixed(2)
-    const format = blob.type.split('/')[1].toUpperCase()
+    const format = blob.type.split('/')[1]?.toUpperCase() || 'N/A'
+
+    console.log('Blob size:', blob.size, 'Format:', format)
 
     return new Promise((resolve) => {
       const img = new Image()
       img.onload = () => {
+        console.log('Image loaded from URL, dimensions:', img.width, 'x', img.height)
         resolve({
           size: `${sizeInKB} KB`,
           dimensions: `${img.width} x ${img.height} px`,
           format: format,
         })
       }
-      img.onerror = () => resolve({ size: "N/A", dimensions: "N/A", format: "N/A" })
+      img.onerror = (error) => {
+        console.error('Image load error for URL:', error)
+        resolve({
+          size: `${sizeInKB} KB`,
+          dimensions: "N/A",
+          format: format
+        })
+      }
+      img.crossOrigin = 'anonymous'
       img.src = url
     })
   } catch (e) {
     console.error("Error al obtener las propiedades del archivo:", e)
+
+    // Fallback: try to get basic info from URL
+    if (url.startsWith('data:image/')) {
+      return new Promise((resolve) => {
+        const img = new Image()
+        img.onload = () => {
+          resolve({
+            size: `${(url.length * 0.75 / 1024).toFixed(2)} KB (est.)`,
+            dimensions: `${img.width} x ${img.height} px`,
+            format: url.split(';')[0].split('/')[1].toUpperCase(),
+          })
+        }
+        img.onerror = () => resolve({ size: "N/A", dimensions: "N/A", format: "N/A" })
+        img.src = url
+      })
+    }
+
     return { size: "N/A", dimensions: "N/A", format: "N/A" }
   }
 }
 
 const fetchVideoProperties = async (videoItem) => {
   try {
+    console.log('Fetching video properties for:', videoItem.name)
+
     const video = document.createElement("video")
+    video.preload = 'metadata'
     video.src = videoItem.url
 
-    await new Promise((resolve, reject) => {
-      video.onloadedmetadata = resolve
-      video.onerror = () => reject("Error al cargar metadatos del video.")
+    // Set a timeout for loading metadata
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error('Timeout loading video metadata')), 10000)
     })
 
-    const dimensions = `${video.videoWidth} x ${video.videoHeight} px`
-    const format = videoItem.url.split(".").pop().toUpperCase() || "N/A"
+    await Promise.race([
+      new Promise((resolve, reject) => {
+        video.onloadedmetadata = () => {
+          console.log('Video metadata loaded:', video.videoWidth, 'x', video.videoHeight)
+          resolve()
+        }
+        video.onerror = (e) => {
+          console.error('Video load error:', e)
+          reject(new Error("Error al cargar metadatos del video."))
+        }
+      }),
+      timeoutPromise
+    ])
 
-    const response = await fetch(videoItem.url)
-    const blob = await response.blob()
-    const sizeInMB = (blob.size / (1024 * 1024)).toFixed(2)
+    const dimensions = `${video.videoWidth} x ${video.videoHeight} px`
+    const format = videoItem.url.split(".").pop()?.toUpperCase() || "N/A"
+
+    // Try to get file size
+    let size = "N/A"
+    try {
+      const response = await fetch(videoItem.url, { method: 'HEAD' })
+      const contentLength = response.headers.get('content-length')
+      if (contentLength) {
+        const sizeInMB = (parseInt(contentLength) / (1024 * 1024)).toFixed(2)
+        size = `${sizeInMB} MB`
+      }
+    } catch (sizeError) {
+      console.warn('Could not get video file size:', sizeError)
+      size = "N/A"
+    }
+
+    console.log('Video properties:', { dimensions, size, format })
 
     return {
       ...videoItem,
       dimensions: dimensions,
-      size: `${sizeInMB} MB`,
+      size: size,
       format: format,
       views: Math.floor(Math.random() * 5000),
       uniqueViews: Math.floor(Math.random() * 2000),
@@ -647,6 +797,45 @@ const resetCropperState = () => {
   }
 
   console.log('Cropper state reset completed')
+}
+
+const triggerFileInput = () => {
+  console.log('Triggering file input click')
+
+  // Only open file browser if no image is currently loaded
+  if (!previewImage.value) {
+    if (fileInput.value) {
+      fileInput.value.click()
+    } else {
+      console.warn('File input not found')
+    }
+  } else {
+    console.log('Image already loaded, not opening file browser')
+  }
+}
+
+const handleDragOver = (event) => {
+  event.preventDefault()
+  event.currentTarget.classList.add('drag-over')
+  console.log('Drag over detected')
+}
+
+const handleDragLeave = (event) => {
+  event.preventDefault()
+  event.currentTarget.classList.remove('drag-over')
+  console.log('Drag leave detected')
+}
+
+const handleDrop = (event) => {
+  event.preventDefault()
+  event.currentTarget.classList.remove('drag-over')
+
+  const files = event.dataTransfer.files
+  if (files.length > 0) {
+    const file = files[0]
+    console.log('File dropped:', file.name)
+    handleFileSelect({ target: { files: [file] } })
+  }
 }
 
 const handleFileSelect = (event) => {
@@ -986,15 +1175,25 @@ const cropAndSaveImage = async () => {
       const croppedDataUrl = finalCanvas.toDataURL('image/png', 0.9);
       console.log('✅ Data URL created, length:', croppedDataUrl.length);
 
+      // Calculate actual dimensions from the cropped canvas
+      const actualWidth = croppedCanvas.width || 800
+      const actualHeight = croppedCanvas.height || 450
+
+      // Calculate size more accurately
+      const sizeInBytes = croppedDataUrl.length * 0.75 // Base64 encoding overhead
+      const sizeInKB = (sizeInBytes / 1024).toFixed(2)
+
       // Create new image object
       const newImage = {
         id: `img-${Date.now()}`,
         url: croppedDataUrl,
         name: imageName.value.trim(),
-        dimensions: `${croppedCanvas.width} x ${croppedCanvas.height} px`,
-        size: `${((croppedDataUrl.length * 3) / 4 / 1024).toFixed(2)} KB`,
+        dimensions: `${actualWidth} x ${actualHeight} px`,
+        size: `${sizeInKB} KB`,
         format: 'PNG',
       };
+
+      console.log('New cropped image properties:', newImage);
 
       console.log('📦 New image object created:', newImage);
 
@@ -1035,18 +1234,36 @@ const cropAndSaveImage = async () => {
     // Fallback: save original image
     console.log('🔄 Attempting fallback with original image...');
     if (previewImage.value) {
-      const newImage = {
-        id: `img-${Date.now()}`,
-        url: previewImage.value,
-        name: imageName.value.trim(),
-        dimensions: 'Original',
-        size: 'Original',
-        format: 'Original',
-      };
+      // Try to get dimensions from the original image
+      const img = new Image()
+      img.src = previewImage.value
 
-      images.value.unshift(newImage);
+      const fallbackImage = await new Promise((resolve) => {
+        img.onload = () => {
+          const sizeInKB = (previewImage.value.length * 0.75 / 1024).toFixed(2)
+          resolve({
+            id: `img-${Date.now()}`,
+            url: previewImage.value,
+            name: imageName.value.trim(),
+            dimensions: `${img.width} x ${img.height} px`,
+            size: `${sizeInKB} KB`,
+            format: previewImage.value.startsWith('data:image/') ?
+              previewImage.value.split(';')[0].split('/')[1].toUpperCase() : 'N/A',
+          })
+        }
+        img.onerror = () => resolve({
+          id: `img-${Date.now()}`,
+          url: previewImage.value,
+          name: imageName.value.trim(),
+          dimensions: 'N/A',
+          size: 'N/A',
+          format: 'N/A',
+        })
+      })
+
+      images.value.unshift(fallbackImage);
       const savedImages = JSON.parse(localStorage.getItem('uploadedImages') || '[]');
-      savedImages.unshift(newImage);
+      savedImages.unshift(fallbackImage);
       localStorage.setItem('uploadedImages', JSON.stringify(savedImages));
 
       // Trigger storage event to update carousel
@@ -1083,29 +1300,39 @@ onMounted(async () => {
   document.body.classList.add('config-page')
 
   try {
+    console.log('🎬 Loading multimedia data...')
+
     // Load image properties for initial images
+    console.log('🖼️ Processing initial images...')
     const processedImages = await Promise.all(
       initialImages.map(async (img) => {
+        console.log('Processing image:', img.name, 'URL:', img.url.substring(0, 50) + '...')
         const properties = await fetchImageProperties(img.url)
+        console.log('Image properties for', img.name, ':', properties)
         return { ...img, ...properties }
       })
     )
 
     // Load saved images from localStorage
     const savedImages = JSON.parse(localStorage.getItem('uploadedImages') || '[]')
+    console.log('📦 Loaded saved images:', savedImages.length)
 
     // Combine initial images with saved images
     images.value = [...processedImages, ...savedImages]
+    console.log('✅ Total images loaded:', images.value.length)
 
     // Load video properties
+    console.log('🎥 Processing videos...')
     const processedVideos = await Promise.all(
       STATIC_VIDEOS.map(video => fetchVideoProperties(video))
     )
     videos.value = processedVideos
+    console.log('✅ Videos loaded:', videos.value.length)
 
     loading.value = false
+    console.log('🎉 Multimedia loading completed!')
   } catch (err) {
-    console.error('Error loading multimedia:', err)
+    console.error('❌ Error loading multimedia:', err)
     error.value = 'Error al cargar los archivos multimedia'
     loading.value = false
   }
@@ -1227,6 +1454,21 @@ button:active {
 
 .shadow-glow:hover {
   box-shadow: 0 0 30px rgba(139, 69, 19, 0.2);
+}
+
+/* Drop zone styles */
+.drop-zone {
+  transition: all 0.2s ease;
+}
+
+.drop-zone:hover {
+  border-color: #a8a29e !important;
+  background-color: #f9fafb !important;
+}
+
+.drop-zone.drag-over {
+  border-color: #78716c !important;
+  background-color: #f3f4f6 !important;
 }
 
 /* Cropper.js styles */

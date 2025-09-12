@@ -4,7 +4,7 @@ export interface Font {
   id: string
   name: string
   fontFamily: string
-  fontType: 'title' | 'subtitle' | 'paragraph' | 'general'
+  fontType: 'title' | 'subtitle' | 'paragraph' | 'general' | 'active'
   fontFilePath: string | null
   fontWeight: string
   fontStyle: string
@@ -15,9 +15,7 @@ export interface Font {
 }
 
 export interface AssignedFonts {
-  title?: Font
-  subtitle?: Font
-  paragraph?: Font
+  active?: Font
 }
 
 const fonts = ref<Font[]>([])
@@ -64,15 +62,17 @@ export const useFonts = () => {
       const token = localStorage.getItem('token')
       if (!token) return
 
-      const response = await fetch(`${API_BASE}/fonts/user/assigned`, {
+      const response = await fetch(`${API_BASE}/fonts`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       })
 
       if (response.ok) {
-        const data = await response.json()
-        assignedFonts.value = data
+        const allFonts = await response.json()
+        // Find the active font
+        const activeFont = allFonts.find((font: Font) => font.fontType === 'active')
+        assignedFonts.value = activeFont ? { active: activeFont } : {}
         applyFontsToPage()
       }
     } catch (err) {
@@ -186,67 +186,30 @@ export const useFonts = () => {
   const applyFontsToPage = () => {
     if (typeof document === 'undefined') return
 
-    const root = document.documentElement
-
-    // Reset to defaults
-    root.style.setProperty('--font-title', 'var(--font-default)')
-    root.style.setProperty('--font-subtitle', 'var(--font-default)')
-    root.style.setProperty('--font-paragraph', 'var(--font-default)')
-
-    // Apply assigned fonts
-    if (assignedFonts.value.title) {
-      const fontUrl = `${API_BASE.replace('/api', '')}/${assignedFonts.value.title.fontFilePath}`
-      const fontFace = `
-        @font-face {
-          font-family: '${assignedFonts.value.title.fontFamily}';
-          src: url('${fontUrl}') format('${assignedFonts.value.title.fontFormat}');
-          font-weight: ${assignedFonts.value.title.fontWeight};
-          font-style: ${assignedFonts.value.title.fontStyle};
-        }
-      `
-      const styleId = 'dynamic-font-title'
-      let styleElement = document.getElementById(styleId) as HTMLStyleElement
-      if (!styleElement) {
-        styleElement = document.createElement('style')
-        styleElement.id = styleId
-        document.head.appendChild(styleElement)
-      }
-      styleElement.textContent = fontFace
-      root.style.setProperty('--font-title', assignedFonts.value.title.fontFamily)
+    // Remove any existing active font styles
+    const existingStyle = document.getElementById('dynamic-active-font')
+    if (existingStyle) {
+      existingStyle.remove()
     }
 
-    if (assignedFonts.value.subtitle) {
-      const fontUrl = `${API_BASE.replace('/api', '')}/${assignedFonts.value.subtitle.fontFilePath}`
-      const fontFace = `
-        @font-face {
-          font-family: '${assignedFonts.value.subtitle.fontFamily}';
-          src: url('${fontUrl}') format('${assignedFonts.value.subtitle.fontFormat}');
-          font-weight: ${assignedFonts.value.subtitle.fontWeight};
-          font-style: ${assignedFonts.value.subtitle.fontStyle};
-        }
-      `
-      const styleId = 'dynamic-font-subtitle'
-      let styleElement = document.getElementById(styleId) as HTMLStyleElement
-      if (!styleElement) {
-        styleElement = document.createElement('style')
-        styleElement.id = styleId
-        document.head.appendChild(styleElement)
-      }
-      styleElement.textContent = fontFace
-      root.style.setProperty('--font-subtitle', assignedFonts.value.subtitle.fontFamily)
-    }
+    // Reset all text elements to default font
+    const allTextElements = document.querySelectorAll('h1, h2, h3, h4, h5, h6, p, span, div, li, td, th, label, a, button')
+    allTextElements.forEach((element) => {
+      (element as HTMLElement).style.fontFamily = ''
+    })
 
-    if (assignedFonts.value.paragraph) {
-      const fontUrl = `${API_BASE.replace('/api', '')}/${assignedFonts.value.paragraph.fontFilePath}`
+    // Apply active font globally to all text elements if one exists
+    if (assignedFonts.value.active) {
+      const fontUrl = `${API_BASE.replace('/api', '')}/${assignedFonts.value.active.fontFilePath}`
       const fontFace = `
         @font-face {
-          font-family: '${assignedFonts.value.paragraph.fontFamily}';
-          src: url('${fontUrl}') format('${assignedFonts.value.paragraph.fontFormat}');
-          font-weight: ${assignedFonts.value.paragraph.fontWeight};
-          font-style: ${assignedFonts.value.paragraph.fontStyle};
+          font-family: '${assignedFonts.value.active.fontFamily}';
+          src: url('${fontUrl}') format('${assignedFonts.value.active.fontFormat}');
+          font-weight: ${assignedFonts.value.active.fontWeight};
+          font-style: ${assignedFonts.value.active.fontStyle};
         }
       `
-      const styleId = 'dynamic-font-paragraph'
+      const styleId = 'dynamic-active-font'
       let styleElement = document.getElementById(styleId) as HTMLStyleElement
       if (!styleElement) {
         styleElement = document.createElement('style')
@@ -254,7 +217,11 @@ export const useFonts = () => {
         document.head.appendChild(styleElement)
       }
       styleElement.textContent = fontFace
-      root.style.setProperty('--font-paragraph', assignedFonts.value.paragraph.fontFamily)
+
+      // Apply font globally to all text elements
+      allTextElements.forEach((element) => {
+        (element as HTMLElement).style.fontFamily = assignedFonts.value.active!.fontFamily
+      })
     }
   }
 
