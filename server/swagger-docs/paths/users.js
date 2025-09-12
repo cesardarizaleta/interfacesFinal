@@ -345,5 +345,35 @@ module.exports = {
         }
       }
     }
+  },
+  '/api/users/admin/{id}': {
+    post: {
+      summary: 'Registrar usuario como administrador',
+      description: 'Promueve a un usuario existente al rol de administrador',
+      tags: ['Users', 'Admin'],
+      parameters: [
+        {
+          $ref: '#/components/parameters/userId'
+        }
+      ],
+      responses: {
+        200: {
+          description: 'Usuario promovido a administrador exitosamente',
+          content: {
+            'application/json': {
+              schema: {
+                $ref: '#/components/schemas/User'
+              }
+            }
+          }
+        },
+        400: {
+          $ref: '#/components/responses/ValidationError'
+        },
+        404: {
+          $ref: '#/components/responses/NotFoundError'
+        }
+      }
+    }
   }
 };

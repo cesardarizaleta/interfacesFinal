@@ -339,4 +339,17 @@ router.get('/role/:role',
   }
 );
 
+router.post('/admin/:id',
+  validatorHandler(getUserSchema, 'params'),
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const updatedUser = await service.updateRole(id, 'admin');
+      res.json(updatedUser);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
 module.exports = router;
