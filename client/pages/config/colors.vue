@@ -383,7 +383,7 @@ const fetchUserPalettes = async () => {
     if (!user) throw new Error('Usuario no encontrado');
 
     const userData = JSON.parse(user);
-    const response = await fetch(`${BACKEND_URL}/api/colors/user/${userData.id}`, {
+    const response = await fetch(`${BACKEND_URL}/api/profile/my-colors`, {
       headers: {
         'Authorization': `Bearer ${token}`
       }
@@ -401,6 +401,16 @@ const fetchUserPalettes = async () => {
       applyPalette(activePalette);
       // Aplicar colores globalmente cuando se carga la página
       applyColorsToPage(activePalette);
+
+      // Forzar aplicación global inmediata
+      if (typeof document !== 'undefined') {
+        const root = document.documentElement;
+        root.style.setProperty('--color-primary', activePalette.colorPrimary);
+        root.style.setProperty('--color-secondary', activePalette.colorSecondary);
+        root.style.setProperty('--color-accent', activePalette.colorAccent);
+        root.style.setProperty('--color-text', activePalette.colorText);
+        root.style.setProperty('--background-neutral', activePalette.backgroundNeutral);
+      }
     }
   } catch (error) {
     console.error('Error:', error);
@@ -444,6 +454,16 @@ const activatePalette = async (palette) => {
 
     // Aplicar colores globalmente a toda la aplicación
     applyColorsToPage(activatedPalette);
+
+    // Forzar aplicación global inmediata
+    if (typeof document !== 'undefined') {
+      const root = document.documentElement;
+      root.style.setProperty('--color-primary', activatedPalette.colorPrimary);
+      root.style.setProperty('--color-secondary', activatedPalette.colorSecondary);
+      root.style.setProperty('--color-accent', activatedPalette.colorAccent);
+      root.style.setProperty('--color-text', activatedPalette.colorText);
+      root.style.setProperty('--background-neutral', activatedPalette.backgroundNeutral);
+    }
 
     // Actualizar la lista de paletas
     const index = palettes.value.findIndex(p => p.id === activatedPalette.id);

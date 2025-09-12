@@ -35,9 +35,9 @@ class ProfileController {
   async getLastColorUsed(req, res, next) {
     try {
       const user = req.user;
-      const colors = await this.colorsService.findLastUsedByUserId(user.id);
-      const lastColor = colors[0] || null;
-      res.json(lastColor);
+      const activeColors = await this.colorsService.findActiveByUserId(user.id);
+      const activeColor = activeColors[0] || null;
+      res.json(activeColor);
     } catch (error) {
       next(error);
     }

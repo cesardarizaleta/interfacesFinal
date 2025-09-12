@@ -125,7 +125,15 @@ class ColorsService {
     if (color.userId !== userId) {
       throw boom.forbidden('Access denied');
     }
-    await color.update({ isActive: true });
+
+    // First, deactivate all palettes for this user
+    await this.Color.update(
+      { isActive: false },
+      { where: { userId } }
+    );
+
+    // Then activate the selected palette
+    await color.update({ isActive: true, lastUsedAt: new Date() });
     return color.toJSON();
   }
 

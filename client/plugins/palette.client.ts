@@ -1,10 +1,28 @@
 import { usePalette } from '~/composables/usePalette'
 
 export default defineNuxtPlugin(() => {
-  // No cargar paleta automáticamente al inicializar
-  // La carga se hará manualmente en páginas específicas
-  const { applyColorsToPage, activePalette } = usePalette()
+  const { applyColorsToPage, activePalette, loadFromServer } = usePalette()
 
-  // Solo aplicar colores predeterminados inicialmente
+  // Aplicar colores iniciales
   applyColorsToPage(activePalette.value)
+
+  // Intentar cargar colores del usuario si está autenticado
+  if (typeof window !== 'undefined') {
+    const token = localStorage.getItem('token')
+    const user = localStorage.getItem('user')
+
+    if (token && user) {
+      try {
+        const userData = JSON.parse(user)
+        loadFromServer(userData.id).then(() => {
+          console.log('User colors loaded and applied globally')
+          // Los colores ya se aplicaron dentro de loadFromServer
+        }).catch((error) => {
+          console.warn('Failed to load user colors in plugin:', error)
+        })
+      } catch (error) {
+        console.warn('Error parsing user data in plugin:', error)
+      }
+    }
+  }
 })

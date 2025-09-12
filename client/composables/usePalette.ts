@@ -71,7 +71,7 @@ export const usePalette = () => {
         const cssVar = colorMapping[key as keyof typeof colorMapping]
         if (cssVar && value) {
           root.style.setProperty(cssVar, value)
-          
+
           // Aplicar también la versión RGB para rgba() dinámico
           const rgb = hexToRgb(value)
           if (rgb) {
@@ -84,18 +84,28 @@ export const usePalette = () => {
       if (colors.colorPrimary) {
         root.style.setProperty('--bg-primary', colors.colorPrimary)
         root.style.setProperty('--border-primary', colors.colorPrimary)
+        root.style.setProperty('--text-primary', colors.colorPrimary)
       }
       if (colors.colorSecondary) {
         root.style.setProperty('--bg-secondary', colors.colorSecondary)
         root.style.setProperty('--border-secondary', colors.colorSecondary)
+        root.style.setProperty('--text-secondary', colors.colorSecondary)
       }
       if (colors.colorAccent) {
         root.style.setProperty('--bg-accent', colors.colorAccent)
         root.style.setProperty('--border-accent', colors.colorAccent)
+        root.style.setProperty('--text-accent', colors.colorAccent)
+      }
+      if (colors.colorText) {
+        root.style.setProperty('--text-primary', colors.colorText)
       }
       if (colors.backgroundNeutral) {
         root.style.setProperty('--bg-neutral', colors.backgroundNeutral)
+        // Aplicar background al body también
+        document.body.style.background = colors.backgroundNeutral
       }
+
+      console.log('Colors applied globally:', colors)
     }
   }
 
@@ -116,7 +126,8 @@ export const usePalette = () => {
       const token = localStorage.getItem('token')
       if (!token) return
 
-      const response = await fetch(`http://localhost:4000/api/colors/user/${userId}/active`, {
+      const config = useRuntimeConfig()
+      const response = await fetch(`${config.public.BACKEND_URL}/api/profile/lastColorUsed`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -124,8 +135,10 @@ export const usePalette = () => {
 
       if (response.ok) {
         const palette = await response.json()
-        setActivePalette(palette)
-        applyColorsToPage(activePalette.value)
+        if (palette) {
+          setActivePalette(palette)
+          applyColorsToPage(activePalette.value)
+        }
       }
     } catch (error) {
       console.warn('Error loading palette from server:', error)
@@ -137,7 +150,8 @@ export const usePalette = () => {
       const token = localStorage.getItem('token')
       if (!token) return
 
-      const response = await fetch(`http://localhost:4000/api/colors/${paletteId}/activate`, {
+      const config = useRuntimeConfig()
+      const response = await fetch(`${config.public.BACKEND_URL}/api/colors/${paletteId}/activate`, {
         method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -161,7 +175,8 @@ export const usePalette = () => {
       const token = localStorage.getItem('token')
       if (!token) return
 
-      const response = await fetch(`http://localhost:4000/api/colors/${paletteId}/deactivate`, {
+      const config = useRuntimeConfig()
+      const response = await fetch(`${config.public.BACKEND_URL}/api/colors/${paletteId}/deactivate`, {
         method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -199,6 +214,23 @@ export const usePalette = () => {
   // Cargar desde localStorage al inicializar
   if (typeof window !== 'undefined') {
     loadFromStorage()
+
+    // Intentar cargar desde servidor si hay token
+    const token = localStorage.getItem('token')
+    const user = localStorage.getItem('user')
+    if (token && user) {
+      try {
+        const userData = JSON.parse(user)
+        // Cargar colores del servidor inmediatamente
+        loadFromServer(userData.id).then(() => {
+          console.log('Colors loaded from server:', activePalette.value)
+        }).catch((error) => {
+          console.warn('Failed to load colors from server:', error)
+        })
+      } catch (error) {
+        console.warn('Error parsing user data:', error)
+      }
+    }
   }
 
   return {
