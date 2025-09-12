@@ -49,6 +49,9 @@
   --font-primary: 'Inter', system-ui, sans-serif;
   --font-heading: 'Playfair Display', serif;
 
+  /* Default fonts */
+  --font-default: var(--font-primary);
+
   /* Font Sizes */
   --text-xs: 0.75rem;
   --text-sm: 0.875rem;
@@ -204,7 +207,15 @@ body {
 .text-stone-300,
 .text-stone-200,
 .text-stone-100,
-.text-stone-900 {
+.text-stone-900,
+.text-gray-800,
+.text-gray-600,
+.text-gray-500,
+.text-gray-400,
+.text-gray-300,
+.text-gray-200,
+.text-gray-100,
+.text-gray-900 {
   color: var(--color-text) !important;
 }
 
@@ -218,8 +229,44 @@ body {
 .bg-stone-600,
 .bg-stone-700,
 .bg-stone-800,
-.bg-stone-900 {
+.bg-stone-900,
+.bg-gray-50,
+.bg-gray-100,
+.bg-gray-200,
+.bg-gray-300,
+.bg-gray-400,
+.bg-gray-500,
+.bg-gray-600,
+.bg-gray-700,
+.bg-gray-800,
+.bg-gray-900 {
   background-color: var(--background-neutral) !important;
+}
+
+/* Override icon colors */
+.fas,
+.far,
+.fab,
+.fa {
+  color: var(--color-text) !important;
+}
+
+/* Override all text elements globally */
+p, span, div, h1, h2, h3, h4, h5, h6, li, td, th, label, a {
+  color: var(--color-text) !important;
+}
+
+/* Override button colors */
+button {
+  color: var(--color-text) !important;
+  background-color: var(--background-neutral) !important;
+}
+
+/* Override input colors */
+input, textarea, select {
+  color: var(--color-text) !important;
+  background-color: var(--color-secondary) !important;
+  border-color: var(--color-primary) !important;
 }
 
 /* Essential animations */
@@ -251,6 +298,19 @@ body {
 
 i, .fa, .fas, .far, .fab {
   color: var(--color-accent);
+}
+
+/* Font type classes */
+.font-title {
+  font-family: var(--font-title, var(--font-heading));
+}
+
+.font-subtitle {
+  font-family: var(--font-subtitle, var(--font-primary));
+}
+
+.font-paragraph {
+  font-family: var(--font-paragraph, var(--font-primary));
 }
 
 /* Config pages - prevent transitions */

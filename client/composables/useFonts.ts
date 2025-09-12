@@ -26,7 +26,8 @@ const isLoading = ref(false)
 const error = ref<string | null>(null)
 
 export const useFonts = () => {
-  const API_BASE = 'http://localhost:4000/api'
+  const config = useRuntimeConfig()
+  const API_BASE = `${config.public.BACKEND_URL || 'http://localhost:3000'}/api`
 
   const loadFonts = async () => {
     try {
@@ -72,6 +73,7 @@ export const useFonts = () => {
       if (response.ok) {
         const data = await response.json()
         assignedFonts.value = data
+        applyFontsToPage()
       }
     } catch (err) {
       console.error('Error loading assigned fonts:', err)
@@ -108,6 +110,7 @@ export const useFonts = () => {
 
       // Reload assigned fonts
       await loadAssignedFonts()
+      applyFontsToPage()
 
       return updatedFont
     } catch (err) {

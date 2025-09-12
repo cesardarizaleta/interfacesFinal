@@ -7,10 +7,10 @@
           <Icon name="heroicons:information-circle" class="icon" />
           <span>About Us</span>
         </div>
-        <h2 class="section-title">
+        <h2 class="section-title font-title">
           Crafting <span class="title-accent">Memories</span> That Last Forever
         </h2>
-        <p class="section-subtitle">
+        <p class="section-subtitle font-paragraph">
           We are passionate photographers dedicated to capturing life's most precious moments with artistry, professionalism, and attention to detail.
         </p>
       </div>
@@ -20,31 +20,31 @@
         <!-- Main Content -->
         <div class="about-content">
           <div class="content-block">
-            <h3 class="content-title">
+            <h3 class="content-title font-subtitle">
               <Icon name="heroicons:camera" class="icon" />
               Our Story
             </h3>
-            <p class="content-text">
+            <p class="content-text font-paragraph">
               Founded with a vision to redefine photography, we've been creating stunning visual narratives for over a decade. Our journey began with a simple belief: every moment deserves to be captured beautifully.
             </p>
           </div>
 
           <div class="content-block">
-            <h3 class="content-title">
+            <h3 class="content-title font-subtitle">
               <Icon name="heroicons:heart" class="icon" />
               Our Passion
             </h3>
-            <p class="content-text">
+            <p class="content-text font-paragraph">
               We combine technical expertise with artistic vision to deliver photographs that not only document events but tell compelling stories. Each click of the shutter is an opportunity to create something extraordinary.
             </p>
           </div>
 
           <div class="content-block">
-            <h3 class="content-title">
+            <h3 class="content-title font-subtitle">
               <Icon name="heroicons:trophy" class="icon" />
               Our Commitment
             </h3>
-            <p class="content-text">
+            <p class="content-text font-paragraph">
               Excellence is not just a goal—it's our standard. We work tirelessly to exceed expectations, delivering high-quality results that our clients cherish for generations.
             </p>
           </div>
@@ -54,20 +54,20 @@
         <div class="about-visual">
           <div class="stats-grid">
             <div class="stat-card">
-              <div class="stat-number">500+</div>
-              <div class="stat-label">Happy Clients</div>
+              <div class="stat-number font-title">500+</div>
+              <div class="stat-label font-subtitle">Happy Clients</div>
             </div>
             <div class="stat-card">
-              <div class="stat-number">1000+</div>
-              <div class="stat-label">Photos Taken</div>
+              <div class="stat-number font-title">1000+</div>
+              <div class="stat-label font-subtitle">Photos Taken</div>
             </div>
             <div class="stat-card">
-              <div class="stat-number">50+</div>
-              <div class="stat-label">Events Covered</div>
+              <div class="stat-number font-title">50+</div>
+              <div class="stat-label font-subtitle">Events Covered</div>
             </div>
             <div class="stat-card">
-              <div class="stat-number">10+</div>
-              <div class="stat-label">Years Experience</div>
+              <div class="stat-number font-title">10+</div>
+              <div class="stat-label font-subtitle">Years Experience</div>
             </div>
           </div>
 
@@ -81,8 +81,8 @@
       <!-- CTA Section -->
       <div class="about-cta">
         <div class="cta-content">
-          <h3 class="cta-title">Ready to Create Your Story?</h3>
-          <p class="cta-text">Let's discuss how we can capture your special moments.</p>
+          <h3 class="cta-title font-subtitle">Ready to Create Your Story?</h3>
+          <p class="cta-text font-paragraph">Let's discuss how we can capture your special moments.</p>
           <a href="#contact" class="cta-button">
             <span>Get In Touch</span>
             <Icon name="heroicons:arrow-right" class="icon" />

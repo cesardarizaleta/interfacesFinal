@@ -11,7 +11,8 @@ export default defineNuxtConfig({
     },
   },
   plugins: [
-    '~/plugins/palette.client.ts'
+    '~/plugins/palette.client.ts',
+    '~/plugins/font.client.ts'
   ],
   app: {
     head: {

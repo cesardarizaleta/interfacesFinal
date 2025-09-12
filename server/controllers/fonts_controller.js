@@ -26,9 +26,25 @@ class FontsController {
 
   async getFontsByUser(req, res, next) {
     try {
-      const { userId } = req.params;
+      const userId = req.user.id;
       const fonts = await this.service.findByUser(userId);
       res.json(fonts);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getAssignedFonts(req, res, next) {
+    try {
+      const userId = req.user.id;
+      const fonts = await this.service.findByUser(userId);
+      const assigned = {};
+      fonts.forEach(font => {
+        if (font.fontType === 'title') assigned.title = font;
+        else if (font.fontType === 'subtitle') assigned.subtitle = font;
+        else if (font.fontType === 'paragraph') assigned.paragraph = font;
+      });
+      res.json(assigned);
     } catch (error) {
       next(error);
     }
@@ -44,7 +60,7 @@ class FontsController {
         return res.status(400).json({ message: 'No file uploaded' });
       }
 
-      const uploadedFont = await this.service.uploadFontToDrive(userId, file, fontData);
+      const uploadedFont = await this.service.uploadFontLocally(userId, file, fontData);
       res.status(201).json(uploadedFont);
     } catch (error) {
       next(error);
@@ -56,6 +72,17 @@ class FontsController {
       const { id } = req.params;
       const fontData = req.body;
       const updatedFont = await this.service.update(id, fontData);
+      res.json(updatedFont);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async assignFontType(req, res, next) {
+    try {
+      const { id } = req.params;
+      const { fontType } = req.body;
+      const updatedFont = await this.service.update(id, { fontType });
       res.json(updatedFont);
     } catch (error) {
       next(error);
@@ -74,7 +101,7 @@ class FontsController {
 
   async getLastUsedFonts(req, res, next) {
     try {
-      const { userId } = req.params;
+      const userId = req.user.id;
       const fonts = await this.service.findLastUsedByUserId(userId);
       res.json(fonts);
     } catch (error) {
@@ -92,7 +119,7 @@ class FontsController {
         return res.status(400).json({ message: 'No file uploaded' });
       }
 
-      const uploadedFont = await this.service.uploadFontToDrive(userId, file, fontData);
+      const uploadedFont = await this.service.uploadFontLocally(userId, file, fontData);
       res.status(201).json({
         message: 'Font uploaded successfully',
         font: uploadedFont

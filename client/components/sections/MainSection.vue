@@ -9,13 +9,13 @@
           <span>Professional Photography Studio</span>
         </div>
 
-        <h1 class="hero-title">
+        <h1 class="hero-title font-title">
           Capturing Life's
           <span class="hero-title-accent">Beautiful</span>
           Moments
         </h1>
 
-        <p class="hero-description">
+        <p class="hero-description font-paragraph">
           We transform ordinary moments into extraordinary memories through
           professional photography that tells your unique story with elegance
           and artistic vision.
@@ -36,16 +36,16 @@
         <!-- Stats -->
         <div class="hero-stats">
           <div class="stat-item">
-            <div class="stat-number">500+</div>
-            <div class="stat-label">Happy Clients</div>
+            <div class="stat-number font-title">500+</div>
+            <div class="stat-label font-subtitle">Happy Clients</div>
           </div>
           <div class="stat-item">
-            <div class="stat-number">1000+</div>
-            <div class="stat-label">Photos Taken</div>
+            <div class="stat-number font-title">1000+</div>
+            <div class="stat-label font-subtitle">Photos Taken</div>
           </div>
           <div class="stat-item">
-            <div class="stat-number">50+</div>
-            <div class="stat-label">Events Covered</div>
+            <div class="stat-number font-title">50+</div>
+            <div class="stat-label font-subtitle">Events Covered</div>
           </div>
         </div>
       </div>
@@ -67,8 +67,8 @@
             <Icon name="heroicons:camera" class="icon" />
           </div>
           <div class="floating-text">
-            <div class="floating-title">Professional</div>
-            <div class="floating-subtitle">Equipment</div>
+            <div class="floating-title font-subtitle">Professional</div>
+            <div class="floating-subtitle font-paragraph">Equipment</div>
           </div>
         </div>
 
@@ -77,8 +77,8 @@
             <Icon name="heroicons:trophy" class="icon" />
           </div>
           <div class="floating-text">
-            <div class="floating-title">Award</div>
-            <div class="floating-subtitle">Winning</div>
+            <div class="floating-title font-subtitle">Award</div>
+            <div class="floating-subtitle font-paragraph">Winning</div>
           </div>
         </div>
 
@@ -87,8 +87,8 @@
             <Icon name="heroicons:users" class="icon" />
           </div>
           <div class="floating-text">
-            <div class="floating-title">Expert</div>
-            <div class="floating-subtitle">Team</div>
+            <div class="floating-title font-subtitle">Expert</div>
+            <div class="floating-subtitle font-paragraph">Team</div>
           </div>
         </div>
       </div>
@@ -101,7 +101,7 @@
 
     <!-- Scroll Indicator -->
     <div class="scroll-indicator">
-      <div class="scroll-text">Scroll to explore</div>
+      <div class="scroll-text font-paragraph">Scroll to explore</div>
       <div class="scroll-mouse">
         <div class="scroll-wheel"></div>
       </div>
@@ -386,17 +386,51 @@
 }
 
 .floating-title {
-  font-weight: var(--font-bold);
+  font-weight: var(--font-bold) !important;
   color: var(--color-text) !important;
-  font-size: var(--text-sm);
+  font-size: var(--text-sm) !important;
 }
 
 .floating-subtitle {
-  font-size: var(--text-xs);
+  font-size: var(--text-xs) !important;
   color: var(--color-text-light) !important;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-weight: var(--font-medium);
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  font-weight: var(--font-medium) !important;
+  opacity: 0.8 !important; /* Asegurar que sea visible pero más sutil */
+}
+
+/* Override Tailwind classes in floating cards */
+.floating-card .text-stone-400,
+.floating-card .text-stone-500,
+.floating-card .text-stone-600,
+.floating-card .text-stone-700,
+.floating-card .text-stone-800,
+.floating-card .text-stone-900 {
+  color: var(--color-text) !important;
+}
+
+.floating-card i.fas,
+.floating-card i.far,
+.floating-card i.fab,
+.floating-card .icon {
+  color: var(--color-secondary) !important;
+}
+
+/* Ensure floating card text uses palette colors */
+.floating-card .floating-title,
+.floating-card .floating-subtitle {
+  color: var(--color-text) !important;
+}
+
+.floating-card .floating-subtitle {
+  color: var(--color-text-light) !important;
+}
+
+/* Force background colors for floating cards */
+.floating-card {
+  background: var(--color-secondary) !important;
+  border-color: var(--color-primary) !important;
 }
 
 /* Background Shapes */
@@ -523,8 +557,22 @@
     max-width: none;
   }
 
+  /* Mantener tarjetas flotantes visibles en tablets */
   .floating-card {
-    display: none;
+    position: static !important;
+    margin: var(--spacing-md) auto;
+    max-width: 200px;
+    display: inline-flex !important;
+  }
+
+  .floating-card.card-1,
+  .floating-card.card-2,
+  .floating-card.card-3 {
+    position: static !important;
+    top: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: auto !important;
   }
 }
 

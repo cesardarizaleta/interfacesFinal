@@ -35,7 +35,7 @@
           />
         </svg>
       </NuxtLink>
-      <h1 class="uppercase text-3xl font-extrabold text-center text-stone-900">
+      <h1 class="uppercase text-3xl font-extrabold text-center text-stone-900 font-title">
         Gestión de Fuentes
       </h1>
     </div>
@@ -47,7 +47,7 @@
 
     <!-- Upload Section -->
     <div class="bg-white rounded-xl shadow-lg p-6 mb-8 border border-stone-200">
-      <h2 class="text-2xl font-bold mb-6 text-center">
+      <h2 class="text-2xl font-bold mb-6 text-center font-subtitle">
         Subir Nueva Fuente
       </h2>
 
@@ -72,10 +72,10 @@
               <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
             </svg>
             <div>
-              <p class="text-lg font-medium text-stone-900">Arrastra y suelta tu fuente aquí</p>
-              <p class="text-stone-500">o <span class="text-blue-600 hover:text-blue-500 cursor-pointer">haz clic para seleccionar</span></p>
+              <p class="text-lg font-medium text-stone-900 font-paragraph">Arrastra y suelta tu fuente aquí</p>
+              <p class="text-stone-500 font-paragraph">o <span class="text-blue-600 hover:text-blue-500 cursor-pointer">haz clic para seleccionar</span></p>
             </div>
-            <p class="text-sm text-stone-400">Formatos soportados: TTF, OTF, WOFF, WOFF2 (máx. 10MB)</p>
+            <p class="text-sm text-stone-400 font-paragraph">Formatos soportados: TTF, OTF, WOFF, WOFF2 (máx. 10MB)</p>
           </div>
 
           <div v-else class="space-y-4">
@@ -190,7 +190,7 @@
 
     <!-- Font Preview -->
     <div class="bg-white rounded-xl shadow-lg p-6 mb-8 border border-stone-200">
-      <h2 class="text-2xl font-bold mb-6 text-center">
+      <h2 class="text-2xl font-bold mb-6 text-center font-subtitle">
         Vista Previa
       </h2>
       <div class="text-center space-y-6">
@@ -224,7 +224,7 @@
 
     <!-- All Fonts List -->
     <div class="bg-white rounded-xl shadow-lg p-6 border border-stone-200">
-      <h2 class="text-2xl font-bold mb-6 text-center">
+      <h2 class="text-2xl font-bold mb-6 text-center font-subtitle">
         Todas las Fuentes
       </h2>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -256,6 +256,9 @@
           <p class="text-sm text-stone-600 mb-4">
             Peso: {{ font?.fontWeight || 'normal' }} | Estilo: {{ font?.fontStyle || 'normal' }}
           </p>
+          <div class="mt-2 p-2 bg-stone-50 rounded text-sm font-paragraph" :style="{ fontFamily: font?.fontFamily, fontWeight: font?.fontWeight, fontStyle: font?.fontStyle }">
+            AaBbCc 123 - Vista previa
+          </div>
           <div class="flex justify-between items-center gap-2">
             <button
               @click="openAssignModal(font)"
@@ -569,6 +572,29 @@ onMounted(async () => {
   document.body.classList.add('config-page')
   await loadFonts()
   await loadAssignedFonts()
+
+  // Load fonts for preview
+  if (fonts.value) {
+    for (const font of fonts.value) {
+      if (font.fontFilePath) {
+        try {
+          // Use anonymous path as per user indication
+          const fileName = font.fontFilePath.split('/').pop()
+          const fontUrl = `http://localhost:3001/uploads/fonts/anonymous/${fileName}`
+          const response = await fetch(fontUrl)
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`)
+          }
+          const arrayBuffer = await response.arrayBuffer()
+          const fontFace = new FontFace(font.fontFamily, arrayBuffer)
+          await fontFace.load()
+          document.fonts.add(fontFace)
+        } catch (error) {
+          console.error('Error loading font for preview:', error)
+        }
+      }
+    }
+  }
 })
 
 onUnmounted(() => {

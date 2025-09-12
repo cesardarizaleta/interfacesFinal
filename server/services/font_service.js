@@ -8,7 +8,11 @@ const path = require('path');
 class FontsService {
   constructor() {
     this.Font = models.Font;
-    this.driveService = new GoogleDriveService();
+    // No longer need Google Drive service
+    // this.driveService = new GoogleDriveService();
+
+    // Initialize directories on startup
+    this.initializeDirectories();
   }
 
   async find() {
@@ -84,6 +88,21 @@ class FontsService {
     if (!font) {
       throw boom.notFound('Font not found');
     }
+
+    // Delete local file if it exists
+    if (font.fontFilePath && font.fontFilePath.startsWith('/uploads/')) {
+      try {
+        const filePath = path.join(__dirname, '../../', font.fontFilePath);
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+          logger.info(`Local font file deleted: ${filePath}`);
+        }
+      } catch (error) {
+        logger.warn(`Failed to delete local font file: ${error.message}`);
+        // Don't throw error, continue with database deletion
+      }
+    }
+
     await font.destroy();
     return font.toJSON();
   }
@@ -106,7 +125,20 @@ class FontsService {
     return font.toJSON();
   }
 
-  async uploadFontToDrive(userId, file, fontData) {
+  // Initialize fonts directory structure
+  async initializeDirectories() {
+    const fontsDir = path.join(__dirname, '../../uploads/fonts');
+    try {
+      if (!fs.existsSync(fontsDir)) {
+        fs.mkdirSync(fontsDir, { recursive: true });
+        logger.info('Fonts directory created:', fontsDir);
+      }
+    } catch (error) {
+      logger.error('Failed to create fonts directory:', error);
+    }
+  }
+
+  async uploadFontLocally(userId, file, fontData) {
     try {
       // Validate file type
       const allowedMimes = [
@@ -127,39 +159,39 @@ class FontsService {
         throw boom.badRequest('Tipo de archivo no válido. Solo se permiten archivos .ttf, .otf, .woff, .woff2');
       }
 
-      // Upload to Google Drive
-      const driveResult = await this.driveService.uploadFile(
-        userId,
-        file.buffer,
-        file.originalname,
-        file.mimetype
-      );
+      // File is already saved by multer, get the path
+      const filePath = file.path;
+      const relativePath = `/uploads/fonts/${userId}/${path.basename(filePath)}`;
 
       // Create font record in database
       const fontRecord = {
         name: fontData.name || path.parse(file.originalname).name,
         fontFamily: fontData.fontFamily || fontData.name || path.parse(file.originalname).name,
         fontType: fontData.fontType || 'general',
-        fontFilePath: driveResult.downloadUrl, // Store the Drive URL
+        fontFilePath: relativePath, // Store relative path for serving
         fontWeight: fontData.weight || 'normal',
         fontStyle: fontData.style || 'normal',
         fontFormat: path.extname(file.originalname).substring(1) || 'ttf',
         userId: userId,
         uploadedAt: new Date(),
         lastUsedAt: null,
-        driveFileId: driveResult.fileId, // Store Drive file ID for potential deletion
+        driveFileId: null, // No longer using Google Drive
       };
 
       const newFont = await this.Font.create(fontRecord);
 
-      // No local file to clean up since we're using memory storage
-      logger.info(`Font uploaded successfully for user ${userId}: ${newFont.name}`);
+      logger.info(`Font uploaded locally for user ${userId}: ${newFont.name} -> ${filePath}`);
 
       return newFont.toJSON();
     } catch (error) {
-      logger.error('Error uploading font to Drive:', error);
+      logger.error('Error uploading font locally:', error);
       throw error;
     }
+  }
+
+  // Legacy method for backward compatibility (redirects to new method)
+  async uploadFontToDrive(userId, file, fontData) {
+    return this.uploadFontLocally(userId, file, fontData);
   }
 }
 

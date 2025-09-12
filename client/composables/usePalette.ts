@@ -98,6 +98,8 @@ export const usePalette = () => {
       }
       if (colors.colorText) {
         root.style.setProperty('--text-primary', colors.colorText)
+        // Crear variante más clara para subtítulos
+        root.style.setProperty('--color-text-light', colors.colorText + 'CC') // 80% opacity
       }
       if (colors.backgroundNeutral) {
         root.style.setProperty('--bg-neutral', colors.backgroundNeutral)

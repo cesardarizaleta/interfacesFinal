@@ -15,8 +15,9 @@ export default defineNuxtPlugin(() => {
       try {
         const userData = JSON.parse(user)
         loadFromServer(userData.id).then(() => {
-          console.log('User colors loaded and applied globally')
+          console.log('User colors loaded successfully')
           // Los colores ya se aplicaron dentro de loadFromServer
+          console.log('Colors applied to page in plugin')
         }).catch((error) => {
           console.warn('Failed to load user colors in plugin:', error)
         })

@@ -248,12 +248,12 @@
             <tr v-for="palette in palettes" :key="palette.id" class="border-b border-stone-200">
               <td class="py-4 px-4">
                 <div class="flex items-center space-x-2">
-                  <i 
+                  <i
                     :class="[
                       'fas',
-                      palette.isDefault ? 'fa-palette' : 'fa-swatchbook',
-                      'text-stone-400'
+                      palette.isDefault ? 'fa-palette' : 'fa-swatchbook'
                     ]"
+                    :style="{ color: 'var(--color-text)' }"
                   ></i>
                   <div>
                     <p class="font-medium text-stone-900">{{ palette.name }}</p>

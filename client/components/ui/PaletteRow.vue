@@ -8,9 +8,9 @@
         <i 
           :class="[
             'fas',
-            palette.isDefault ? 'fa-palette' : 'fa-swatchbook',
-            'text-stone-400'
+            palette.isDefault ? 'fa-palette' : 'fa-swatchbook'
           ]"
+          :style="{ color: 'var(--color-text)' }"
         ></i>
         <div>
           <p class="font-medium text-stone-900">{{ palette.name }}</p>

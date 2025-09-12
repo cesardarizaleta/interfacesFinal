@@ -38,4 +38,8 @@ const assignFontSchema = Joi.object({
   fontType: fontType.required(),
 });
 
-module.exports = { createFontSchema, updateFontSchema, getFontSchema, assignFontSchema }
+const assignTypeSchema = Joi.object({
+  fontType: fontType.required(),
+});
+
+module.exports = { createFontSchema, updateFontSchema, getFontSchema, assignFontSchema, assignTypeSchema }

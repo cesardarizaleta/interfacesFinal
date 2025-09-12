@@ -7,10 +7,10 @@
           <Icon name="heroicons:briefcase" class="icon" />
           <span>Our Services</span>
         </div>
-        <h2 class="section-title">
+        <h2 class="section-title font-title">
           Professional <span class="title-accent">Photography</span> Services
         </h2>
-        <p class="section-subtitle">
+        <p class="section-subtitle font-paragraph">
           We offer comprehensive photography services tailored to capture your most precious moments with creativity and professionalism.
         </p>
       </div>
@@ -27,14 +27,14 @@
             <div class="service-overlay"></div>
           </div>
           <div class="service-content">
-            <h3 class="service-title">Wedding Photography</h3>
-            <p class="service-description">
+            <h3 class="service-title font-subtitle">Wedding Photography</h3>
+            <p class="service-description font-paragraph">
               Capture the magic of your special day with our expert wedding photography. From intimate ceremonies to grand celebrations, we document every precious moment.
             </p>
             <div class="service-features">
-              <span class="feature-tag">Full Day Coverage</span>
-              <span class="feature-tag">Engagement Session</span>
-              <span class="feature-tag">Online Gallery</span>
+              <span class="feature-tag font-paragraph">Full Day Coverage</span>
+              <span class="feature-tag font-paragraph">Engagement Session</span>
+              <span class="feature-tag font-paragraph">Online Gallery</span>
             </div>
           </div>
         </div>
@@ -49,14 +49,14 @@
             <div class="service-overlay"></div>
           </div>
           <div class="service-content">
-            <h3 class="service-title">Lifestyle Photography</h3>
-            <p class="service-description">
+            <h3 class="service-title font-subtitle">Lifestyle Photography</h3>
+            <p class="service-description font-paragraph">
               Natural, authentic photography that tells your unique story. Perfect for family portraits, personal branding, and lifestyle documentation.
             </p>
             <div class="service-features">
-              <span class="feature-tag">Natural Settings</span>
-              <span class="feature-tag">Personal Branding</span>
-              <span class="feature-tag">Family Portraits</span>
+              <span class="feature-tag font-paragraph">Natural Settings</span>
+              <span class="feature-tag font-paragraph">Personal Branding</span>
+              <span class="feature-tag font-paragraph">Family Portraits</span>
             </div>
           </div>
         </div>
@@ -71,14 +71,14 @@
             <div class="service-overlay"></div>
           </div>
           <div class="service-content">
-            <h3 class="service-title">Special Moments</h3>
-            <p class="service-description">
+            <h3 class="service-title font-subtitle">Special Moments</h3>
+            <p class="service-description font-paragraph">
               Preserve life's fleeting moments with our specialized photography. Birthdays, anniversaries, corporate events, and milestone celebrations.
             </p>
             <div class="service-features">
-              <span class="feature-tag">Event Coverage</span>
-              <span class="feature-tag">Corporate Events</span>
-              <span class="feature-tag">Milestone Moments</span>
+              <span class="feature-tag font-paragraph">Event Coverage</span>
+              <span class="feature-tag font-paragraph">Corporate Events</span>
+              <span class="feature-tag font-paragraph">Milestone Moments</span>
             </div>
           </div>
         </div>
@@ -87,8 +87,8 @@
       <!-- CTA Section -->
       <div class="services-cta">
         <div class="cta-content">
-          <h3 class="cta-title">Ready to Book Your Session?</h3>
-          <p class="cta-text">Contact us today to discuss your photography needs and create unforgettable memories.</p>
+          <h3 class="cta-title font-subtitle">Ready to Book Your Session?</h3>
+          <p class="cta-text font-paragraph">Contact us today to discuss your photography needs and create unforgettable memories.</p>
           <div class="cta-buttons">
             <a href="#contact" class="cta-button primary">
               <span>Get Quote</span>
