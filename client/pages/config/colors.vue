@@ -1,4 +1,5 @@
 <template>
+  <palette-loader></palette-loader>
   <section class="min-h-screen px-4 sm:px-6 md:px-10 lg:px-24 py-12 sm:py-16 bg-gradient-to-br from-stone-50 to-stone-200 text-stone-800 font-sans relative">
     <div class="absolute inset-0 overflow-hidden opacity-10 -z-10">
       <img src="@/assets/image.jpg" alt="Photographer at work" class="w-full h-full object-cover object-center scale-110 blur-sm">
@@ -332,6 +333,7 @@
 import { ref, onMounted, onUnmounted } from 'vue';
 import { useToast } from '~/composables/useToast'
 import { usePalette } from '~/composables/usePalette'
+import PaletteLoader from "@/components/ui/PaletteLoader.vue";
 import ToastMessage from '~/components/ui/ToastMessage.vue'
 
 definePageMeta({
@@ -718,4 +720,37 @@ input[type="color"]::-webkit-color-swatch {
   border-color: var(--local-primary, #8B4513) !important;
   color: var(--local-text, #2F1B14) !important;
 }
+
+/* Override Tailwind stone classes with palette colors */
+.bg-stone-50 { background-color: var(--background-neutral); }
+.bg-stone-100 { background-color: var(--color-secondary); }
+.bg-stone-200 { background-color: var(--color-accent); }
+.text-stone-800 { color: var(--color-primary); }
+.text-stone-900 { color: var(--color-primary); }
+.text-stone-700 { color: var(--color-text); }
+.text-stone-600 { color: var(--color-text); }
+.text-stone-500 { color: var(--color-text-light); }
+.border-stone-200 { border-color: var(--color-accent); }
+.border-stone-300 { border-color: var(--color-accent); }
+.hover\:bg-stone-200:hover { background-color: var(--color-accent); }
+.hover\:text-stone-800:hover { color: var(--color-primary); }
+.focus\:ring-stone-500:focus { --tw-ring-color: var(--color-primary); }
+.bg-stone-800 { background-color: var(--color-primary); }
+.hover\:bg-stone-700:hover { background-color: var(--color-accent); }
+.bg-white { background-color: var(--color-secondary); }
+.text-red-500 { color: var(--color-accent); }
+.text-green-600 { color: var(--color-primary); }
+.bg-stone-500 { background-color: var(--color-accent); }
+.hover\:bg-stone-600:hover { background-color: var(--color-primary); }
+.bg-red-500 { background-color: var(--color-accent); }
+.hover\:bg-red-600:hover { background-color: var(--color-primary); }
+.bg-blue-500 { background-color: var(--color-primary); }
+.hover\:bg-blue-600:hover { background-color: var(--color-accent); }
+.bg-stone-200 { background-color: var(--color-secondary); }
+.hover\:bg-stone-300:hover { background-color: var(--color-accent); }
+.bg-gray-100 { background-color: var(--color-secondary); }
+.text-gray-400 { color: var(--color-text-light); }
+.text-gray-500 { color: var(--color-text-light); }
+.bg-gray-100 { background-color: var(--color-secondary); }
+.text-gray-500 { color: var(--color-text-light); }
 </style>

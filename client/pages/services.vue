@@ -1,4 +1,4 @@
-<template>
+ <template>
   <navbar-element></navbar-element>
 
   <section class="services-section">
@@ -85,7 +85,7 @@ import "@/style/style.css";
 <style scoped>
 .services-section {
   min-height: 100vh;
-  background: var(--bg-page);
+  background: var(--background-neutral);
   padding: 2rem 0;
 }
 
@@ -141,12 +141,12 @@ import "@/style/style.css";
 }
 
 .service-card {
-  background: var(--bg-light);
-  border-radius: var(--radius);
+  background: var(--color-secondary);
+  border-radius: 0.5rem;
   padding: 2rem;
-  box-shadow: 0 4px 6px var(--shadow-primary);
-  border: 1px solid var(--border-light);
-  transition: transform var(--transition-fast);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--color-accent);
+  transition: transform 0.3s ease;
 }
 
 .service-card:hover {

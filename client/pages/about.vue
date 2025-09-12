@@ -38,7 +38,7 @@ import "@/style/style.css";
 <style scoped>
 .about-section {
   min-height: 100vh;
-  background: var(--bg-page);
+  background: var(--background-neutral);
   padding: 2rem 0;
 }
 
@@ -70,16 +70,16 @@ import "@/style/style.css";
 }
 
 .about-content {
-  background: var(--bg-light);
-  border-radius: var(--radius);
+  background: var(--color-secondary);
+  border-radius: 0.5rem;
   padding: 3rem;
-  box-shadow: 0 4px 6px var(--shadow-primary);
-  border: 1px solid var(--border-light);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--color-accent);
 }
 
 .about-content h2 {
   font-size: 2.5rem;
-  color: var(--color-text);
+  color: var(--color-primary);
   margin: 0 0 2rem 0;
   text-align: center;
 }

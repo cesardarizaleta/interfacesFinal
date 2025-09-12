@@ -248,15 +248,17 @@
               class="w-full rounded-2xl shadow-2xl mb-6"
               controls
               autoplay
+              crossorigin="anonymous"
             >
+              <!-- Dynamic subtitle tracks for modal -->
               <track
-                v-for="subtitle in selectedVideo.subtitles"
-                :key="subtitle.srclang"
+                v-for="(subtitle, index) in window.modalSubtitles || []"
+                :key="`modal-subtitle-${index}`"
                 kind="subtitles"
-                :src="subtitle.src"
-                :srclang="subtitle.srclang"
-                :label="subtitle.label"
-                :default="subtitle.srclang === 'es'"
+                :src="subtitle.blobUrl"
+                :srclang="subtitle.lang"
+                :label="getLanguageLabel(subtitle.lang)"
+                :default="subtitle.lang === 'es'"
               />
               <p class="text-stone-500 text-center py-8">Tu navegador no soporta el tag de vídeo.</p>
             </video>
@@ -1107,6 +1109,78 @@ const fetchVideoProperties = async (videoItem) => {
   try {
     console.log('Fetching video properties for:', videoItem.name)
 
+    // Handle blob URLs differently
+    if (videoItem.url.startsWith('blob:') || videoItem.url.startsWith('data:')) {
+      console.log('Processing blob/data URL video')
+
+      // For blob URLs, we can't get file size from headers, but we can estimate from data URL
+      let size = "N/A"
+      let format = "N/A"
+
+      if (videoItem.url.startsWith('data:video/')) {
+        // Extract format from data URL
+        const mimeType = videoItem.url.split(';')[0]
+        format = mimeType.split('/')[1]?.toUpperCase() || "N/A"
+
+        // Estimate size from base64 length
+        const base64Length = videoItem.url.split(',')[1]?.length || 0
+        const sizeInBytes = (base64Length * 3) / 4 // Base64 encoding overhead
+        const sizeInMB = (sizeInBytes / (1024 * 1024)).toFixed(2)
+        size = `${sizeInMB} MB`
+      }
+
+      // Create video element to get dimensions
+      const video = document.createElement("video")
+      video.preload = 'metadata'
+      video.src = videoItem.url
+
+      return new Promise((resolve) => {
+        const timeout = setTimeout(() => {
+          console.warn('Timeout loading blob video metadata')
+          resolve({
+            ...videoItem,
+            dimensions: "N/A",
+            size: size,
+            format: format,
+            views: Math.floor(Math.random() * 5000),
+            uniqueViews: Math.floor(Math.random() * 2000),
+            subtitles: videoItem.subtitles || [],
+          })
+        }, 5000)
+
+        video.onloadedmetadata = () => {
+          clearTimeout(timeout)
+          console.log('Blob video metadata loaded:', video.videoWidth, 'x', video.videoHeight)
+          const dimensions = `${video.videoWidth} x ${video.videoHeight} px`
+
+          resolve({
+            ...videoItem,
+            dimensions: dimensions,
+            size: size,
+            format: format,
+            views: Math.floor(Math.random() * 5000),
+            uniqueViews: Math.floor(Math.random() * 2000),
+            subtitles: videoItem.subtitles || [],
+          })
+        }
+
+        video.onerror = (e) => {
+          clearTimeout(timeout)
+          console.error('Blob video load error:', e)
+          resolve({
+            ...videoItem,
+            dimensions: "N/A",
+            size: size,
+            format: format,
+            views: Math.floor(Math.random() * 5000),
+            uniqueViews: Math.floor(Math.random() * 2000),
+            subtitles: videoItem.subtitles || [],
+          })
+        }
+      })
+    }
+
+    // Handle regular URLs
     const video = document.createElement("video")
     video.preload = 'metadata'
     video.src = videoItem.url
@@ -1156,6 +1230,7 @@ const fetchVideoProperties = async (videoItem) => {
       format: format,
       views: Math.floor(Math.random() * 5000),
       uniqueViews: Math.floor(Math.random() * 2000),
+      subtitles: videoItem.subtitles || [],
     }
   } catch (error) {
     console.error("Error en fetchVideoProperties:", error)
@@ -1166,13 +1241,17 @@ const fetchVideoProperties = async (videoItem) => {
       format: "N/A",
       views: 0,
       uniqueViews: 0,
-      subtitles: [],
+      subtitles: videoItem.subtitles || [],
     }
   }
 }
 
 const openVideoModal = (video) => {
   selectedVideo.value = video
+
+  // Generate dynamic subtitles for the modal
+  generateModalSubtitles(video)
+
   showVideoModal.value = true
 }
 
@@ -1190,6 +1269,17 @@ const closeAllModals = () => {
   selectedVideo.value = null
   selectedImage.value = null
   editingVideo.value = null
+
+  // Clean up modal subtitles
+  if (window.modalSubtitles) {
+    window.modalSubtitles.forEach(subtitle => {
+      if (subtitle.blobUrl) {
+        URL.revokeObjectURL(subtitle.blobUrl)
+      }
+    })
+    window.modalSubtitles = []
+  }
+
   resetVideoUploader()
   resetVideoEditor()
 }
@@ -1582,6 +1672,41 @@ const removeSubtitle = (index) => {
     } else {
       selectedSubtitleTrack.value = (parseInt(selectedSubtitleTrack.value) - 1).toString()
     }
+  }
+}
+
+const generateModalSubtitles = (video) => {
+  // Clean up any existing modal subtitles
+  if (window.modalSubtitles) {
+    window.modalSubtitles.forEach(subtitle => {
+      if (subtitle.blobUrl) {
+        URL.revokeObjectURL(subtitle.blobUrl)
+      }
+    })
+  }
+
+  window.modalSubtitles = []
+
+  // Generate VTT files for modal subtitles
+  if (video.subtitles && Array.isArray(video.subtitles)) {
+    video.subtitles.forEach((subtitle, index) => {
+      if (subtitle.text && subtitle.text.trim()) {
+        const vttContent = `WEBVTT
+
+${(index + 1).toString().padStart(2, '00')}
+${formatTime(subtitle.start)} --> ${formatTime(subtitle.end)}
+${subtitle.text}
+`
+
+        const blob = new Blob([vttContent], { type: 'text/vtt' })
+        const blobUrl = URL.createObjectURL(blob)
+
+        window.modalSubtitles.push({
+          ...subtitle,
+          blobUrl: blobUrl
+        })
+      }
+    })
   }
 }
 

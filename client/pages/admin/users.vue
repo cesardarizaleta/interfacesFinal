@@ -1,25 +1,26 @@
 <template>
   <navbar-element></navbar-element>
+  <palette-loader></palette-loader>
   <div class="min-h-screen pt-20 py-12" :style="{ background: 'linear-gradient(135deg, var(--background-neutral) 0%, rgba(139, 69, 19, 0.02) 100%)' }">
     <div class="container mx-auto px-6">
       <div class="text-center mb-12">
-        <h1 class="text-4xl font-bold text-amber-900 mb-4">Gestión de Usuarios</h1>
-        <p class="text-amber-700 text-lg">Administra los usuarios del sistema de manera eficiente</p>
+        <h1 class="text-4xl font-bold text-primary mb-4">Gestión de Usuarios</h1>
+        <p class="text-accent text-lg">Administra los usuarios del sistema de manera eficiente</p>
       </div>
 
-      <div class="bg-white rounded-lg shadow-lg p-8">
+      <div class="bg-secondary rounded-lg shadow-lg p-8">
         <div class="flex justify-between items-center mb-6">
-          <h2 class="text-2xl font-semibold text-amber-900">Lista de Usuarios</h2>
+          <h2 class="text-2xl font-semibold text-primary">Lista de Usuarios</h2>
           <div class="flex gap-4">
-            <button @click="openCreateModal" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg flex items-center gap-2 transition-colors">
+            <button @click="openCreateModal" class="btn-success px-6 py-2 rounded-lg flex items-center gap-2 transition-colors">
               <Icon name="heroicons:plus" class="w-5 h-5" />
               Crear Usuario
             </button>
-            <button @click="exportUsers('xlsx')" class="bg-amber-600 hover:bg-amber-700 text-white px-6 py-2 rounded-lg flex items-center gap-2 transition-colors">
+            <button @click="exportUsers('xlsx')" class="btn-warning px-6 py-2 rounded-lg flex items-center gap-2 transition-colors">
               <Icon name="heroicons:arrow-down-tray" class="w-5 h-5" />
               Excel
             </button>
-            <button @click="exportUsers('pdf')" class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg flex items-center gap-2 transition-colors">
+            <button @click="exportUsers('pdf')" class="btn-danger px-6 py-2 rounded-lg flex items-center gap-2 transition-colors">
               <Icon name="heroicons:document" class="w-5 h-5" />
               PDF
             </button>
@@ -27,41 +28,41 @@
         </div>
 
         <div v-if="loading" class="text-center py-8">
-          <Icon name="heroicons:arrow-path" class="w-8 h-8 animate-spin text-amber-600 mx-auto mb-4" />
-          <p class="text-amber-600">Cargando usuarios...</p>
+          <Icon name="heroicons:arrow-path" class="w-8 h-8 animate-spin text-primary mx-auto mb-4" />
+          <p class="text-primary">Cargando usuarios...</p>
         </div>
 
         <div v-else-if="users.length === 0" class="text-center py-8">
-          <Icon name="heroicons:users" class="w-16 h-16 text-amber-300 mx-auto mb-4" />
-          <p class="text-amber-600">No hay usuarios registrados</p>
+          <Icon name="heroicons:users" class="w-16 h-16 text-accent mx-auto mb-4" />
+          <p class="text-primary">No hay usuarios registrados</p>
         </div>
 
         <div v-else class="overflow-x-auto">
           <table class="w-full table-auto border-collapse">
             <thead>
-              <tr class="bg-amber-50">
-                <th class="px-6 py-3 text-left text-xs font-medium text-amber-700 uppercase tracking-wider">ID</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-amber-700 uppercase tracking-wider">Nombre</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-amber-700 uppercase tracking-wider">Email</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-amber-700 uppercase tracking-wider">Rol</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-amber-700 uppercase tracking-wider">Acciones</th>
+              <tr class="table-header">
+                <th class="px-6 py-3 text-left text-xs font-medium text-primary uppercase tracking-wider">ID</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-primary uppercase tracking-wider">Nombre</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-primary uppercase tracking-wider">Email</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-primary uppercase tracking-wider">Rol</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-primary uppercase tracking-wider">Acciones</th>
               </tr>
             </thead>
-            <tbody class="bg-white divide-y divide-amber-100">
-              <tr v-for="user in users" :key="user.id" class="hover:bg-amber-25">
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-amber-900">{{ user.id }}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-amber-900">{{ user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : user.email }}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-amber-900">{{ user.email }}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-amber-900">
-                  <span :class="user.role === 'admin' ? 'bg-yellow-100 text-yellow-800' : 'bg-amber-100 text-amber-800'" class="px-2 py-1 rounded-full text-xs font-medium">
+            <tbody class="bg-secondary divide-y divide-accent">
+              <tr v-for="user in users" :key="user.id" class="table-row">
+                <td class="px-6 py-4 whitespace-nowrap text-sm table-cell">{{ user.id }}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm table-cell">{{ user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : user.email }}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm table-cell">{{ user.email }}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm table-cell">
+                  <span :class="user.role === 'admin' ? 'bg-accent text-light' : 'bg-primary text-light'" class="px-2 py-1 rounded-full text-xs font-medium">
                     {{ user.role }}
                   </span>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                  <button @click="editUser(user)" class="text-amber-600 hover:text-amber-900 mr-4">
+                  <button @click="editUser(user)" class="text-accent hover:text-primary mr-4">
                     <Icon name="heroicons:pencil" class="w-5 h-5" />
                   </button>
-                  <button @click="deleteUser(user)" class="text-red-600 hover:text-red-900">
+                  <button @click="deleteUser(user)" class="text-accent hover:text-primary">
                     <Icon name="heroicons:trash" class="w-5 h-5" />
                   </button>
                 </td>
@@ -73,35 +74,35 @@
 
       <!-- Modal para editar/crear usuario -->
       <div v-if="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div class="bg-white rounded-lg p-8 w-full max-w-md mx-4">
-          <h3 class="text-xl font-bold text-amber-900 mb-6">{{ isEditing ? 'Editar Usuario' : 'Crear Usuario' }}</h3>
+        <div class="modal-bg rounded-lg p-8 w-full max-w-md mx-4">
+          <h3 class="text-xl font-bold modal-text mb-6">{{ isEditing ? 'Editar Usuario' : 'Crear Usuario' }}</h3>
           <form @submit.prevent="saveUser" class="space-y-4">
             <div>
-              <label class="block text-sm font-medium text-amber-700 mb-1">Nombre</label>
-              <input v-model="formData.firstName" type="text" class="w-full px-3 py-2 border border-amber-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500" required>
+              <label class="block text-sm font-medium label-text mb-1">Nombre</label>
+              <input v-model="formData.firstName" type="text" class="w-full px-3 py-2 input-border rounded-lg focus:outline-none focus:ring-2" required>
             </div>
             <div>
-              <label class="block text-sm font-medium text-amber-700 mb-1">Apellido</label>
-              <input v-model="formData.lastName" type="text" class="w-full px-3 py-2 border border-amber-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500" required>
+              <label class="block text-sm font-medium label-text mb-1">Apellido</label>
+              <input v-model="formData.lastName" type="text" class="w-full px-3 py-2 input-border rounded-lg focus:outline-none focus:ring-2" required>
             </div>
             <div>
-              <label class="block text-sm font-medium text-amber-700 mb-1">Email</label>
-              <input v-model="formData.email" type="email" class="w-full px-3 py-2 border border-amber-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500" required>
+              <label class="block text-sm font-medium label-text mb-1">Email</label>
+              <input v-model="formData.email" type="email" class="w-full px-3 py-2 input-border rounded-lg focus:outline-none focus:ring-2" required>
             </div>
             <div>
-              <label class="block text-sm font-medium text-amber-700 mb-1">Rol</label>
-              <select v-model="formData.role" class="w-full px-3 py-2 border border-amber-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500" required>
+              <label class="block text-sm font-medium label-text mb-1">Rol</label>
+              <select v-model="formData.role" class="w-full px-3 py-2 input-border rounded-lg focus:outline-none focus:ring-2" required>
                 <option value="user">Usuario</option>
                 <option value="admin">Administrador</option>
               </select>
             </div>
             <div v-if="!isEditing">
-              <label class="block text-sm font-medium text-amber-700 mb-1">Contraseña</label>
-              <input v-model="formData.password" type="password" class="w-full px-3 py-2 border border-amber-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500" required>
+              <label class="block text-sm font-medium label-text mb-1">Contraseña</label>
+              <input v-model="formData.password" type="password" class="w-full px-3 py-2 input-border rounded-lg focus:outline-none focus:ring-2" required>
             </div>
             <div class="flex gap-4 pt-4">
-              <button type="submit" class="flex-1 bg-amber-600 hover:bg-amber-700 text-white py-2 rounded-lg transition-colors">{{ isEditing ? 'Guardar' : 'Crear' }}</button>
-              <button type="button" @click="closeModal" class="flex-1 bg-gray-500 hover:bg-gray-600 text-white py-2 rounded-lg transition-colors">Cancelar</button>
+              <button type="submit" class="flex-1 btn-warning py-2 rounded-lg transition-colors">{{ isEditing ? 'Guardar' : 'Crear' }}</button>
+              <button type="button" @click="closeModal" class="flex-1 btn-secondary py-2 rounded-lg transition-colors">Cancelar</button>
             </div>
           </form>
         </div>
@@ -115,6 +116,7 @@
 import { onMounted, onUnmounted } from 'vue';
 import NavbarElement from "@/components/navigation/NavbarElement.vue";
 import FooterElement from "@/components/navigation/FooterElement.vue";
+import PaletteLoader from "@/components/ui/PaletteLoader.vue";
 import { useToast } from '~/composables/useToast';
 import { usePalette } from '~/composables/usePalette';
 import { useFonts } from '~/composables/useFonts';
@@ -366,3 +368,100 @@ onMounted(async () => {
   fetchUsers();
 });
 </script>
+
+<style>
+/* Custom classes using palette colors */
+.text-primary { color: var(--color-primary); }
+.bg-primary { background-color: var(--color-primary); }
+.border-primary { border-color: var(--color-primary); }
+.hover-bg-primary:hover { background-color: var(--color-primary); }
+.hover-text-primary:hover { color: var(--color-primary); }
+
+.text-accent { color: var(--color-accent); }
+.bg-accent { background-color: var(--color-accent); }
+.border-accent { border-color: var(--color-accent); }
+.hover-bg-accent:hover { background-color: var(--color-accent); }
+.hover-text-accent:hover { color: var(--color-accent); }
+
+.text-secondary { color: var(--color-secondary); }
+.bg-secondary { background-color: var(--color-secondary); }
+.border-secondary { border-color: var(--color-secondary); }
+.hover-bg-secondary:hover { background-color: var(--color-secondary); }
+
+.text-neutral { color: var(--color-text); }
+.bg-neutral { background-color: var(--background-neutral); }
+.hover-bg-neutral:hover { background-color: var(--background-neutral); }
+
+.text-light { color: var(--color-text-light); }
+.bg-light { background-color: var(--color-text-light); }
+
+/* Specific overrides for admin page */
+.btn-success {
+  background-color: var(--color-accent);
+  color: var(--color-text-light);
+}
+.btn-success:hover {
+  background-color: var(--color-primary);
+}
+
+.btn-warning {
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
+}
+.btn-warning:hover {
+  background-color: var(--color-accent);
+}
+
+.btn-danger {
+  background-color: var(--color-accent);
+  color: var(--color-text-light);
+}
+.btn-danger:hover {
+  background-color: var(--color-primary);
+}
+
+.btn-secondary {
+  background-color: var(--color-secondary);
+  color: var(--color-primary);
+}
+.btn-secondary:hover {
+  background-color: var(--background-neutral);
+}
+
+.table-header {
+  background-color: var(--background-neutral);
+  color: var(--color-primary);
+}
+
+.table-row {
+  background-color: var(--color-secondary);
+  color: var(--color-primary);
+}
+.table-row:hover {
+  background-color: var(--background-neutral);
+}
+
+.table-cell {
+  color: var(--color-primary);
+}
+
+.modal-bg {
+  background-color: var(--color-secondary);
+}
+
+.modal-text {
+  color: var(--color-primary);
+}
+
+.input-border {
+  border-color: var(--color-primary);
+}
+.input-border:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px var(--color-primary);
+}
+
+.label-text {
+  color: var(--color-primary);
+}
+</style>

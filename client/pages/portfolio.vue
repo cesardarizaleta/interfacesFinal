@@ -93,7 +93,7 @@ const portfolioImages = ref([
 <style scoped>
 .portfolio-section {
   min-height: 100vh;
-  background: var(--bg-page);
+  background: var(--background-neutral);
   padding: 2rem 0;
 }
 
@@ -150,10 +150,10 @@ const portfolioImages = ref([
 
 .portfolio-item {
   position: relative;
-  border-radius: var(--radius);
+  border-radius: 0.5rem;
   overflow: hidden;
-  box-shadow: 0 4px 6px var(--shadow-primary);
-  transition: transform var(--transition-fast);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
   cursor: pointer;
 }
 
@@ -175,7 +175,7 @@ const portfolioImages = ref([
   right: 0;
   background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
   padding: 2rem 1rem 1rem 1rem;
-  color: white;
+  color: var(--color-text-light);
 }
 
 .portfolio-overlay h3 {

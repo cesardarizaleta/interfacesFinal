@@ -1,4 +1,5 @@
 <template>
+  <palette-loader></palette-loader>
   <section class="login-section">
 
     <div class="login-container">
@@ -60,6 +61,7 @@
 import { ref } from 'vue';
 import { navigateTo } from '#app';
 import { useToast } from '~/composables/useToast';
+import PaletteLoader from "@/components/ui/PaletteLoader.vue";
 
 const { show } = useToast();
 
@@ -116,7 +118,7 @@ const handleLogin = async () => {
   height: 100vh;
   width: 100vw;
   overflow: hidden;
-  background-color: var(--color-background);
+  background-color: var(--background-neutral);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -139,7 +141,7 @@ const handleLogin = async () => {
 .login-container {
   width: 100%;
   max-width: 28rem;
-  background-color: var(--color-background);
+  background-color: var(--color-secondary);
   border-radius: 0.5rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   padding: 3rem;
@@ -247,7 +249,7 @@ const handleLogin = async () => {
 }
 
 .submit-button:hover:not(:disabled) {
-  background-color: var(--color-secondary);
+  background-color: var(--color-accent);
   transform: translateY(-1px);
 }
 
@@ -257,7 +259,7 @@ const handleLogin = async () => {
 }
 
 .error-message {
-  color: #ef4444;
+  color: var(--color-accent);
   font-size: 0.875rem;
   text-align: center;
 }
@@ -272,7 +274,7 @@ const handleLogin = async () => {
 }
 
 .home-link:hover {
-  color: var(--color-secondary);
+  color: var(--color-accent);
   text-decoration: underline;
 }
 
@@ -290,7 +292,7 @@ const handleLogin = async () => {
 }
 
 .register-link:hover {
-  color: var(--color-secondary);
+  color: var(--color-accent);
 }
 
 @media (max-width: 768px) {

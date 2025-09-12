@@ -1,4 +1,5 @@
 <template>
+  <palette-loader></palette-loader>
   <section class="relative h-screen w-screen overflow-hidden bg-stone-100 flex items-center justify-center">
 
     <div class="w-full max-w-md bg-white rounded-lg shadow-xl p-12 max-md:w-[80%]">
@@ -76,6 +77,7 @@
 <script setup>
 import { ref } from 'vue';
 import { navigateTo } from '#app'; // Importa navigateTo de Nuxt
+import PaletteLoader from "@/components/ui/PaletteLoader.vue";
 
 // Estados reactivos para los campos del formulario y el manejo de la UI
 const email = ref('');
@@ -132,3 +134,21 @@ const handleRegister = async () => {
   }
 };
 </script>
+
+<style scoped>
+/* Override Tailwind classes with palette colors */
+.bg-stone-100 { background-color: var(--background-neutral); }
+.bg-white { background-color: var(--color-secondary); }
+.text-stone-800 { color: var(--color-primary); }
+.text-stone-600 { color: var(--color-text); }
+.text-stone-500 { color: var(--color-text-light); }
+.border-stone-300 { border-color: var(--color-accent); }
+.focus\:ring-stone-500:focus { --tw-ring-color: var(--color-primary); }
+.bg-stone-700 { background-color: var(--color-primary); }
+.hover\:bg-stone-800:hover { background-color: var(--color-accent); }
+.text-red-500 { color: var(--color-accent); }
+.text-green-600 { color: var(--color-primary); }
+.hover\:text-stone-800:hover { color: var(--color-accent); }
+.text-stone-900 { color: var(--color-primary); }
+.hover\:text-stone-900:hover { color: var(--color-primary); }
+</style>

@@ -1,4 +1,5 @@
 <template>
+  <palette-loader></palette-loader>
   <div class="profile-editor">
     <!-- Header -->
     <div class="editor-header">
@@ -96,6 +97,7 @@ import ContactTab from './tabs/ContactTab.vue'
 import AddressTab from './tabs/AddressTab.vue'
 import SecurityTab from './tabs/SecurityTab.vue'
 import PreferencesTab from './tabs/PreferencesTab.vue'
+import PaletteLoader from './PaletteLoader.vue'
 
 const props = defineProps({
   profile: {
@@ -254,10 +256,10 @@ defineExpose({ cleanup })
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background: #FFFFFF;
+  background: var(--color-secondary);
   border-radius: 0.75rem;
   overflow: hidden;
-  box-shadow: 0 20px 25px -5px rgba(139, 69, 19, 0.1), 0 10px 10px -5px rgba(139, 69, 19, 0.04);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
 /* Header */
@@ -266,8 +268,8 @@ defineExpose({ cleanup })
   justify-content: space-between;
   align-items: flex-start;
   padding: 2rem;
-  background: linear-gradient(135deg, #F5F5DC 0%, rgba(139, 69, 19, 0.02) 100%);
-  border-bottom: 1px solid rgba(139, 69, 19, 0.08);
+  background: linear-gradient(135deg, var(--background-neutral) 0%, rgba(0, 0, 0, 0.02) 100%);
+  border-bottom: 1px solid var(--color-accent);
 }
 
 .header-content {
@@ -277,14 +279,14 @@ defineExpose({ cleanup })
 .editor-title {
   font-size: 1.875rem;
   font-weight: 700;
-  color: #8B4513;
+  color: var(--color-primary);
   margin: 0 0 0.5rem 0;
   font-family: 'Playfair Display', serif;
 }
 
 .editor-subtitle {
   font-size: 0.875rem;
-  color: #8B7355;
+  color: var(--color-text);
   margin: 0;
   font-family: 'Inter', sans-serif;
 }
@@ -296,16 +298,16 @@ defineExpose({ cleanup })
   width: 2.5rem;
   height: 2.5rem;
   border-radius: 0.5rem;
-  background: rgba(139, 69, 19, 0.05);
-  border: 1px solid rgba(139, 69, 19, 0.1);
-  color: #8B4513;
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--color-accent);
+  color: var(--color-primary);
   transition: all 0.2s ease;
   cursor: pointer;
 }
 
 .close-btn:hover {
-  background: #8B4513;
-  color: #FFFFFF;
+  background: var(--color-primary);
+  color: var(--color-text-light);
   transform: rotate(90deg);
 }
 
@@ -315,21 +317,21 @@ defineExpose({ cleanup })
   align-items: center;
   gap: 1rem;
   padding: 1rem 2rem;
-  background: #FFFFFF;
-  border-bottom: 1px solid rgba(139, 69, 19, 0.08);
+  background: var(--color-secondary);
+  border-bottom: 1px solid var(--color-accent);
 }
 
 .progress-bar {
   flex: 1;
   height: 0.5rem;
-  background: rgba(139, 69, 19, 0.1);
+  background: rgba(0, 0, 0, 0.1);
   border-radius: 0.25rem;
   overflow: hidden;
 }
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #8B4513 0%, #DAA520 100%);
+  background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-accent) 100%);
   border-radius: 0.25rem;
   transition: width 0.3s ease;
 }
@@ -337,14 +339,14 @@ defineExpose({ cleanup })
 .progress-text {
   font-size: 0.75rem;
   font-weight: 600;
-  color: #8B4513;
+  color: var(--color-primary);
   font-family: 'Inter', sans-serif;
 }
 
 /* Tabs Navigation */
 .tabs-container {
-  background: #FFFFFF;
-  border-bottom: 1px solid rgba(139, 69, 19, 0.08);
+  background: var(--color-secondary);
+  border-bottom: 1px solid var(--color-accent);
 }
 
 .tabs-nav {
@@ -369,20 +371,20 @@ defineExpose({ cleanup })
 }
 
 .tab-button:hover {
-  background: rgba(139, 69, 19, 0.02);
+  background: rgba(0, 0, 0, 0.02);
 }
 
 .tab-button.active {
-  border-bottom-color: #8B4513;
-  background: rgba(139, 69, 19, 0.05);
+  border-bottom-color: var(--color-primary);
+  background: rgba(0, 0, 0, 0.05);
 }
 
 .tab-button.completed:not(.hasErrors) {
-  border-bottom-color: #16a34a;
+  border-bottom-color: var(--color-primary);
 }
 
 .tab-button.hasErrors {
-  border-bottom-color: #dc2626;
+  border-bottom-color: var(--color-accent);
 }
 
 .tab-icon {
@@ -393,24 +395,24 @@ defineExpose({ cleanup })
   width: 2.5rem;
   height: 2.5rem;
   border-radius: 0.5rem;
-  background: rgba(139, 69, 19, 0.05);
-  color: #8B7355;
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--color-text);
   transition: all 0.2s ease;
 }
 
 .tab-button.active .tab-icon {
-  background: #8B4513;
-  color: #FFFFFF;
+  background: var(--color-primary);
+  color: var(--color-text-light);
 }
 
 .tab-button.completed:not(.hasErrors) .tab-icon {
-  background: #16a34a;
-  color: #FFFFFF;
+  background: var(--color-primary);
+  color: var(--color-text-light);
 }
 
 .tab-button.hasErrors .tab-icon {
-  background: #dc2626;
-  color: #FFFFFF;
+  background: var(--color-accent);
+  color: var(--color-text-light);
 }
 
 .error-indicator {
@@ -419,9 +421,9 @@ defineExpose({ cleanup })
   right: -2px;
   width: 0.5rem;
   height: 0.5rem;
-  background: #dc2626;
+  background: var(--color-accent);
   border-radius: 50%;
-  border: 2px solid #FFFFFF;
+  border: 2px solid var(--color-secondary);
 }
 
 .completed-indicator {
@@ -430,40 +432,40 @@ defineExpose({ cleanup })
   right: -2px;
   width: 1rem;
   height: 1rem;
-  background: #16a34a;
+  background: var(--color-primary);
   border-radius: 50%;
-  border: 2px solid #FFFFFF;
+  border: 2px solid var(--color-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #FFFFFF;
+  color: var(--color-text-light);
 }
 
 .tab-label {
   font-size: 0.75rem;
   font-weight: 600;
-  color: #8B7355;
+  color: var(--color-text);
   text-align: center;
   font-family: 'Inter', sans-serif;
 }
 
 .tab-button.active .tab-label {
-  color: #8B4513;
+  color: var(--color-primary);
 }
 
 .tab-button.completed:not(.hasErrors) .tab-label {
-  color: #16a34a;
+  color: var(--color-primary);
 }
 
 .tab-button.hasErrors .tab-label {
-  color: #dc2626;
+  color: var(--color-accent);
 }
 
 /* Tab Content */
 .tabs-content {
   flex: 1;
   padding: 2rem;
-  background: #FFFFFF;
+  background: var(--color-secondary);
 }
 
 .tab-panel {
@@ -492,8 +494,8 @@ defineExpose({ cleanup })
   justify-content: space-between;
   align-items: center;
   padding: 1.5rem 2rem;
-  background: #F9FAFB;
-  border-top: 1px solid rgba(139, 69, 19, 0.08);
+  background: var(--background-neutral);
+  border-top: 1px solid var(--color-accent);
 }
 
 .action-info {
@@ -502,7 +504,7 @@ defineExpose({ cleanup })
 
 .last-saved {
   font-size: 0.75rem;
-  color: #8B7355;
+  color: var(--color-text);
   font-family: 'Inter', sans-serif;
 }
 
@@ -531,27 +533,27 @@ defineExpose({ cleanup })
 }
 
 .btn-secondary {
-  background: #F3F4F6;
-  color: #6B7280;
-  border-color: #D1D5DB;
+  background: var(--color-secondary);
+  color: var(--color-text);
+  border-color: var(--color-accent);
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background: #E5E7EB;
-  border-color: #9CA3AF;
+  background: var(--background-neutral);
+  border-color: var(--color-primary);
 }
 
 .btn-primary {
-  background: #8B4513;
-  color: #FFFFFF;
-  border-color: #8B4513;
+  background: var(--color-primary);
+  color: var(--color-text-light);
+  border-color: var(--color-primary);
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: #5D2A0C;
-  border-color: #5D2A0C;
+  background: var(--color-accent);
+  border-color: var(--color-accent);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(139, 69, 19, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .spinning {

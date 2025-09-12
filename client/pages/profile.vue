@@ -260,7 +260,7 @@ const saveProfile = async (profileData) => {
 <style scoped>
 .profile-section {
   min-height: 100vh;
-  background: var(--bg-page);
+  background: var(--background-neutral);
   padding: 2rem 0;
 }
 
@@ -312,11 +312,11 @@ const saveProfile = async (profileData) => {
 }
 
 .profile-content {
-  background: var(--bg-light);
-  border-radius: var(--radius);
+  background: var(--color-secondary);
+  border-radius: 0.5rem;
   padding: 3rem;
-  box-shadow: 0 4px 6px var(--shadow-primary);
-  border: 1px solid var(--border-light);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--color-accent);
 }
 
 .profile-form {
@@ -360,22 +360,22 @@ const saveProfile = async (profileData) => {
 
 .form-input {
   padding: 0.75rem 1rem;
-  border: 2px solid var(--border-light);
-  border-radius: var(--radius);
+  border: 2px solid var(--color-accent);
+  border-radius: 0.5rem;
   font-size: 1rem;
-  transition: all var(--transition-fast);
-  background: var(--bg-light);
+  transition: all 0.3s ease;
+  background: var(--color-secondary);
   color: var(--color-text);
 }
 
 .form-input:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
 }
 
 .form-input:hover {
-  border-color: var(--color-secondary);
+  border-color: var(--color-primary);
 }
 
 .form-actions {
@@ -384,31 +384,31 @@ const saveProfile = async (profileData) => {
   justify-content: center;
   margin-top: 3rem;
   padding-top: 2rem;
-  border-top: 2px solid var(--border-light);
+  border-top: 2px solid var(--color-accent);
 }
 
 .save-btn,
 .reset-btn {
   padding: 1rem 2rem;
   border: none;
-  border-radius: var(--radius);
+  border-radius: 0.5rem;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: all 0.3s ease;
   min-width: 150px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
 .save-btn {
-  background: var(--bg-primary);
-  color: var(--color-primary-contrast);
+  background: var(--color-primary);
+  color: var(--color-text-light);
 }
 
 .save-btn:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 10px 20px var(--shadow-primary);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
 }
 
 .save-btn:disabled {
@@ -418,12 +418,12 @@ const saveProfile = async (profileData) => {
 }
 
 .reset-btn {
-  background: var(--color-muted);
-  color: white;
+  background: var(--color-accent);
+  color: var(--color-text-light);
 }
 
 .reset-btn:hover {
-  background: var(--color-text);
+  background: var(--color-primary);
   transform: translateY(-2px);
 }
 
@@ -465,12 +465,12 @@ const saveProfile = async (profileData) => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: var(--bg-light);
-  border-radius: var(--radius);
+  background: var(--color-secondary);
+  border-radius: 0.5rem;
   padding: 2rem;
   margin-bottom: 2rem;
-  box-shadow: 0 2px 4px var(--shadow-primary);
-  border: 1px solid var(--border-light);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--color-accent);
 }
 
 .summary-card {
@@ -487,7 +487,7 @@ const saveProfile = async (profileData) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: var(--color-text-light);
   font-size: 2rem;
   font-weight: 600;
 }
@@ -500,7 +500,7 @@ const saveProfile = async (profileData) => {
 
 .summary-info p {
   margin: 0;
-  color: var(--color-text-muted);
+  color: var(--color-text-light);
   font-size: 1rem;
 }
 
@@ -509,9 +509,9 @@ const saveProfile = async (profileData) => {
   align-items: center;
   gap: 0.5rem;
   padding: 0.875rem 1.75rem;
-  background: linear-gradient(135deg, #8B4513 0%, #DAA520 100%);
-  color: #FFFFFF;
-  border: 1px solid #8B4513;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+  color: var(--color-text-light);
+  border: 1px solid var(--color-primary);
   border-radius: 0.75rem;
   font-size: 1rem;
   font-weight: 600;
@@ -519,12 +519,12 @@ const saveProfile = async (profileData) => {
   cursor: pointer;
   transition: all 0.2s ease;
   text-decoration: none;
-  box-shadow: 0 2px 8px rgba(139, 69, 19, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .edit-profile-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(139, 69, 19, 0.3);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
 }
 
 .edit-profile-btn:active {

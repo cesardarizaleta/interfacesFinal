@@ -185,7 +185,7 @@ watch(() => props.profile, (newProfile) => {
   gap: 1rem;
   margin-bottom: 2rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid rgba(139, 69, 19, 0.1);
+  border-bottom: 1px solid var(--color-accent);
 }
 
 .section-icon {
@@ -195,8 +195,8 @@ watch(() => props.profile, (newProfile) => {
   width: 3rem;
   height: 3rem;
   border-radius: 0.75rem;
-  background: linear-gradient(135deg, #8B4513 0%, #DAA520 100%);
-  color: #FFFFFF;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+  color: var(--color-text-light);
 }
 
 .section-info {
@@ -206,14 +206,14 @@ watch(() => props.profile, (newProfile) => {
 .section-title {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #8B4513;
+  color: var(--color-primary);
   margin: 0 0 0.25rem 0;
   font-family: 'Playfair Display', serif;
 }
 
 .section-description {
   font-size: 0.875rem;
-  color: #8B7355;
+  color: var(--color-text);
   margin: 0;
   font-family: 'Inter', sans-serif;
 }
@@ -233,20 +233,20 @@ watch(() => props.profile, (newProfile) => {
 .form-label {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #2F1B14;
+  color: var(--color-text);
   font-family: 'Inter', sans-serif;
 }
 
 .required {
-  color: #dc2626;
+  color: var(--color-accent);
 }
 
 .form-input {
   padding: 0.75rem 1rem;
-  border: 1px solid rgba(139, 69, 19, 0.2);
+  border: 1px solid var(--color-accent);
   border-radius: 0.5rem;
-  background: #FFFFFF;
-  color: #2F1B14;
+  background: var(--color-secondary);
+  color: var(--color-text);
   font-size: 0.875rem;
   font-family: 'Inter', sans-serif;
   transition: all 0.2s ease;
@@ -254,22 +254,22 @@ watch(() => props.profile, (newProfile) => {
 
 .form-input:focus {
   outline: none;
-  border-color: #8B4513;
-  box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.1);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
 }
 
 .form-input.error {
-  border-color: #dc2626;
-  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
 }
 
 .form-input::placeholder {
-  color: #8B7355;
+  color: var(--color-text-light);
 }
 
 .error-message {
   font-size: 0.75rem;
-  color: #dc2626;
+  color: var(--color-accent);
   font-family: 'Inter', sans-serif;
   font-weight: 500;
 }
