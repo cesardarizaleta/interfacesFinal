@@ -26,7 +26,7 @@ class ColorsController {
 
   async getColorsByUser(req, res, next) {
     try {
-      const { userId } = req.params;
+      const userId = req.user.id;
       const colors = await this.service.findByUser(userId);
       res.json(colors);
     } catch (error) {
@@ -36,7 +36,10 @@ class ColorsController {
 
   async createColor(req, res, next) {
     try {
-      const colorData = req.body;
+      const colorData = {
+        ...req.body,
+        userId: req.user.id
+      };
       const newColor = await this.service.create(colorData);
       res.status(201).json(newColor);
     } catch (error) {
@@ -78,7 +81,7 @@ class ColorsController {
   async setColorAsDefault(req, res, next) {
     try {
       const { id } = req.params;
-      const { userId } = req.body;
+      const userId = req.user.id;
       const updatedColor = await this.service.setAsDefault(id, userId);
       res.json(updatedColor);
     } catch (error) {
@@ -88,7 +91,7 @@ class ColorsController {
 
   async getLastUsedColors(req, res, next) {
     try {
-      const { userId } = req.params;
+      const userId = req.user.id;
       const colors = await this.service.findLastUsedByUserId(userId);
       res.json(colors);
     } catch (error) {
@@ -98,7 +101,7 @@ class ColorsController {
 
   async getActiveColors(req, res, next) {
     try {
-      const { userId } = req.params;
+      const userId = req.user.id;
       const colors = await this.service.findActiveByUserId(userId);
       res.json(colors);
     } catch (error) {
@@ -109,7 +112,7 @@ class ColorsController {
   async activatePalette(req, res, next) {
     try {
       const { id } = req.params;
-      const { userId } = req.body;
+      const userId = req.user.id;
       const updatedColor = await this.service.activatePalette(id, userId);
       res.json(updatedColor);
     } catch (error) {
@@ -120,7 +123,7 @@ class ColorsController {
   async deactivatePalette(req, res, next) {
     try {
       const { id } = req.params;
-      const { userId } = req.body;
+      const userId = req.user.id;
       const updatedColor = await this.service.deactivatePalette(id, userId);
       res.json(updatedColor);
     } catch (error) {

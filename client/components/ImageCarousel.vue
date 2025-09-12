@@ -366,9 +366,14 @@ export default {
 
 /* Personalización de la paginación */
 :deep(.swiper-pagination-custom .swiper-pagination-bullet) {
-  background: #d1d5db;
+  background: var(--color-gray-300);
   opacity: 1;
   margin: 0 4px;
+  transition: all var(--transition-fast);
+}
+
+:deep(.swiper-pagination-custom .swiper-pagination-bullet:hover) {
+  background: var(--color-gray-500);
 }
 
 :deep(.swiper-pagination-custom .swiper-pagination-bullet-active) {

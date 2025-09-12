@@ -240,7 +240,7 @@ const handleLogoutAndClose = () => {
   left: 0;
   right: 0;
   z-index: 1000;
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--bg-navbar);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--border-light);
   transition: all var(--transition-normal);
@@ -345,7 +345,7 @@ const handleLogoutAndClose = () => {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+  background: linear-gradient(90deg, transparent, var(--color-primary-10), transparent);
   transition: left var(--transition-normal);
 }
 
@@ -361,7 +361,7 @@ const handleLogoutAndClose = () => {
 
 .nav-link.nuxt-link-active {
   color: var(--color-primary);
-  background: rgba(26, 54, 93, 0.1);
+  background: var(--color-primary-10);
 }
 
 .nav-link i {
@@ -476,7 +476,7 @@ const handleLogoutAndClose = () => {
 }
 
 .dropdown-item.text-error:hover {
-  background: rgba(239, 68, 68, 0.1);
+  background: var(--color-error-light);
   color: var(--color-error);
 }
 
@@ -708,7 +708,7 @@ const handleLogoutAndClose = () => {
 }
 
 .mobile-link.text-error:hover {
-  background: rgba(239, 68, 68, 0.1);
+  background: var(--color-error-light);
   color: var(--color-error);
 }
 

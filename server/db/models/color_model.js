@@ -13,17 +13,30 @@ const ColorSchema = {
     allowNull: false,
     type: DataTypes.STRING,
   },
-  hex: {
+  colorPrimary: {
     allowNull: false,
     type: DataTypes.STRING,
+    field: 'color_primary',
   },
-  rgb: {
-    allowNull: true,
+  colorSecondary: {
+    allowNull: false,
     type: DataTypes.STRING,
+    field: 'color_secondary',
   },
-  hsl: {
-    allowNull: true,
+  colorAccent: {
+    allowNull: false,
     type: DataTypes.STRING,
+    field: 'color_accent',
+  },
+  colorText: {
+    allowNull: false,
+    type: DataTypes.STRING,
+    field: 'color_text',
+  },
+  backgroundNeutral: {
+    allowNull: false,
+    type: DataTypes.STRING,
+    field: 'background_neutral',
   },
   userId: {
     allowNull: false,

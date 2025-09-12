@@ -248,7 +248,7 @@ defineExpose({ cleanup })
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-xs);
-  background: rgba(16, 185, 129, 0.1);
+  background: var(--color-success-light);
   color: var(--color-success);
   padding: var(--spacing-xs) var(--spacing-md);
   border-radius: var(--radius-full);
@@ -257,7 +257,7 @@ defineExpose({ cleanup })
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: var(--spacing-lg);
-  border: 1px solid rgba(16, 185, 129, 0.2);
+  border: 1px solid var(--color-success-20);
 }
 
 .section-badge i {
@@ -396,7 +396,7 @@ defineExpose({ cleanup })
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(45deg, rgba(59, 130, 246, 0.9), rgba(245, 158, 11, 0.9));
+  background: linear-gradient(45deg, var(--color-primary-20), var(--color-accent-20));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -615,7 +615,7 @@ defineExpose({ cleanup })
 .bg-shape {
   position: absolute;
   border-radius: var(--radius-full);
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(59, 130, 246, 0.1));
+  background: linear-gradient(135deg, var(--color-success-10), var(--color-primary-10));
   animation: float 6s ease-in-out infinite;
 }
 

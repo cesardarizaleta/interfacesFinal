@@ -7,7 +7,7 @@ export default defineNuxtConfig({
   modules: ["@nuxtjs/tailwindcss", "@nuxt/icon", "@nuxt/image"],
   runtimeConfig: {
     public: {
-      BACKEND_URL: process.env.BACKEND_URL,
+      BACKEND_URL: process.env.NUXT_PUBLIC_BACKEND_URL,
     },
   },
   plugins: [

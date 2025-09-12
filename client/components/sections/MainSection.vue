@@ -140,7 +140,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-xs);
-  background: rgba(245, 158, 11, 0.1);
+  background: var(--color-accent-10);
   color: var(--color-secondary);
   padding: var(--spacing-xs) var(--spacing-md);
   border-radius: var(--radius-full);
@@ -149,7 +149,7 @@
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: var(--spacing-lg);
-  border: 1px solid rgba(245, 158, 11, 0.2);
+  border: 1px solid var(--color-accent-20);
 }
 
 .hero-badge i {
@@ -322,7 +322,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(45deg, rgba(26, 54, 93, 0.1), rgba(59, 130, 246, 0.1));
+  background: linear-gradient(45deg, var(--color-primary-10), var(--color-accent-10));
   pointer-events: none;
 }
 
@@ -403,7 +403,7 @@
 .hero-bg-shape {
   position: absolute;
   border-radius: var(--radius-full);
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(245, 158, 11, 0.1));
+  background: linear-gradient(135deg, var(--color-primary-10), var(--color-accent-10));
   animation: pulse 4s ease-in-out infinite;
 }
 

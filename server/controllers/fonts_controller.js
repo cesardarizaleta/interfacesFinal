@@ -36,7 +36,7 @@ class FontsController {
 
   async createFont(req, res, next) {
     try {
-      const userId = req.user.sub;
+      const userId = req.user.id;
       const fontData = req.body;
       const file = req.file;
 
@@ -84,7 +84,7 @@ class FontsController {
 
   async uploadFont(req, res, next) {
     try {
-      const userId = req.user.sub; // From JWT middleware
+      const userId = req.user.id; // From JWT middleware
       const fontData = req.body;
       const file = req.file;
 

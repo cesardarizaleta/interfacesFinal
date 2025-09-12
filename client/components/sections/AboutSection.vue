@@ -291,7 +291,7 @@
 .decorative-circle {
   position: absolute;
   border-radius: var(--radius-full);
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(245, 158, 11, 0.1));
+  background: linear-gradient(135deg, var(--color-primary-10), var(--color-accent-10));
   animation: float 6s ease-in-out infinite;
 }
 
@@ -347,7 +347,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(45deg, rgba(59, 130, 246, 0.05), rgba(245, 158, 11, 0.05));
+  background: linear-gradient(45deg, var(--color-primary-10), var(--color-accent-10));
   pointer-events: none;
 }
 

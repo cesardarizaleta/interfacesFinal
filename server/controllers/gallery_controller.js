@@ -126,7 +126,7 @@ class GalleryController {
 
       const itemData = {
         ...req.body,
-        uploadedBy: req.user.sub, // JWT uses 'sub' for user ID
+        uploadedBy: req.user.id, // JWT uses 'id' for user ID
         type: req.file.mimetype.startsWith('image/') ? 'image' : 'video'
       };
 
@@ -145,15 +145,15 @@ class GalleryController {
 
       // Debug: Check if user is authenticated
       console.log('User from token:', req.user);
-      console.log('User ID:', req.user?.sub);
+      console.log('User ID:', req.user?.id);
 
-      if (!req.user || !req.user.sub) {
+      if (!req.user || !req.user.id) {
         return res.status(401).json({ message: 'User not authenticated' });
       }
 
       const itemData = {
         ...req.body,
-        uploadedBy: req.user.sub, // JWT uses 'sub' for user ID
+        uploadedBy: req.user.id, // JWT uses 'id' for user ID
         type: 'image'
       };
 
@@ -172,7 +172,7 @@ class GalleryController {
 
       const itemData = {
         ...req.body,
-        uploadedBy: req.user.sub, // JWT uses 'sub' for user ID
+        uploadedBy: req.user.id, // JWT uses 'id' for user ID
         type: 'video'
       };
 

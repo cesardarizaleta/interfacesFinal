@@ -1,4 +1,5 @@
 // server/db/config.js
+require('dotenv').config();
 const { config } = require('./../config/config');
 
 module.exports = {
@@ -6,6 +7,12 @@ module.exports = {
         url: config.db_url,
         dialect: 'postgres',
         logging: config.isProd ? false : true, // No loguear en producción
+        dialectOptions: {
+            ssl: {
+                require: true,
+                rejectUnauthorized: false, // For development
+            }
+        }
     },
     production: {
         url: config.db_url,

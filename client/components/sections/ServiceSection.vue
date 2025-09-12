@@ -134,7 +134,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-xs);
-  background: rgba(245, 158, 11, 0.1);
+  background: var(--color-accent-10);
   color: var(--color-accent);
   padding: var(--spacing-xs) var(--spacing-md);
   border-radius: var(--radius-full);
@@ -143,7 +143,7 @@
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: var(--spacing-lg);
-  border: 1px solid rgba(245, 158, 11, 0.2);
+  border: 1px solid var(--color-accent-20);
 }
 
 .section-badge i {
@@ -253,7 +253,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(45deg, rgba(59, 130, 246, 0.1), rgba(245, 158, 11, 0.1));
+  background: linear-gradient(45deg, var(--color-primary-10), var(--color-accent-10));
   opacity: 0;
   transition: opacity var(--transition-normal);
 }
@@ -288,13 +288,13 @@
 }
 
 .feature-tag {
-  background: rgba(59, 130, 246, 0.1);
+  background: var(--color-primary-10);
   color: var(--color-primary);
   padding: var(--spacing-xs) var(--spacing-sm);
   border-radius: var(--radius-sm);
   font-size: var(--text-xs);
   font-weight: var(--font-medium);
-  border: 1px solid rgba(59, 130, 246, 0.2);
+  border: 1px solid var(--color-primary-20);
 }
 
 /* CTA Section */
@@ -316,7 +316,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(45deg, rgba(245, 158, 11, 0.05), rgba(59, 130, 246, 0.05));
+  background: linear-gradient(45deg, var(--color-accent-10), var(--color-primary-10));
   pointer-events: none;
 }
 
@@ -414,7 +414,7 @@
 .bg-shape {
   position: absolute;
   border-radius: var(--radius-full);
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(245, 158, 11, 0.1));
+  background: linear-gradient(135deg, var(--color-primary-10), var(--color-accent-10));
   animation: float 6s ease-in-out infinite;
 }
 

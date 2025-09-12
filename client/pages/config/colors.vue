@@ -25,37 +25,37 @@
         <div class="flex flex-col items-center text-center w-full px-2">
           <button
             :style="{ backgroundColor: primaryColor, color: secondaryColor }"
-            class="py-2.5 px-6 sm:py-3 sm:px-8 rounded-lg shadow-md transition-all duration-300 ease-in-out hover:opacity-90 text-sm sm:text-base font-semibold"
+            class="py-2.5 px-6 sm:py-3 sm:px-8 rounded-lg shadow-md transition-all duration-300 ease-in-out hover:opacity-90 text-sm sm:text-base font-semibold config-button"
           >
             Botón de Muestra
           </button>
           <p class="text-xs sm:text-sm mt-2 text-stone-500">Fondo Principal, Texto Secundario</p>
         </div>
         <div class="text-center w-full px-2">
-          <h3 class="text-xl sm:text-2xl md:text-3xl font-extrabold mb-1" :style="{ color: accentColor }">Título de Ejemplo</h3>
-          <p class="text-sm sm:text-base" :style="{ color: textColor }">Texto del cuerpo para previsualizar el color.</p>
+          <h3 class="text-xl sm:text-2xl md:text-3xl font-extrabold mb-1 config-heading" :style="{ color: accentColor }">Título de Ejemplo</h3>
+          <p class="text-sm sm:text-base config-text" :style="{ color: textColor }">Texto del cuerpo para previsualizar el color.</p>
           <p class="text-xs sm:text-sm mt-2 text-stone-500">Título de Acento, Texto del Cuerpo</p>
         </div>
         <div class="flex flex-col items-center text-center w-full px-2">
           <div
-            class="h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24 rounded-full flex items-center justify-center shadow-lg"
+            class="h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24 rounded-full flex items-center justify-center shadow-lg config-bg"
             :style="{ backgroundColor: neutralColor }"
           >
-            <i class="fas fa-star text-3xl sm:text-4xl" :style="{ color: primaryColor }"></i>
+            <i class="fas fa-star text-3xl sm:text-4xl config-icon" :style="{ color: primaryColor }"></i>
           </div>
           <p class="text-xs sm:text-sm mt-2 text-stone-500">Fondo Neutro, Icono Principal</p>
         </div>
         <div class="flex flex-col items-center text-center w-full px-2">
           <button
             :style="{ backgroundColor: accentColor, color: secondaryColor }"
-            class="py-2.5 px-6 sm:py-3 sm:px-8 rounded-lg border-2 transition-all duration-300 ease-in-out hover:opacity-90 text-sm sm:text-base font-semibold"
+            class="py-2.5 px-6 sm:py-3 sm:px-8 rounded-lg border-2 transition-all duration-300 ease-in-out hover:opacity-90 text-sm sm:text-base font-semibold config-button"
           >
             Otro Botón
           </button>
           <p class="text-xs sm:text-sm mt-2 text-stone-500">Fondo de Acento, Texto Secundario</p>
         </div>
         <div class="text-center w-full px-2">
-          <a href="#" class="font-medium text-base sm:text-lg hover:underline transition-colors duration-200" :style="{ color: primaryColor }">
+          <a href="#" class="font-medium text-base sm:text-lg hover:underline transition-colors duration-200 config-link" :style="{ color: primaryColor }">
             Enlace de Muestra
           </a>
           <p class="text-xs sm:text-sm mt-2 text-stone-500">Color de Enlace Principal</p>
@@ -65,7 +65,7 @@
                 type="text"
                 placeholder="Entrada de Texto"
                 :style="{ borderColor: primaryColor, color: textColor }"
-                class="w-full px-3 py-2 sm:py-2.5 border rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-opacity-75 transition-all duration-300 text-sm sm:text-base focus:ring-stone-500"
+                class="w-full px-3 py-2 sm:py-2.5 border rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-opacity-75 transition-all duration-300 text-sm sm:text-base focus:ring-stone-500 config-input"
             >
             <p class="text-xs sm:text-sm mt-2 text-stone-500">Borde Principal, Color de Texto</p>
         </div>
@@ -399,6 +399,8 @@ const fetchUserPalettes = async () => {
     if (activePalette) {
       activePaletteId.value = activePalette.id;
       applyPalette(activePalette);
+      // Aplicar colores globalmente cuando se carga la página
+      applyColorsToPage(activePalette);
     }
   } catch (error) {
     console.error('Error:', error);
@@ -435,11 +437,14 @@ const activatePalette = async (palette) => {
     if (!response.ok) throw new Error('Error al activar la paleta');
 
     const activatedPalette = await response.json();
-    
+
     // Actualizar la paleta activa
     activePaletteId.value = activatedPalette.id;
     applyPalette(activatedPalette);
-    
+
+    // Aplicar colores globalmente a toda la aplicación
+    applyColorsToPage(activatedPalette);
+
     // Actualizar la lista de paletas
     const index = palettes.value.findIndex(p => p.id === activatedPalette.id);
     if (index !== -1) {
@@ -646,5 +651,51 @@ input[type="color"]::-webkit-color-swatch-wrapper {
 input[type="color"]::-webkit-color-swatch {
   border: none;
   border-radius: 0.375rem;
+}
+
+/* Override global styles for config page - prevent global color variables */
+.config-button,
+.config-heading,
+.config-text,
+.config-bg,
+.config-icon,
+.config-link,
+.config-input {
+  /* Use !important to override global styles */
+  color: inherit !important;
+  background-color: inherit !important;
+  border-color: inherit !important;
+}
+
+/* Specific overrides for config page elements */
+.config-button {
+  background-color: var(--local-primary, #8B4513) !important;
+  color: var(--local-secondary, #FFFFFF) !important;
+  border-color: var(--local-primary, #8B4513) !important;
+}
+
+.config-heading {
+  color: var(--local-accent, #DAA520) !important;
+}
+
+.config-text {
+  color: var(--local-text, #2F1B14) !important;
+}
+
+.config-bg {
+  background-color: var(--local-neutral, #F5F5DC) !important;
+}
+
+.config-icon {
+  color: var(--local-primary, #8B4513) !important;
+}
+
+.config-link {
+  color: var(--local-primary, #8B4513) !important;
+}
+
+.config-input {
+  border-color: var(--local-primary, #8B4513) !important;
+  color: var(--local-text, #2F1B14) !important;
 }
 </style>

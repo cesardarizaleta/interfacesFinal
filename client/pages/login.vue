@@ -222,6 +222,11 @@ const handleLogin = async () => {
   transition: all 0.3s ease;
 }
 
+.form-group input::placeholder {
+  color: #6b7280;
+  opacity: 1;
+}
+
 .form-group input:focus {
   outline: none;
   border-color: var(--color-primary);

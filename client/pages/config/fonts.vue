@@ -589,4 +589,50 @@ onUnmounted(() => {
   align-items: center;
   z-index: 9999;
 }
+
+/* Override global styles for config page - prevent global color variables */
+.config-button,
+.config-heading,
+.config-text,
+.config-bg,
+.config-icon,
+.config-link,
+.config-input {
+  /* Use !important to override global styles */
+  color: inherit !important;
+  background-color: inherit !important;
+  border-color: inherit !important;
+}
+
+/* Specific overrides for config page elements */
+.config-button {
+  background-color: var(--local-primary, #8B4513) !important;
+  color: var(--local-secondary, #FFFFFF) !important;
+  border-color: var(--local-primary, #8B4513) !important;
+}
+
+.config-heading {
+  color: var(--local-accent, #DAA520) !important;
+}
+
+.config-text {
+  color: var(--local-text, #2F1B14) !important;
+}
+
+.config-bg {
+  background-color: var(--local-neutral, #F5F5DC) !important;
+}
+
+.config-icon {
+  color: var(--local-primary, #8B4513) !important;
+}
+
+.config-link {
+  color: var(--local-primary, #8B4513) !important;
+}
+
+.config-input {
+  border-color: var(--local-primary, #8B4513) !important;
+  color: var(--local-text, #2F1B14) !important;
+}
 </style>

@@ -11,11 +11,20 @@ router.get('/', controller.getColors.bind(controller));
 
 router.get('/:id', validatorHandler(getColorSchema, 'params'), controller.getColor.bind(controller));
 
-router.get('/user/:userId', controller.getColorsByUser.bind(controller));
+router.get('/user/:userId',
+  passport.authenticate('jwt', { session: false }),
+  controller.getColorsByUser.bind(controller)
+);
 
-router.get('/user/:userId/active', controller.getActiveColors.bind(controller));
+router.get('/user/:userId/active',
+  passport.authenticate('jwt', { session: false }),
+  controller.getActiveColors.bind(controller)
+);
 
-router.get('/user/:userId/last-used', controller.getLastUsedColors.bind(controller));
+router.get('/user/:userId/last-used',
+  passport.authenticate('jwt', { session: false }),
+  controller.getLastUsedColors.bind(controller)
+);
 
 router.post('/',
   validatorHandler(createColorSchema, 'body'),

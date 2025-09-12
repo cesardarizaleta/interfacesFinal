@@ -294,7 +294,7 @@ const submitForm = async () => {
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-xs);
-  background: rgba(239, 68, 68, 0.1);
+  background: var(--color-error-light);
   color: var(--color-error);
   padding: var(--spacing-xs) var(--spacing-md);
   border-radius: var(--radius-full);
@@ -303,7 +303,7 @@ const submitForm = async () => {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: var(--spacing-lg);
-  border: 1px solid rgba(239, 68, 68, 0.2);
+  border: 1px solid var(--color-error-20);
 }
 
 .section-badge i {
@@ -374,7 +374,7 @@ const submitForm = async () => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(45deg, rgba(239, 68, 68, 0.05), rgba(59, 130, 246, 0.05));
+  background: linear-gradient(45deg, var(--color-error-10), var(--color-primary-10));
   pointer-events: none;
 }
 
@@ -696,7 +696,7 @@ const submitForm = async () => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(45deg, rgba(59, 130, 246, 0.1), rgba(245, 158, 11, 0.1));
+  background: linear-gradient(45deg, var(--color-primary-10), var(--color-accent-10));
   pointer-events: none;
 }
 
@@ -731,7 +731,7 @@ const submitForm = async () => {
 .bg-shape {
   position: absolute;
   border-radius: var(--radius-full);
-  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(59, 130, 246, 0.1));
+  background: linear-gradient(135deg, var(--color-error-10), var(--color-primary-10));
   animation: float 6s ease-in-out infinite;
 }
 
