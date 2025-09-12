@@ -1,4 +1,15 @@
 services:
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: interfaces_final_user
+      POSTGRES_PASSWORD: interfaces_final_password
+      POSTGRES_DB: interfaces_final
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
   app:
     build: .
     ports:
@@ -6,3 +17,8 @@ services:
     volumes:
       - ./uploads:/app/uploads
       - ./data:/app/data
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:

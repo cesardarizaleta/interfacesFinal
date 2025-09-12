@@ -348,7 +348,3 @@ onMounted(async () => {
   fetchUsers();
 });
 </script>
-
-<style scoped>
-/* Estilos adicionales si es necesario */
-</style>

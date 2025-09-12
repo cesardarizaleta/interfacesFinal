@@ -8,10 +8,7 @@ module.exports = {
         dialect: 'postgres',
         logging: config.isProd ? false : true, // No loguear en producción
         dialectOptions: {
-            ssl: {
-                require: true,
-                rejectUnauthorized: false, // For development
-            }
+            ssl: false, // Disable SSL for local Docker development
         }
     },
     production: {
