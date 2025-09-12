@@ -19,6 +19,12 @@ router.get('/users',
   controller.getAllUsers.bind(controller)
 );
 
+router.get('/users/export',
+  authenticateJwt,
+  checkRole(['admin']),
+  controller.exportUsers.bind(controller)
+);
+
 router.get('/colors',
   authenticateJwt,
   checkRole(['admin']),

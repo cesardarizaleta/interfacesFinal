@@ -135,12 +135,22 @@
                 </svg>
                 Video
               </div>
-              <div class="absolute top-3 right-3 bg-stone-900/80 text-white text-xs px-3 py-2 rounded-full backdrop-blur-sm font-semibold">
-                <svg class="w-4 h-4 inline mr-2" fill="currentColor" viewBox="0 0 24 24">
+              <div class="absolute top-3 right-3 bg-stone-900/80 text-white text-xs px-3 py-2 rounded-full backdrop-blur-sm font-semibold flex items-center gap-2">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M8 5v14l11-7z"/>
                 </svg>
                 Video
               </div>
+              <!-- Edit button -->
+              <button
+                @click.stop="openVideoEditor(video)"
+                class="absolute bottom-3 right-3 bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full shadow-lg transition-colors"
+                title="Editar video"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                </svg>
+              </button>
             </div>
             <div class="p-6">
               <h3 class="font-bold text-stone-800 truncate text-lg mb-3">{{ video.name }}</h3>
@@ -578,6 +588,246 @@
           </div>
         </div>
       </div>
+
+      <!-- Video Editor Modal -->
+      <div
+        v-if="showVideoEditor"
+        class="fixed inset-0 bg-stone-900 bg-opacity-95 flex items-center justify-center z-50 p-6 overflow-y-auto"
+      >
+        <div class="bg-white rounded-3xl overflow-hidden shadow-2xl w-full max-w-6xl max-h-[95vh] flex flex-col">
+          <div class="flex justify-between items-center p-8 border-b border-stone-200 bg-gradient-to-r from-stone-50 to-stone-100">
+            <div>
+              <h3 class="text-3xl font-bold text-stone-800 mb-2">🎬 Editar Vídeo</h3>
+              <p class="text-stone-600 text-lg">Añade subtítulos y audio a tu vídeo</p>
+            </div>
+            <button
+              @click="closeVideoEditor"
+              class="text-stone-400 hover:text-stone-600 hover:bg-stone-200 rounded-full p-3 transition-all duration-200 text-2xl font-bold shadow-lg"
+            >
+              ✕
+            </button>
+          </div>
+
+          <div class="p-8 flex-1 flex flex-col overflow-y-auto">
+            <!-- Video Preview -->
+            <div class="mb-8">
+              <h4 class="text-xl font-bold text-stone-800 mb-4">Vista Previa del Vídeo</h4>
+              <div class="bg-stone-100 rounded-2xl p-6">
+                <video
+                  ref="editorVideoPlayer"
+                  :src="editingVideo?.url"
+                  class="w-full rounded-xl shadow-lg"
+                  controls
+                  muted
+                  preload="metadata"
+                  crossorigin="anonymous"
+                >
+                  <!-- Dynamic subtitle tracks -->
+                  <track
+                    v-for="(subtitle, index) in currentSubtitles"
+                    :key="`subtitle-${index}`"
+                    kind="subtitles"
+                    :src="subtitle.blobUrl"
+                    :srclang="subtitle.lang"
+                    :label="getLanguageLabel(subtitle.lang)"
+                    :default="subtitle.lang === 'es'"
+                  />
+                </video>
+
+                <!-- Subtitle Controls -->
+                <div v-if="currentSubtitles.length > 0" class="mt-4 flex items-center gap-4">
+                  <span class="text-sm font-medium text-stone-700">Subtítulos:</span>
+                  <select
+                    v-model="selectedSubtitleTrack"
+                    @change="updateSubtitleTrack"
+                    class="px-3 py-1 text-sm border border-stone-300 rounded-md focus:outline-none focus:ring-2 focus:ring-stone-500"
+                  >
+                    <option value="-1">Desactivados</option>
+                    <option
+                      v-for="(subtitle, index) in currentSubtitles"
+                      :key="`option-${index}`"
+                      :value="index"
+                    >
+                      {{ getLanguageLabel(subtitle.lang) }}
+                    </option>
+                  </select>
+                  <span class="text-xs text-stone-500">
+                    {{ currentSubtitles.length }} subtítulo(s) disponible(s)
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Subtitles Section -->
+            <div class="mb-8">
+              <h4 class="text-xl font-bold text-stone-800 mb-4">📝 Subtítulos</h4>
+              <div class="bg-stone-50 rounded-2xl p-6">
+                <div class="mb-4">
+                  <button
+                    @click="addSubtitle"
+                    class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+                  >
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                    </svg>
+                    Añadir Subtítulo
+                  </button>
+                </div>
+
+                <div class="space-y-4">
+                  <div
+                    v-for="(subtitle, index) in videoSubtitles"
+                    :key="index"
+                    class="bg-white rounded-lg p-4 border border-stone-200"
+                  >
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                      <div>
+                        <label class="block text-sm font-medium text-stone-700 mb-1">Texto del Subtítulo</label>
+                        <input
+                          v-model="subtitle.text"
+                          type="text"
+                          class="w-full px-3 py-2 border border-stone-300 rounded-md focus:outline-none focus:ring-2 focus:ring-stone-500"
+                          placeholder="Texto del subtítulo"
+                        />
+                      </div>
+                      <div>
+                        <label class="block text-sm font-medium text-stone-700 mb-1">Idioma</label>
+                        <select
+                          v-model="subtitle.lang"
+                          class="w-full px-3 py-2 border border-stone-300 rounded-md focus:outline-none focus:ring-2 focus:ring-stone-500"
+                        >
+                          <option value="es">Español</option>
+                          <option value="en">Inglés</option>
+                          <option value="fr">Francés</option>
+                          <option value="de">Alemán</option>
+                          <option value="it">Italiano</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                      <div>
+                        <label class="block text-sm font-medium text-stone-700 mb-1">Inicio (segundos)</label>
+                        <input
+                          v-model.number="subtitle.start"
+                          type="number"
+                          step="0.1"
+                          min="0"
+                          class="w-full px-3 py-2 border border-stone-300 rounded-md focus:outline-none focus:ring-2 focus:ring-stone-500"
+                        />
+                      </div>
+                      <div>
+                        <label class="block text-sm font-medium text-stone-700 mb-1">Fin (segundos)</label>
+                        <input
+                          v-model.number="subtitle.end"
+                          type="number"
+                          step="0.1"
+                          min="0"
+                          class="w-full px-3 py-2 border border-stone-300 rounded-md focus:outline-none focus:ring-2 focus:ring-stone-500"
+                        />
+                      </div>
+                      <div>
+                        <label class="block text-sm font-medium text-stone-700 mb-1">Fuente</label>
+                        <select
+                          v-model="subtitle.fontFamily"
+                          class="w-full px-3 py-2 border border-stone-300 rounded-md focus:outline-none focus:ring-2 focus:ring-stone-500"
+                        >
+                          <option :value="assignedFonts?.active?.fontFamily || 'Arial'">Fuente Activa ({{ assignedFonts?.active?.name || 'Predeterminada' }})</option>
+                          <option value="Arial">Arial</option>
+                          <option value="Helvetica">Helvetica</option>
+                          <option value="Times New Roman">Times New Roman</option>
+                          <option value="Courier New">Courier New</option>
+                          <option value="Georgia">Georgia</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="flex justify-between items-center">
+                      <div class="text-sm text-stone-600">
+                        Vista previa: <span :style="{ fontFamily: subtitle.fontFamily }" class="font-semibold">{{ subtitle.text || 'Texto del subtítulo' }}</span>
+                      </div>
+                      <button
+                        @click="removeSubtitle(index)"
+                        class="text-red-600 hover:text-red-700 text-sm font-medium"
+                      >
+                        Eliminar
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Audio Section -->
+            <div class="mb-8">
+              <h4 class="text-xl font-bold text-stone-800 mb-4">🎵 Audio</h4>
+              <div class="bg-stone-50 rounded-2xl p-6">
+                <div class="mb-4">
+                  <label class="block text-lg font-semibold text-stone-800 mb-3">Seleccionar Audio</label>
+                  <input
+                    ref="audioInput"
+                    type="file"
+                    accept="audio/*"
+                    @change="handleAudioSelect"
+                    class="w-full p-4 border-2 border-stone-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-stone-500 focus:border-stone-500 transition-all duration-200 text-lg"
+                  />
+                </div>
+
+                <div v-if="selectedAudioFile" class="bg-white rounded-lg p-4 border border-stone-200">
+                  <div class="flex items-center justify-between mb-4">
+                    <div>
+                      <h5 class="font-semibold text-stone-800">{{ selectedAudioFile.name }}</h5>
+                      <p class="text-sm text-stone-600">{{ (selectedAudioFile.size / 1024 / 1024).toFixed(2) }} MB</p>
+                    </div>
+                    <button
+                      @click="removeAudio"
+                      class="text-red-600 hover:text-red-700 text-sm font-medium"
+                    >
+                      Eliminar
+                    </button>
+                  </div>
+
+                  <audio
+                    ref="audioPreview"
+                    :src="audioPreviewUrl"
+                    controls
+                    class="w-full"
+                  ></audio>
+                </div>
+
+                <div v-else class="text-center text-stone-500 py-8">
+                  <svg class="w-16 h-16 mx-auto mb-4 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/>
+                  </svg>
+                  <p class="text-lg">Selecciona un archivo de audio para añadir al vídeo</p>
+                  <p class="text-sm text-stone-400 mt-2">Nota: El audio se guardará pero no se previsualizará en el editor</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex justify-end gap-4">
+              <button
+                @click="closeVideoEditor"
+                class="px-8 py-3 bg-stone-200 text-stone-800 rounded-xl hover:bg-stone-300 transition-colors font-semibold text-lg shadow-lg"
+              >
+                Cancelar
+              </button>
+              <button
+                @click="saveVideoEdits"
+                :disabled="isSavingVideo"
+                class="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 font-bold text-lg shadow-lg transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <svg v-if="isSavingVideo" class="w-5 h-5 animate-spin mr-2" fill="none" viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" class="opacity-25"></circle>
+                  <path fill="currentColor" class="opacity-75" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                {{ isSavingVideo ? 'Guardando...' : 'Guardar Cambios' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -585,12 +835,16 @@
 <script setup>
 import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 import Cropper from 'cropperjs'
+import { useFonts } from '~/composables/useFonts'
 import weddingImg from '~/assets/carousel/wedding.webp'
 import portraitImg from '~/assets/carousel/horses.webp'
 import landscapeImg from '~/assets/carousel/landscape.webp'
 import eventsImg from '~/assets/carousel/events.webp'
 import familyImg from '~/assets/carousel/family.webp'
 import fashionImg from '~/assets/carousel/fashion.webp'
+
+// Fonts composable
+const { assignedFonts } = useFonts()
 
 // Reactive data
 const activeTab = ref('videos')
@@ -603,8 +857,16 @@ const showVideoModal = ref(false)
 const showImageModal = ref(false)
 const showImageCropper = ref(false)
 const showVideoUploader = ref(false)
+const showVideoEditor = ref(false)
 const selectedVideo = ref(null)
 const selectedImage = ref(null)
+const editingVideo = ref(null)
+const videoSubtitles = ref([])
+const currentSubtitles = ref([])
+const selectedSubtitleTrack = ref('-1')
+const selectedAudioFile = ref(null)
+const audioPreviewUrl = ref('')
+const isSavingVideo = ref(false)
 
 // Cropper related data
 const previewImage = ref('')
@@ -615,6 +877,9 @@ const imagePreview = ref(null)
 
 // Video uploader related data
 const videoInput = ref(null)
+const audioInput = ref(null)
+const editorVideoPlayer = ref(null)
+const audioPreview = ref(null)
 const videoName = ref('')
 const selectedVideoFile = ref(null)
 const videoPreview = ref('')
@@ -921,9 +1186,12 @@ const closeAllModals = () => {
   showImageModal.value = false
   showImageCropper.value = false
   showVideoUploader.value = false
+  showVideoEditor.value = false
   selectedVideo.value = null
   selectedImage.value = null
+  editingVideo.value = null
   resetVideoUploader()
+  resetVideoEditor()
 }
 
 const onVideoLoaded = (event, videoId) => {
@@ -1072,6 +1340,248 @@ const resetVideoUploader = () => {
   // Clear file input
   if (videoInput.value) {
     videoInput.value.value = ''
+  }
+}
+
+// Video Editor Methods
+const openVideoEditor = (video) => {
+  editingVideo.value = { ...video }
+  videoSubtitles.value = [...(video.subtitles || [])]
+
+  // Generate blob URLs for current subtitles
+  generateSubtitleBlobs()
+
+  selectedAudioFile.value = null
+  audioPreviewUrl.value = ''
+  selectedSubtitleTrack.value = '-1'
+  showVideoEditor.value = true
+}
+
+const closeVideoEditor = () => {
+  showVideoEditor.value = false
+  editingVideo.value = null
+
+  // Clean up blob URLs
+  currentSubtitles.value.forEach(subtitle => {
+    if (subtitle.blobUrl) {
+      URL.revokeObjectURL(subtitle.blobUrl)
+    }
+  })
+
+  resetVideoEditor()
+}
+
+const resetVideoEditor = () => {
+  videoSubtitles.value = []
+  selectedAudioFile.value = null
+  audioPreviewUrl.value = ''
+  isSavingVideo.value = false
+}
+
+
+const handleAudioSelect = (event) => {
+  const file = event.target.files[0]
+  if (file) {
+    // Validate file type
+    const allowedTypes = ['audio/mp3', 'audio/wav', 'audio/m4a', 'audio/aac', 'audio/ogg']
+    const allowedExtensions = ['.mp3', '.wav', '.m4a', '.aac', '.ogg']
+    const fileExtension = file.name.toLowerCase().substring(file.name.lastIndexOf('.'))
+
+    if (!allowedTypes.includes(file.type) && !allowedExtensions.includes(fileExtension)) {
+      alert('Tipo de archivo no válido. Solo se permiten archivos de audio: MP3, WAV, M4A, AAC, OGG')
+      return
+    }
+
+    // Validate file size (max 50MB for audio)
+    const maxSize = 50 * 1024 * 1024 // 50MB
+    if (file.size > maxSize) {
+      alert('El archivo es demasiado grande. El tamaño máximo es 50MB.')
+      return
+    }
+
+    selectedAudioFile.value = file
+    audioPreviewUrl.value = URL.createObjectURL(file)
+  }
+}
+
+const removeAudio = () => {
+  selectedAudioFile.value = null
+  audioPreviewUrl.value = ''
+  if (audioInput.value) {
+    audioInput.value.value = ''
+  }
+}
+
+const saveVideoEdits = async () => {
+  if (!editingVideo.value) return
+
+  isSavingVideo.value = true
+
+  try {
+    // Create VTT files for subtitles
+    const subtitleFiles = []
+    for (let i = 0; i < videoSubtitles.value.length; i++) {
+      const subtitle = videoSubtitles.value[i]
+      if (subtitle.text.trim()) {
+        const vttContent = `WEBVTT
+
+${(i + 1).toString().padStart(2, '0')}
+${formatTime(subtitle.start)} --> ${formatTime(subtitle.end)}
+${subtitle.text}
+`
+        const blob = new Blob([vttContent], { type: 'text/vtt' })
+        const file = new File([blob], `subtitle_${i + 1}_${subtitle.lang}.vtt`, { type: 'text/vtt' })
+        subtitleFiles.push({
+          file,
+          lang: subtitle.lang,
+          label: getLanguageLabel(subtitle.lang),
+          fontFamily: subtitle.fontFamily
+        })
+      }
+    }
+
+    // Update video object with new data
+    const updatedVideo = {
+      ...editingVideo.value,
+      subtitles: subtitleFiles.map(s => ({
+        src: '', // Will be set after upload
+        srclang: s.lang,
+        label: s.label,
+        fontFamily: s.fontFamily
+      })),
+      audioFile: selectedAudioFile.value
+    }
+
+    // Here you would typically upload the subtitle files and audio to the server
+    // For now, we'll just update the local video object
+    const videoIndex = videos.value.findIndex(v => v.id === editingVideo.value.id)
+    if (videoIndex !== -1) {
+      videos.value[videoIndex] = updatedVideo
+
+      // Save to localStorage
+      const savedVideos = JSON.parse(localStorage.getItem('uploadedVideos') || '[]')
+      const savedIndex = savedVideos.findIndex(v => v.id === editingVideo.value.id)
+      if (savedIndex !== -1) {
+        savedVideos[savedIndex] = updatedVideo
+        localStorage.setItem('uploadedVideos', JSON.stringify(savedVideos))
+      }
+    }
+
+    // Regenerate subtitle blobs for immediate preview
+    generateSubtitleBlobs()
+
+    success.value = 'Vídeo editado exitosamente'
+    setTimeout(() => success.value = '', 3000)
+    closeVideoEditor()
+
+  } catch (error) {
+    console.error('Error saving video edits:', error)
+    error.value = 'Error al guardar los cambios del vídeo'
+    setTimeout(() => error.value = '', 3000)
+  } finally {
+    isSavingVideo.value = false
+  }
+}
+
+const formatTime = (seconds) => {
+  const hours = Math.floor(seconds / 3600)
+  const minutes = Math.floor((seconds % 3600) / 60)
+  const secs = Math.floor(seconds % 60)
+  const ms = Math.floor((seconds % 1) * 1000)
+
+  return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}.${ms.toString().padStart(3, '0')}`
+}
+
+const getLanguageLabel = (lang) => {
+  const labels = {
+    es: 'Español',
+    en: 'English',
+    fr: 'Français',
+    de: 'Deutsch',
+    it: 'Italiano'
+  }
+  return labels[lang] || lang
+}
+
+const generateSubtitleBlobs = () => {
+  // Clean up previous blob URLs
+  currentSubtitles.value.forEach(subtitle => {
+    if (subtitle.blobUrl) {
+      URL.revokeObjectURL(subtitle.blobUrl)
+    }
+  })
+
+  currentSubtitles.value = []
+
+  // Generate new blob URLs for current subtitles
+  videoSubtitles.value.forEach((subtitle, index) => {
+    if (subtitle.text && subtitle.text.trim()) {
+      const vttContent = `WEBVTT
+
+${(index + 1).toString().padStart(2, '00')}
+${formatTime(subtitle.start)} --> ${formatTime(subtitle.end)}
+${subtitle.text}
+`
+
+      const blob = new Blob([vttContent], { type: 'text/vtt' })
+      const blobUrl = URL.createObjectURL(blob)
+
+      currentSubtitles.value.push({
+        ...subtitle,
+        blobUrl: blobUrl
+      })
+    }
+  })
+}
+
+const updateSubtitleTrack = () => {
+  const video = editorVideoPlayer.value
+  if (!video) return
+
+  // Disable all subtitle tracks
+  const tracks = video.textTracks
+  for (let i = 0; i < tracks.length; i++) {
+    tracks[i].mode = 'disabled'
+  }
+
+  // Enable selected track
+  if (selectedSubtitleTrack.value !== '-1') {
+    const trackIndex = parseInt(selectedSubtitleTrack.value)
+    if (tracks[trackIndex]) {
+      tracks[trackIndex].mode = 'showing'
+    }
+  }
+}
+
+const addSubtitle = () => {
+  videoSubtitles.value.push({
+    text: '',
+    lang: 'es',
+    start: 0,
+    end: 5,
+    fontFamily: assignedFonts.value?.active?.fontFamily || 'Arial'
+  })
+
+  // Regenerate blobs after adding
+  generateSubtitleBlobs()
+}
+
+const removeSubtitle = (index) => {
+  // Clean up blob URL before removing
+  if (currentSubtitles.value[index]?.blobUrl) {
+    URL.revokeObjectURL(currentSubtitles.value[index].blobUrl)
+  }
+
+  videoSubtitles.value.splice(index, 1)
+  currentSubtitles.value.splice(index, 1)
+
+  // Update selected track if necessary
+  if (selectedSubtitleTrack.value !== '-1' && parseInt(selectedSubtitleTrack.value) >= index) {
+    if (parseInt(selectedSubtitleTrack.value) === index) {
+      selectedSubtitleTrack.value = '-1'
+    } else {
+      selectedSubtitleTrack.value = (parseInt(selectedSubtitleTrack.value) - 1).toString()
+    }
   }
 }
 

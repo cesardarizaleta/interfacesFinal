@@ -15,9 +15,13 @@
               <Icon name="heroicons:plus" class="w-5 h-5" />
               Crear Usuario
             </button>
-            <button @click="exportUsers" class="bg-amber-600 hover:bg-amber-700 text-white px-6 py-2 rounded-lg flex items-center gap-2 transition-colors">
+            <button @click="exportUsers('xlsx')" class="bg-amber-600 hover:bg-amber-700 text-white px-6 py-2 rounded-lg flex items-center gap-2 transition-colors">
               <Icon name="heroicons:arrow-down-tray" class="w-5 h-5" />
-              Exportar Usuarios
+              Excel
+            </button>
+            <button @click="exportUsers('pdf')" class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg flex items-center gap-2 transition-colors">
+              <Icon name="heroicons:document" class="w-5 h-5" />
+              PDF
             </button>
           </div>
         </div>
@@ -331,16 +335,30 @@ const saveUser = async () => {
   }
 };
 
-const exportUsers = () => {
-  // Crear un enlace temporal para descargar el archivo
-  const link = document.createElement('a');
-  link.href = `${useRuntimeConfig().public.BACKEND_URL}/users/admin/export`;
-  link.setAttribute('download', 'usuarios_landing_photography.xlsx');
-  link.setAttribute('target', '_blank');
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  show('Exportando usuarios...', 'info');
+const exportUsers = (format = 'xlsx') => {
+  const baseUrl = `${useRuntimeConfig().public.BACKEND_URL}/api/admin/users/export?format=${format}`;
+  const token = localStorage.getItem('token');
+  // Usamos fetch para incluir encabezado Authorization y forzar descarga
+  fetch(baseUrl, {
+    headers: { 'Authorization': `Bearer ${token}` }
+  }).then(async res => {
+    if (!res.ok) {
+      show('Error al exportar usuarios', 'error');
+      return;
+    }
+    const blob = await res.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = format === 'pdf' ? 'usuarios_landing_photography.pdf' : 'usuarios_landing_photography.xlsx';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(url);
+    show(`Exportación ${format.toUpperCase()} iniciada`, 'success');
+  }).catch(() => {
+    show('Error de conexión al exportar', 'error');
+  });
 };
 
 onMounted(async () => {
