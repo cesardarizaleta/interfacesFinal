@@ -2,14 +2,14 @@ const boom = require('@hapi/boom');
 const fs = require('fs').promises;
 const path = require('path');
 const { models } = require('../libs/sequelize');
-const ImgBBService = require('./imgbb_service');
 
 class GalleryService {
   constructor() {
     this.Gallery = models.Gallery;
     this.uploadDir = path.join(__dirname, '../uploads/gallery');
-    this.thumbnailDir = path.join(this.uploadDir, 'thumbnails');
-    this.imgbbService = new ImgBBService();
+    this.imagesDir = path.join(this.uploadDir, 'images');
+    this.videosDir = path.join(this.uploadDir, 'videos');
+    this.tempDir = path.join(__dirname, '../uploads/temp');
   }
 
   async findAll(filters = {}) {
@@ -33,7 +33,7 @@ class GalleryService {
   }
 
   async findById(id) {
-    const item = await this.Gallery.findByPk(id);
+    const item = await this.Gallery.findByPk(parseInt(id));
     if (!item) {
       throw boom.notFound('Gallery item not found');
     }
@@ -65,7 +65,6 @@ class GalleryService {
       }
 
       const galleryData = {
-        id: `gallery-${Date.now()}`,
         title: data.title,
         description: data.description || '',
         category: data.category,
@@ -100,47 +99,31 @@ class GalleryService {
 
   async createImage(data, file) {
     try {
-      // Upload image to ImgBB
-      const imgbbResult = await this.imgbbService.uploadImage(
-        file.path,
-        file.originalname,
-        15552000 // 6 months expiration
-      );
+      // Ensure upload directories exist
+      await this._ensureDirectories();
 
-      if (!imgbbResult.success) {
-        throw new Error('Failed to upload image to ImgBB');
-      }
+      // Generate unique filename
+      const fileExtension = path.extname(file.originalname);
+      const filename = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}${fileExtension}`;
+      const filepath = path.join(this.imagesDir, filename);
 
-      const imgbbData = imgbbResult.data;
+      // Move file from temp to images directory
+      await fs.rename(file.path, filepath);
 
-      // Extract additional metadata from the uploaded image
-      const metadata = {
-        width: imgbbData.width,
-        height: imgbbData.height,
-        format: imgbbData.mime.split('/')[1] || 'jpeg',
-        size: imgbbData.size,
-        imgbb: {
-          id: imgbbData.id,
-          url: imgbbData.url,
-          displayUrl: imgbbData.displayUrl,
-          thumbUrl: imgbbData.thumbUrl,
-          mediumUrl: imgbbData.mediumUrl,
-          deleteUrl: imgbbData.deleteUrl
-        }
-      };
+      // Extract image metadata
+      const metadata = await this._extractImageMetadata(filepath);
 
       const galleryData = {
-        id: `gallery-${Date.now()}`,
         title: data.title,
         description: data.description || '',
         category: data.category,
         type: 'image',
-        filename: imgbbData.filename,
+        filename: filename,
         originalName: file.originalname,
         mimeType: file.mimetype,
         size: file.size,
-        path: imgbbData.url, // Store ImgBB URL as path
-        thumbnail: imgbbData.thumbUrl, // Store thumbnail URL
+        path: `/uploads/gallery/images/${filename}`,
+        thumbnail: `/uploads/gallery/images/${filename}`, // Same as main image for now
         uploadedBy: data.uploadedBy,
         uploadedAt: new Date().toISOString(),
         isActive: true,
@@ -149,14 +132,6 @@ class GalleryService {
       };
 
       const newItem = await this.Gallery.create(galleryData);
-
-      // Clean up the temporary file
-      try {
-        await fs.unlink(file.path);
-      } catch (cleanupError) {
-        console.error('Error cleaning up temporary file:', cleanupError);
-      }
-
       return newItem.toJSON();
     } catch (error) {
       // Clean up file if creation fails
@@ -172,15 +147,56 @@ class GalleryService {
   }
 
   async createVideo(data, file) {
-    // Extract video metadata
-    const metadata = await this._extractVideoMetadata(file.path);
-    data.metadata = { ...data.metadata, ...metadata };
+    try {
+      // Ensure upload directories exist
+      await this._ensureDirectories();
 
-    return await this.create(data, file);
+      // Generate unique filename
+      const fileExtension = path.extname(file.originalname);
+      const filename = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}${fileExtension}`;
+      const filepath = path.join(this.videosDir, filename);
+
+      // Move file from temp to videos directory
+      await fs.rename(file.path, filepath);
+
+      // Extract video metadata
+      const metadata = await this._extractVideoMetadata(filepath);
+
+      const galleryData = {
+        title: data.title,
+        description: data.description || '',
+        category: data.category,
+        type: 'video',
+        filename: filename,
+        originalName: file.originalname,
+        mimeType: file.mimetype,
+        size: file.size,
+        path: `/uploads/gallery/videos/${filename}`,
+        thumbnail: null, // Videos don't have automatic thumbnails
+        uploadedBy: data.uploadedBy,
+        uploadedAt: new Date().toISOString(),
+        isActive: true,
+        tags: data.tags ? data.tags.split(',').map(tag => tag.trim()) : [],
+        metadata: metadata
+      };
+
+      const newItem = await this.Gallery.create(galleryData);
+      return newItem.toJSON();
+    } catch (error) {
+      // Clean up file if creation fails
+      if (file && file.path) {
+        try {
+          await fs.unlink(file.path);
+        } catch (cleanupError) {
+          console.error('Error cleaning up file:', cleanupError);
+        }
+      }
+      throw error;
+    }
   }
 
   async update(id, data) {
-    const existingItem = await this.findById(id);
+    const existingItem = await this.findById(parseInt(id));
 
     const updateData = {
       ...existingItem,
@@ -188,7 +204,7 @@ class GalleryService {
       updatedAt: new Date().toISOString()
     };
 
-    const item = await this.Gallery.findByPk(id);
+    const item = await this.Gallery.findByPk(parseInt(id));
     if (!item) {
       throw boom.notFound('Gallery item not found');
     }
@@ -198,34 +214,25 @@ class GalleryService {
   }
 
   async delete(id) {
-    const galleryItem = await this.findById(id);
+    const galleryItem = await this.findById(parseInt(id));
 
-    // Delete from ImgBB if it's an image with ImgBB data
-    if (galleryItem.type === 'image' && galleryItem.metadata?.imgbb?.deleteUrl) {
-      try {
-        await this.imgbbService.deleteImage(galleryItem.metadata.imgbb.deleteUrl);
-      } catch (imgbbError) {
-        console.error('Error deleting from ImgBB:', imgbbError);
-        // Continue with local deletion even if ImgBB deletion fails
-      }
-    }
-
-    // Delete physical files (for videos or legacy images)
+    // Delete physical files
     try {
-      if (galleryItem.path && !galleryItem.path.startsWith('http')) {
+      if (galleryItem.path) {
         const fullPath = path.join(__dirname, '../', galleryItem.path);
         await fs.unlink(fullPath);
       }
 
-      if (galleryItem.thumbnail && !galleryItem.thumbnail.startsWith('http')) {
+      if (galleryItem.thumbnail && galleryItem.thumbnail !== galleryItem.path) {
         const thumbnailFullPath = path.join(__dirname, '../', galleryItem.thumbnail);
         await fs.unlink(thumbnailFullPath);
       }
     } catch (fileError) {
       console.error('Error deleting local files:', fileError);
+      // Continue with database deletion even if file deletion fails
     }
 
-    const item = await this.Gallery.findByPk(id);
+    const item = await this.Gallery.findByPk(parseInt(id));
     if (!item) {
       throw boom.notFound('Gallery item not found');
     }
@@ -234,14 +241,16 @@ class GalleryService {
   }
 
   async toggleActive(id) {
-    const item = await this.findById(id);
-    return await this.update(id, { isActive: !item.isActive });
+    const item = await this.findById(parseInt(id));
+    return await this.update(parseInt(id), { isActive: !item.isActive });
   }
 
   async _ensureDirectories() {
     try {
       await fs.mkdir(this.uploadDir, { recursive: true });
-      await fs.mkdir(this.thumbnailDir, { recursive: true });
+      await fs.mkdir(this.imagesDir, { recursive: true });
+      await fs.mkdir(this.videosDir, { recursive: true });
+      await fs.mkdir(this.tempDir, { recursive: true });
     } catch (error) {
       if (error.code !== 'EEXIST') {
         throw error;

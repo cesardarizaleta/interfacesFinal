@@ -25,6 +25,14 @@ const config = {
     redirectUri: process.env.GOOGLE_REDIRECT_URI,
     refreshToken: process.env.GOOGLE_REFRESH_TOKEN
   },
+
+  // Vimeo Configuration
+  vimeo: {
+    clientId: 'c5189123123457dde653c03854f1d90ff0d2af86',
+    clientSecret: process.env.VIMEO_CLIENT_SECRET,
+    accessToken: process.env.VIMEO_ACCESS_TOKEN,
+    baseUrl: 'https://api.vimeo.com'
+  },
 /*
   // MySQL Configuration
   mysql: {

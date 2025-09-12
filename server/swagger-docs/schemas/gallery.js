@@ -291,6 +291,37 @@ module.exports = {
         type: 'integer',
         description: 'Bitrate del video',
         example: 5000000
+      },
+      size: {
+        type: 'integer',
+        description: 'Tamaño del archivo en bytes',
+        example: 10485760
+      },
+      vimeo: {
+        type: 'object',
+        description: 'Información de Vimeo',
+        properties: {
+          id: {
+            type: 'string',
+            description: 'ID único en Vimeo',
+            example: '123456789'
+          },
+          uri: {
+            type: 'string',
+            description: 'URI del video en Vimeo',
+            example: '/videos/123456789'
+          },
+          url: {
+            type: 'string',
+            description: 'URL directa del video',
+            example: 'https://vimeo.com/123456789'
+          },
+          embedUrl: {
+            type: 'string',
+            description: 'URL para embed del video',
+            example: 'https://player.vimeo.com/video/123456789'
+          }
+        }
       }
     }
   }

@@ -11,6 +11,7 @@ Este proyecto permite a los usuarios crear, gestionar y personalizar configuraci
 - **Autenticación**: Registro, login y JWT para proteger rutas.
 - **Gestión de Colores**: Crear, editar y eliminar paletas de colores.
 - **Gestión de Fuentes**: Subir archivos TTF, configurar tamaños y familias.
+- **Galería Multimedia**: Subida de imágenes y videos (Almacenamiento Local).
 - **Perfiles de Usuario**: Acceder a configuraciones personales.
 - **Frontend Responsivo**: Interfaz moderna con Nuxt.js.
 - **Backend Flexible**: Versión con base de datos y versión simplificada con JSON.
@@ -38,6 +39,24 @@ interfacesFinal/
 │   └── ...
 └── README.md
 ```
+
+## Estado Actual del Proyecto ✅
+
+### Funcionalidades Activas
+- ✅ **Autenticación JWT**: Completamente funcional
+- ✅ **Gestión de Colores**: Crear, editar, eliminar paletas
+- ✅ **Gestión de Fuentes**: Subir archivos TTF
+- ✅ **Imágenes**: Subida completa local (sin costos)
+- ✅ **Videos**: Subida completa local (sin costos)
+- ✅ **Base de Datos**: PostgreSQL completamente configurado
+
+### Funcionalidades Pendientes
+- ✅ **Videos**: Funciona con almacenamiento local
+- 🔄 **Frontend**: Integración con nueva API de galería
+
+### APIs Externas Configuradas
+- ✅ **Almacenamiento Local**: Funcionando (imágenes y videos sin costos)
+- 📁 **Directorios**: `server/uploads/gallery/images/` y `server/uploads/gallery/videos/`
 
 ## Instalación
 
@@ -116,6 +135,14 @@ JWT_SECRET=your_secret_key
 - `GET /api/profile/lastColorUsed` - Último color usado
 - `GET /api/profile/lastFontUsed` - Última fuente usada
 
+#### Galería Multimedia
+- `GET /api/gallery` - Obtener todos los elementos de la galería
+- `GET /api/gallery/:id` - Obtener elemento específico
+- `POST /api/gallery/images/upload` - Subir imagen (Local)
+- `POST /api/gallery/videos/upload` - Subir video (Local)
+- `PATCH /api/gallery/:id` - Actualizar elemento
+- `DELETE /api/gallery/:id` - Eliminar elemento
+
 ### Docker
 
 Para la versión server con PostgreSQL:
@@ -132,6 +159,38 @@ cd template
 docker-compose up --build
 ```
 
+## Almacenamiento Local de Archivos Multimedia
+
+### ✅ Almacenamiento Local (Sin Costos)
+- **Servicio**: Almacenamiento local en el servidor
+- **Límite**: Solo limitado por el espacio del servidor
+- **Características**: Control total, sin dependencias externas
+- **Estado Actual**: ✅ Funciona inmediatamente
+
+### Estructura de Directorios
+```
+server/uploads/
+├── gallery/
+│   ├── images/     # Imágenes subidas
+│   └── videos/     # Videos subidos
+└── temp/           # Archivos temporales durante subida
+```
+
+### URLs de Acceso
+- **Imágenes**: `http://localhost:3001/uploads/gallery/images/[filename]`
+- **Videos**: `http://localhost:3001/uploads/gallery/videos/[filename]`
+
+### Características del Almacenamiento Local
+- ✅ **Sin costos**: No hay APIs externas ni planes premium
+- ✅ **Control total**: Los archivos están en tu servidor
+- ✅ **Sin límites**: Solo limitado por el espacio disponible
+- ✅ **Rápido**: Sin latencia de redes externas
+- ✅ **Privado**: Solo accesible a través de tu aplicación
+- ✅ **Metadata**: Se extrae automáticamente (dimensiones, duración, etc.)
+
+### Configuración
+No se requiere configuración adicional. Los directorios se crean automáticamente al iniciar el servidor.
+
 ## Tecnologías
 
 - **Frontend**: Nuxt.js, Vue.js, CSS
@@ -140,6 +199,7 @@ docker-compose up --build
 - **Autenticación**: Passport.js, JWT
 - **Validación**: Joi
 - **Subida de Archivos**: Multer
+- **Almacenamiento**: Local (imágenes y videos)
 - **ORM**: Sequelize (server)
 - **Contenedores**: Docker
 

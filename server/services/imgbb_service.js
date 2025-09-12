@@ -8,16 +8,15 @@ class ImgBBService {
     this.baseUrl = 'https://api.imgbb.com/1/upload';
   }
 
-  async uploadImage(filePath, filename = null, expiration = null) {
+  async uploadImage(fileBuffer, filename = null, expiration = null) {
     try {
       const formData = new FormData();
 
       // Add the API key
       formData.append('key', this.apiKey);
 
-      // Add the image file
-      const fileStream = fs.createReadStream(filePath);
-      formData.append('image', fileStream, {
+      // Add the image buffer
+      formData.append('image', fileBuffer, {
         filename: filename || 'image.jpg',
         contentType: 'image/jpeg'
       });

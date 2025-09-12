@@ -267,8 +267,8 @@ module.exports = {
   },
   '/api/gallery/images/upload': {
     post: {
-      summary: 'Subir imagen a la galería (ImgBB)',
-      description: 'Sube una nueva imagen a la galería del sistema. La imagen se almacena en ImgBB y se incluyen metadatos específicos de imagen con URLs de ImgBB',
+      summary: 'Subir imagen a la galería (Local)',
+      description: 'Sube una nueva imagen a la galería del sistema y la guarda localmente en el servidor',
       tags: ['Gallery', 'Admin'],
       security: [
         { bearerAuth: [] }
@@ -285,7 +285,7 @@ module.exports = {
       },
       responses: {
         201: {
-          description: 'Imagen subida exitosamente a ImgBB',
+          description: 'Imagen subida exitosamente al servidor local',
           content: {
             'application/json': {
               schema: {
@@ -315,8 +315,8 @@ module.exports = {
   },
   '/api/gallery/videos/upload': {
     post: {
-      summary: 'Subir video a la galería',
-      description: 'Sube un nuevo video a la galería del sistema con metadatos específicos de video',
+      summary: 'Subir video a la galería (Local)',
+      description: 'Sube un nuevo video a la galería del sistema y lo guarda localmente en el servidor',
       tags: ['Gallery', 'Admin'],
       security: [
         { bearerAuth: [] }
@@ -333,7 +333,7 @@ module.exports = {
       },
       responses: {
         201: {
-          description: 'Video subido exitosamente',
+          description: 'Video subido exitosamente al servidor local',
           content: {
             'application/json': {
               schema: {

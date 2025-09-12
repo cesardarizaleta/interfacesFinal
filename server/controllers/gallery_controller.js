@@ -3,8 +3,8 @@ const { UsersService } = require('../services/user_service');
 const multer = require('multer');
 const path = require('path');
 
-// Configure multer for file uploads
-const storage = multer.diskStorage({
+// Configure multer for file uploads (disk storage for all files)
+const diskStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, path.join(__dirname, '../uploads/temp'));
   },
@@ -24,14 +24,14 @@ const fileFilter = (req, file, cb) => {
 };
 
 const upload = multer({
-  storage: storage,
+  storage: diskStorage,
   fileFilter: fileFilter,
   limits: {
     fileSize: 50 * 1024 * 1024, // 50MB limit
   }
 });
 
-// Specific multer for images
+// Specific multer for images (disk storage for local saving)
 const imageFileFilter = (req, file, cb) => {
   if (file.mimetype.startsWith('image/') &&
       ['image/jpeg', 'image/png', 'image/gif', 'image/webp'].includes(file.mimetype)) {
@@ -42,14 +42,14 @@ const imageFileFilter = (req, file, cb) => {
 };
 
 const uploadImage = multer({
-  storage: storage,
+  storage: diskStorage, // Use disk storage for local saving
   fileFilter: imageFileFilter,
   limits: {
     fileSize: 10 * 1024 * 1024, // 10MB limit for images
   }
 });
 
-// Specific multer for videos
+// Specific multer for videos (disk storage)
 const videoFileFilter = (req, file, cb) => {
   if (file.mimetype.startsWith('video/') &&
       ['video/mp4', 'video/avi', 'video/mov', 'video/wmv'].includes(file.mimetype)) {
@@ -60,7 +60,7 @@ const videoFileFilter = (req, file, cb) => {
 };
 
 const uploadVideo = multer({
-  storage: storage,
+  storage: diskStorage, // Use disk storage for local saving
   fileFilter: videoFileFilter,
   limits: {
     fileSize: 100 * 1024 * 1024, // 100MB limit for videos
@@ -126,7 +126,7 @@ class GalleryController {
 
       const itemData = {
         ...req.body,
-        uploadedBy: req.user.id,
+        uploadedBy: req.user.sub, // JWT uses 'sub' for user ID
         type: req.file.mimetype.startsWith('image/') ? 'image' : 'video'
       };
 
@@ -143,9 +143,17 @@ class GalleryController {
         return res.status(400).json({ message: 'No image file uploaded' });
       }
 
+      // Debug: Check if user is authenticated
+      console.log('User from token:', req.user);
+      console.log('User ID:', req.user?.sub);
+
+      if (!req.user || !req.user.sub) {
+        return res.status(401).json({ message: 'User not authenticated' });
+      }
+
       const itemData = {
         ...req.body,
-        uploadedBy: req.user.id,
+        uploadedBy: req.user.sub, // JWT uses 'sub' for user ID
         type: 'image'
       };
 
@@ -164,7 +172,7 @@ class GalleryController {
 
       const itemData = {
         ...req.body,
-        uploadedBy: req.user.id,
+        uploadedBy: req.user.sub, // JWT uses 'sub' for user ID
         type: 'video'
       };
 
