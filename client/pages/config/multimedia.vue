@@ -9,16 +9,38 @@
     </div>
 
     <div class="relative z-10 w-full max-w-7xl mx-auto">
-      <div class="text-center mb-12 sm:mb-16">
+      <!-- Back Button -->
+      <div class="absolute left-0 top-0 z-20">
         <NuxtLink
           to="/config"
-          class="absolute left-0 top-1/2 -translate-y-1/2 flex items-center text-stone-600 hover:text-stone-800 transition-colors duration-200 p-3 rounded-full hover:bg-stone-200 shadow-lg"
-          aria-label="Volver"
+          class="group relative inline-flex items-center gap-3 bg-gradient-to-r from-stone-800 to-stone-900 text-white font-semibold py-4 px-6 rounded-2xl shadow-2xl hover:shadow-stone-500/25 transition-all duration-300 transform hover:scale-105 overflow-hidden"
+          aria-label="Volver a Configuración"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
-            <path fill="currentColor" d="M10 22L0 12L10 2l1.775 1.775L3.55 12l8.225 8.225z" />
+          <!-- Background gradient effect -->
+          <div class="absolute inset-0 bg-gradient-to-r from-stone-700 to-stone-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+          <!-- Animated background shine -->
+          <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+
+          <!-- Icon with rotation effect -->
+          <svg
+            class="relative w-5 h-5 transform group-hover:-translate-x-1 transition-transform duration-300"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
+
+          <!-- Text -->
+          <span class="relative text-sm tracking-wide">VOLVER</span>
+
+          <!-- Decorative elements -->
+          <div class="absolute -top-1 -right-1 w-2 h-2 bg-amber-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse"></div>
         </NuxtLink>
+      </div>
+
+      <div class="text-center mb-12 sm:mb-16">
         <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold uppercase tracking-tight text-stone-900 mb-4">
           Gestión de Multimedia
         </h1>
@@ -85,13 +107,33 @@
             @click="openVideoModal(video)"
           >
             <div class="relative">
-              <img :src="video.thumbnail" :alt="video.name" class="w-full h-56 object-cover transition-transform duration-300 group-hover:scale-110" />
-              <div class="absolute inset-0 bg-stone-900 bg-opacity-60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+              <img
+                :src="video.thumbnail"
+                :alt="video.name"
+                class="w-full h-56 object-cover transition-transform duration-300 group-hover:scale-110"
+              />
+              <video
+                :src="video.url"
+                class="w-full h-56 object-cover transition-transform duration-300 group-hover:scale-110"
+                muted
+                preload="metadata"
+                style="display: none;"
+                @loadeddata="onVideoLoaded($event, video.id)"
+              ></video>
+              <!-- Play button overlay -->
+              <div class="absolute inset-0 bg-stone-900 bg-opacity-40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                 <div class="bg-white/90 backdrop-blur-sm rounded-full p-5 shadow-xl">
                   <svg class="w-10 h-10 text-stone-800" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M8 5v14l11-7z"/>
                   </svg>
                 </div>
+              </div>
+              <!-- Video indicator -->
+              <div class="absolute top-3 right-3 bg-stone-900/80 text-white text-xs px-3 py-2 rounded-full backdrop-blur-sm font-semibold flex items-center gap-2">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M8 5v14l11-7z"/>
+                </svg>
+                Video
               </div>
               <div class="absolute top-3 right-3 bg-stone-900/80 text-white text-xs px-3 py-2 rounded-full backdrop-blur-sm font-semibold">
                 <svg class="w-4 h-4 inline mr-2" fill="currentColor" viewBox="0 0 24 24">
@@ -278,6 +320,145 @@
         </div>
       </div>
 
+      <!-- Video Uploader Modal -->
+      <div
+        v-if="showVideoUploader"
+        class="fixed inset-0 bg-stone-900 bg-opacity-95 flex items-center justify-center z-50 p-6 overflow-y-auto"
+      >
+        <div class="bg-white rounded-3xl overflow-hidden shadow-2xl w-full max-w-4xl max-h-[95vh] flex flex-col">
+          <div class="flex justify-between items-center p-8 border-b border-stone-200 bg-gradient-to-r from-stone-50 to-stone-100">
+            <div>
+              <h3 class="text-3xl font-bold text-stone-800 mb-2">🎬 Subir Nuevo Vídeo</h3>
+              <p class="text-stone-600 text-lg">Selecciona y sube tu vídeo</p>
+            </div>
+            <button
+              @click="closeAllModals"
+              class="text-stone-400 hover:text-stone-600 hover:bg-stone-200 rounded-full p-3 transition-all duration-200 text-2xl font-bold shadow-lg"
+            >
+              ✕
+            </button>
+          </div>
+
+          <div class="p-8 flex-1 flex flex-col overflow-y-auto">
+            <div class="mb-8">
+              <label class="block text-lg font-semibold text-stone-800 mb-3">Seleccionar Vídeo</label>
+              <input
+                ref="videoInput"
+                type="file"
+                accept="video/*"
+                @change="handleVideoSelect"
+                class="w-full p-4 border-2 border-stone-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-stone-500 focus:border-stone-500 transition-all duration-200 text-lg"
+              />
+            </div>
+
+            <div class="mb-8">
+              <label class="block text-lg font-semibold text-stone-800 mb-3">Nombre del Vídeo</label>
+              <input
+                v-model="videoName"
+                type="text"
+                placeholder="Ej: Mi vídeo increíble"
+                class="w-full px-4 py-3 border-2 border-stone-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-stone-500 focus:border-stone-500 transition-all duration-200 text-lg"
+              />
+            </div>
+
+            <div v-if="selectedVideoFile" class="bg-stone-50 rounded-2xl p-6 mb-6">
+              <h4 class="text-xl font-bold text-stone-800 mb-4">📊 Información del Vídeo</h4>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-stone-700">
+                <div class="text-center">
+                  <div class="text-2xl font-bold text-stone-800 mb-2">{{ videoDimensions || 'Cargando...' }}</div>
+                  <div class="text-sm text-stone-600">Dimensiones</div>
+                </div>
+                <div class="text-center">
+                  <div class="text-2xl font-bold text-stone-800 mb-2">{{ videoFileSize }}</div>
+                  <div class="text-sm text-stone-600">Tamaño</div>
+                </div>
+                <div class="text-center">
+                  <div class="text-2xl font-bold text-stone-800 mb-2">{{ videoFileType }}</div>
+                  <div class="text-sm text-stone-600">Formato</div>
+                </div>
+                <div class="text-center">
+                  <div class="text-2xl font-bold text-stone-800 mb-2">{{ videoDuration || 'Cargando...' }}</div>
+                  <div class="text-sm text-stone-600">Duración</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-stone-50 rounded-2xl p-6 mb-6">
+              <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+                <div class="flex-1">
+                  <h4 class="text-lg font-semibold text-stone-800 mb-3">Vista Previa</h4>
+                  <div v-if="videoThumbnail" class="bg-stone-200 rounded-xl overflow-hidden">
+                    <img
+                      :src="videoThumbnail"
+                      :alt="videoName || 'Vista previa del video'"
+                      class="w-full max-h-64 object-contain"
+                    />
+                    <div class="absolute top-3 right-3 bg-stone-900/80 text-white text-xs px-3 py-2 rounded-full backdrop-blur-sm font-semibold flex items-center gap-2">
+                      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M8 5v14l11-7z"/>
+                      </svg>
+                      Thumbnail
+                    </div>
+                  </div>
+                  <div v-else-if="videoPreview" class="bg-stone-200 rounded-xl overflow-hidden relative">
+                    <video
+                      :src="videoPreview"
+                      class="w-full max-h-64 object-contain"
+                      controls
+                      muted
+                      preload="metadata"
+                    ></video>
+                    <div class="absolute top-3 right-3 bg-stone-900/80 text-white text-xs px-3 py-2 rounded-full backdrop-blur-sm font-semibold">
+                      Generando thumbnail...
+                    </div>
+                  </div>
+                  <div v-else class="bg-stone-200 rounded-xl p-8 text-center text-stone-500">
+                    <svg class="w-16 h-16 mx-auto mb-4 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                    </svg>
+                    <p class="text-lg">Selecciona un vídeo para ver la vista previa</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-stone-50 rounded-2xl p-6 mb-6">
+              <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+                <div class="flex-1">
+                  <label class="block text-lg font-semibold text-stone-800 mb-3">Nombre del Vídeo</label>
+                  <input
+                    v-model="videoName"
+                    type="text"
+                    placeholder="Ej: Mi vídeo increíble"
+                    class="w-full px-4 py-3 border-2 border-stone-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-stone-500 focus:border-stone-500 transition-all duration-200 text-lg"
+                  />
+                </div>
+                <div class="flex gap-4">
+                  <button
+                    @click="closeAllModals"
+                    class="px-8 py-3 bg-stone-200 text-stone-800 rounded-xl hover:bg-stone-300 transition-colors font-semibold text-lg shadow-lg"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    @click="uploadVideo"
+                    :disabled="!selectedVideoFile || !videoName.trim()"
+                    :class="[
+                      'px-8 py-3 rounded-xl transition-all duration-200 font-bold text-lg shadow-lg transform',
+                      (!selectedVideoFile || !videoName.trim())
+                        ? 'bg-gray-400 text-gray-200 cursor-not-allowed'
+                        : 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 hover:scale-105'
+                    ]"
+                  >
+                    🎬 Subir Vídeo
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div
         v-if="showImageCropper"
         class="fixed inset-0 bg-stone-900 bg-opacity-95 flex items-center justify-center z-50 p-6 overflow-y-auto"
@@ -431,6 +612,17 @@ const imageName = ref('')
 const cropper = ref(null)
 const fileInput = ref(null)
 const imagePreview = ref(null)
+
+// Video uploader related data
+const videoInput = ref(null)
+const videoName = ref('')
+const selectedVideoFile = ref(null)
+const videoPreview = ref('')
+const videoThumbnail = ref('')
+const videoFileSize = ref('')
+const videoFileType = ref('')
+const videoDuration = ref('')
+const videoDimensions = ref('')
 
 // Static videos data - Replace with your actual video imports
 import dog1 from '~/assets/videos/dog1.mp4'
@@ -731,6 +923,156 @@ const closeAllModals = () => {
   showVideoUploader.value = false
   selectedVideo.value = null
   selectedImage.value = null
+  resetVideoUploader()
+}
+
+const onVideoLoaded = (event, videoId) => {
+  console.log('Video loaded for thumbnail:', videoId)
+  // El video se carga automáticamente como thumbnail sin reproducirse
+  // gracias a preload="metadata" y muted
+}
+
+const handleVideoSelect = (event) => {
+  console.log('handleVideoSelect called')
+  const file = event.target.files[0]
+  console.log('Selected video file:', file)
+
+  if (file) {
+    // Validate file type
+    const allowedTypes = ['video/mp4', 'video/avi', 'video/mov', 'video/wmv', 'video/flv', 'video/webm']
+    const allowedExtensions = ['.mp4', '.avi', '.mov', '.wmv', '.flv', '.webm']
+    const fileExtension = file.name.toLowerCase().substring(file.name.lastIndexOf('.'))
+
+    if (!allowedTypes.includes(file.type) && !allowedExtensions.includes(fileExtension)) {
+      alert('Tipo de archivo no válido. Solo se permiten archivos de vídeo: MP4, AVI, MOV, WMV, FLV, WebM')
+      return
+    }
+
+    // Validate file size (max 100MB for videos)
+    const maxSize = 100 * 1024 * 1024 // 100MB
+    if (file.size > maxSize) {
+      alert('El archivo es demasiado grande. El tamaño máximo es 100MB.')
+      return
+    }
+
+    selectedVideoFile.value = file
+
+    // Set file info
+    videoFileSize.value = (file.size / (1024 * 1024)).toFixed(2) + ' MB'
+    videoFileType.value = fileExtension.toUpperCase().replace('.', '')
+
+    // Create preview URL
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      videoPreview.value = e.target.result
+
+      // Get video metadata and create thumbnail
+      const video = document.createElement('video')
+      video.preload = 'metadata'
+      video.src = e.target.result
+      video.currentTime = 1 // Seek to 1 second to get a frame (not the first frame which might be black)
+
+      video.onloadedmetadata = () => {
+        // Get duration
+        const duration = video.duration
+        const minutes = Math.floor(duration / 60)
+        const seconds = Math.floor(duration % 60)
+        videoDuration.value = `${minutes}:${seconds.toString().padStart(2, '0')}`
+
+        // Get dimensions
+        const width = video.videoWidth
+        const height = video.videoHeight
+        videoDimensions.value = `${width} x ${height} px`
+      }
+
+      video.onseeked = () => {
+        // Create thumbnail from video frame
+        const canvas = document.createElement('canvas')
+        const ctx = canvas.getContext('2d')
+
+        // Set canvas size (maintain aspect ratio, max 320px width)
+        const aspectRatio = video.videoWidth / video.videoHeight
+        canvas.width = Math.min(320, video.videoWidth)
+        canvas.height = canvas.width / aspectRatio
+
+        // Draw video frame to canvas
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
+
+        // Convert to data URL for thumbnail
+        videoThumbnail.value = canvas.toDataURL('image/jpeg', 0.8)
+      }
+    }
+    reader.readAsDataURL(file)
+
+    // Auto-fill name if empty
+    if (!videoName.value.trim()) {
+      videoName.value = file.name.replace(/\.[^/.]+$/, '')
+    }
+  } else {
+    console.log('No video file selected')
+  }
+}
+
+const uploadVideo = async () => {
+  if (!selectedVideoFile.value || !videoName.value.trim()) {
+    alert('Por favor selecciona un vídeo y proporciona un nombre')
+    return
+  }
+
+  try {
+    console.log('Uploading video:', videoName.value)
+
+    // Create video object
+    const newVideo = {
+      id: `v-${Date.now()}`,
+      url: videoPreview.value,
+      name: videoName.value.trim(),
+      dimensions: videoDimensions.value || 'N/A',
+      size: videoFileSize.value,
+      format: videoFileType.value,
+      duration: videoDuration.value,
+      thumbnail: videoThumbnail.value || videoPreview.value, // Use real thumbnail or fallback to video
+      subtitles: []
+    }
+
+    // Add to videos array
+    videos.value.unshift(newVideo)
+    console.log('Video added to array, new length:', videos.value.length)
+
+    // Save to localStorage for persistence
+    const savedVideos = JSON.parse(localStorage.getItem('uploadedVideos') || '[]')
+    savedVideos.unshift(newVideo)
+    localStorage.setItem('uploadedVideos', JSON.stringify(savedVideos))
+
+    // Show success message
+    success.value = `Vídeo "${videoName.value}" subido exitosamente`
+    setTimeout(() => success.value = '', 3000)
+
+    // Close modal and reset
+    closeAllModals()
+    resetVideoUploader()
+
+  } catch (error) {
+    console.error('Error uploading video:', error)
+    error.value = 'Error al subir el vídeo: ' + error.message
+    setTimeout(() => error.value = '', 3000)
+  }
+}
+
+const resetVideoUploader = () => {
+  videoName.value = ''
+  selectedVideoFile.value = null
+  videoPreview.value = ''
+  videoThumbnail.value = ''
+  videoFileSize.value = ''
+  videoFileType.value = ''
+  videoDuration.value = ''
+  videoDimensions.value = ''
+
+  // Clear file input
+  if (videoInput.value) {
+    videoInput.value.value = ''
+  }
 }
 
 const openCropperModal = () => {
@@ -1317,6 +1659,10 @@ onMounted(async () => {
     const savedImages = JSON.parse(localStorage.getItem('uploadedImages') || '[]')
     console.log('📦 Loaded saved images:', savedImages.length)
 
+    // Load saved videos from localStorage
+    const savedVideos = JSON.parse(localStorage.getItem('uploadedVideos') || '[]')
+    console.log('🎬 Loaded saved videos:', savedVideos.length)
+
     // Combine initial images with saved images
     images.value = [...processedImages, ...savedImages]
     console.log('✅ Total images loaded:', images.value.length)
@@ -1326,8 +1672,10 @@ onMounted(async () => {
     const processedVideos = await Promise.all(
       STATIC_VIDEOS.map(video => fetchVideoProperties(video))
     )
-    videos.value = processedVideos
-    console.log('✅ Videos loaded:', videos.value.length)
+
+    // Combine static videos with saved videos
+    videos.value = [...processedVideos, ...savedVideos]
+    console.log('✅ Total videos loaded:', videos.value.length)
 
     loading.value = false
     console.log('🎉 Multimedia loading completed!')
@@ -1359,6 +1707,14 @@ onUnmounted(() => {
   // Clear all reactive refs to prevent memory leaks
   previewImage.value = ''
   imageName.value = ''
+  videoName.value = ''
+  selectedVideoFile.value = null
+  videoPreview.value = ''
+  videoThumbnail.value = ''
+  videoFileSize.value = ''
+  videoFileType.value = ''
+  videoDuration.value = ''
+  videoDimensions.value = ''
   error.value = ''
   success.value = ''
 
