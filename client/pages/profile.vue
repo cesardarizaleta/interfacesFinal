@@ -103,7 +103,7 @@ const profile = ref({
 
 const originalProfile = ref({})
 const isLoading = ref(false)
-const API_BASE = 'http://localhost:4000/api'
+const API_BASE = 'http://localhost:3000/api'
 
 onMounted(async () => {
   await loadUserProfile()

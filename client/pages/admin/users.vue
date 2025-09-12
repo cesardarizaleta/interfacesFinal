@@ -226,7 +226,7 @@ const initializeTheme = async () => {
 
 const fetchUsers = async () => {
   try {
-    const response = await fetch(`${useRuntimeConfig().public.BACKEND_URL}/users`, {
+    const response = await fetch(`${useRuntimeConfig().public.BACKEND_URL}/api/admin/users`, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`
       }
@@ -260,7 +260,7 @@ const deleteUser = async (user) => {
   const userName = user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : user.email;
   if (confirm(`¿Estás seguro de eliminar al usuario ${userName}?`)) {
     try {
-      const response = await fetch(`${useRuntimeConfig().public.BACKEND_URL}/users/${user.id}`, {
+      const response = await fetch(`${useRuntimeConfig().public.BACKEND_URL}/api/users/${user.id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -293,7 +293,7 @@ const saveUser = async () => {
 
     let response;
     if (isEditing.value) {
-      response = await fetch(`${useRuntimeConfig().public.BACKEND_URL}/users/${editingUser.value.id}`, {
+      response = await fetch(`${useRuntimeConfig().public.BACKEND_URL}/api/users/${editingUser.value.id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -302,7 +302,7 @@ const saveUser = async () => {
         body: JSON.stringify(dataToSend)
       });
     } else {
-      response = await fetch(`${useRuntimeConfig().public.BACKEND_URL}/users`, {
+      response = await fetch(`${useRuntimeConfig().public.BACKEND_URL}/api/users`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

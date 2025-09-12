@@ -12,19 +12,27 @@
 
     <div class="form-grid">
       <div class="form-group full-width">
-        <label for="address" class="form-label">
-          Dirección <span class="required">*</span>
-        </label>
-        <input
-          id="address"
-          v-model="localData.address"
-          type="text"
-          class="form-input"
-          :class="{ error: errors.address }"
-          placeholder="Calle, número, apartamento"
-          @input="handleInput('address', $event.target.value)"
-          @blur="validateField('address')"
-        />
+        <div class="input-with-button">
+          <label for="address" class="form-label">
+            Dirección <span class="required">*</span>
+          </label>
+          <div class="input-container">
+            <input
+              id="address"
+              v-model="localData.address"
+              type="text"
+              class="form-input"
+              :class="{ error: errors.address }"
+              placeholder="Calle, número, apartamento"
+              @input="handleInput('address', $event.target.value)"
+              @blur="validateField('address')"
+            />
+            <button @click="openMapModal" class="map-btn" type="button" title="Seleccionar ubicación en mapa">
+              <Icon name="heroicons:map-pin" size="16" />
+              <span class="map-btn-text">Mapa</span>
+            </button>
+          </div>
+        </div>
         <span v-if="errors.address" class="error-message">{{ errors.address }}</span>
       </div>
 
@@ -105,11 +113,20 @@
         </div>
       </div>
     </div>
+
+    <!-- Map Modal -->
+    <MapModal
+      :is-open="showMapModal"
+      :initial-location="getInitialLocation()"
+      @close="closeMapModal"
+      @confirm="handleMapConfirm"
+    />
   </div>
 </template>
 
 <script setup>
 import { ref, watch, onMounted } from 'vue'
+import MapModal from '../MapModal.vue'
 
 const props = defineProps({
   profile: {
@@ -133,6 +150,7 @@ const localData = ref({
 })
 
 const localErrors = ref({})
+const showMapModal = ref(false)
 
 const handleInput = (field, value) => {
   localData.value[field] = value
@@ -170,6 +188,62 @@ const validateAll = () => {
   ['address', 'city', 'state', 'country', 'postalCode'].forEach(field => {
     validateField(field)
   })
+}
+
+const openMapModal = () => {
+  showMapModal.value = true
+}
+
+const closeMapModal = () => {
+  showMapModal.value = false
+}
+
+const getInitialLocation = () => {
+  // Try to get coordinates from current address or use default
+  // For now, return default location (Bogotá, Colombia)
+  return { lat: 4.6097, lng: -74.0817 }
+}
+
+const handleMapConfirm = (data) => {
+  const { location, address, parsedAddress } = data
+
+  // Update address field with the formatted address
+  if (address) {
+    handleInput('address', address)
+  }
+
+  // Fill individual fields using parsed address components
+  if (parsedAddress) {
+    // Fill city (second part of display name, usually the city)
+    if (parsedAddress.locality && !localData.value.city) {
+      handleInput('city', parsedAddress.locality)
+    }
+
+    // Fill state/province (third part, usually the state/province)
+    if (parsedAddress.administrative_area_level_1 && !localData.value.state) {
+      handleInput('state', parsedAddress.administrative_area_level_1)
+    }
+
+    // Fill country (last part, usually the country)
+    if (parsedAddress.country && !localData.value.country) {
+      // Map to our select options
+      const countryMap = {
+        'Colombia': 'colombia',
+        'México': 'mexico',
+        'Argentina': 'argentina',
+        'España': 'espana'
+      }
+      const mappedCountry = countryMap[parsedAddress.country] || 'otros'
+      handleInput('country', mappedCountry)
+    }
+
+    // Fill postal code if available
+    if (parsedAddress.postal_code && !localData.value.postalCode) {
+      handleInput('postalCode', parsedAddress.postal_code)
+    }
+  }
+
+  closeMapModal()
 }
 
 onMounted(() => {
@@ -304,6 +378,53 @@ watch(() => props.profile, (newProfile) => {
   font-weight: 500;
 }
 
+.input-with-button {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.input-container {
+  display: flex;
+  gap: 0.5rem;
+  align-items: stretch;
+}
+
+.form-input {
+  flex: 1;
+}
+
+.map-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(135deg, #8B4513 0%, #DAA520 100%);
+  color: white;
+  border: 1px solid #8B4513;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.map-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(139, 69, 19, 0.3);
+}
+
+.map-btn-text {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .map-btn-text {
+    display: inline;
+  }
+}
+
 @media (max-width: 768px) {
   .form-row {
     grid-template-columns: 1fr;
@@ -321,6 +442,14 @@ watch(() => props.profile, (newProfile) => {
 
   .section-title {
     font-size: 1.125rem;
+  }
+
+  .input-container {
+    flex-direction: column;
+  }
+
+  .map-btn {
+    justify-content: center;
   }
 }
 </style>
